@@ -1,6 +1,7 @@
 # coding:utf-8
 
 from django.contrib.auth.models import User
+from django.shortcuts import render
 
 from rest_framework import mixins
 from rest_framework import generics
@@ -67,3 +68,47 @@ class ChordList(generics.ListCreateAPIView):
 class ChordDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Chord.objects.all()
     serializer_class = serializers.ChordSerializer
+
+
+class ParagraphList(generics.ListCreateAPIView):
+    queryset = models.Paragraph.objects.all()
+    serializer_class = serializers.ParagraphSerializer
+
+
+class ParagraphDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Paragraph.objects.all()
+    serializer_class = serializers.ParagraphSerializer
+
+
+class VerseList(generics.ListCreateAPIView):
+    queryset = models.Verse.objects.all()
+    serializer_class = serializers.VerseSerializer
+
+
+class VerseDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Verse.objects.all()
+    serializer_class = serializers.VerseSerializer
+
+
+class HarmonizationList(generics.ListCreateAPIView):
+    queryset = models.Harmonization.objects.all()
+    serializer_class = serializers.HarmonizationSerializer
+
+
+class HarmonizationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Harmonization.objects.all()
+    serializer_class = serializers.HarmonizationSerializer
+
+
+class SongLaTeXCodeList(generics.ListCreateAPIView):
+    queryset = models.SongLaTeXCode.objects.all()
+    serializer_class = serializers.SongLaTeXCodeSerializer
+
+
+class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.SongLaTeXCode.objects.all()
+    serializer_class = serializers.SongLaTeXCodeSerializer
+
+
+def main(request):
+    return render(request, 'index.html', {})
