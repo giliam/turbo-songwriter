@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
+</head>
+<body>
+    {% verbatim %}
+    <div id="app">
+        <songslist></songslist>
+    </div>
+    {% endverbatim %}
+    <script type="text/javascript">
+        var url_songs_list = "{% url "songs_list" %}";
+        var url_song_detail = "{% url "songs_detail" 0 %}";
+        alert(url_song_detail);
+    </script>
+    <script src="static/js/app.js"></script>
+</body>
+</html>
