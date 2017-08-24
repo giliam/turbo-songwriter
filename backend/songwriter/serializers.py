@@ -57,7 +57,42 @@ class ChordSerializer(serializers.ModelSerializer):
         )
 
 
+class VerseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Verse
+        fields = (
+            'id',
+            'order',
+            'content',
+            'paragraph',
+            'harmonizations',
+            'added_date',
+            'updated_date'
+        )
+
+
+class ParagraphSerializer(serializers.ModelSerializer):
+    verses = VerseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Paragraph
+        fields = (
+            'id',
+            'order',
+            'song',
+            'verses',
+            'is_refrain',
+            'added_date',
+            'updated_date'
+        )
+
+
 class SongSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
+    editor = EditorSerializer()
+    theme = ThemeSerializer(many=True)
+    paragraphs = ParagraphSerializer(many=True, read_only=True)
+
     class Meta:
         model = Song
         fields = (
@@ -76,34 +111,10 @@ class SongSerializer(serializers.ModelSerializer):
         )
 
 
-class ParagraphSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Paragraph
-        fields = (
-            'id',
-            'order',
-            'song',
-            'verses',
-            'is_refrain',
-            'added_date',
-            'updated_date'
-        )
-
-
-class VerseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Verse
-        fields = (
-            'id',
-            'order',
-            'content',
-            'harmonizations',
-            'added_date',
-            'updated_date'
-        )
-
-
 class HarmonizationSerializer(serializers.ModelSerializer):
+    verse = VerseSerializer()
+    chord = ChordSerializer()
+
     class Meta:
         model = Harmonization
         fields = (

@@ -125,6 +125,9 @@ class Song(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        ordering = ['title']
+
     def __str__(self):
         return u"Song: {0}".format(self.title)
 
@@ -148,6 +151,9 @@ class Paragraph(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        ordering = ['song', 'order']
+
     def __str__(self):
         return u"Paragraph: #{0}".format(self.order)
 
@@ -170,6 +176,9 @@ class Verse(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        ordering = ['paragraph', 'order']
+
     def __str__(self):
         return u"Verse #{1}: {0}".format(self.content, self.order)
 
@@ -189,6 +198,9 @@ class Harmonization(models.Model):
         _('date updated to the database'),
         auto_now=True
     )
+
+    class Meta:
+        ordering = ['verse', 'spot_in_verse']
 
     def __str__(self):
         return u"Harmonization"
