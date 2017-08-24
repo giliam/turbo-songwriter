@@ -1,21 +1,41 @@
 <template>
     <div id="app">
         <h1>Turbo songwriter !</h1>
-        <songslist></songslist>
+        <song :item_id="current_song" v-show="!is_list_shown">
+            <a @click.prevent="show_list">Retour à la liste</a>
+        </song>
+        <songslist @show_song="show_song" v-if="is_list_shown"></songslist>
     </div>
 </template>
 
 <script>
     import Songslist from './Songslist.vue'
+    import Song from './Song.vue'
 
     export default {
         name: 'app',
-        components: {Songslist},
+        components: {
+            Songslist,
+            Song
+        },
         data() {
             return {
-                msg: 'Welcome to Your Vue.js App'
+                msg: 'Welcome to Your Vue.js App',
+                current_song: 0,
+                is_list_shown: true,
             }
-        }
+        },
+        methods: {
+            show_song(param){
+                this.$data.current_song = param
+                console.log("Show main song", param)
+                this.$data.is_list_shown = false
+            },
+            show_list(){
+                this.$data.is_list_shown = true
+                this.$data.current_song = 0
+            }
+        },
     }
 </script>
 
