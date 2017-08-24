@@ -66,6 +66,7 @@ class SongSerializer(serializers.ModelSerializer):
             'author',
             'editor',
             'theme',
+            'paragraphs',
             'rights_paid',
             'secli_number',
             'sacem_number',
@@ -82,6 +83,7 @@ class ParagraphSerializer(serializers.ModelSerializer):
             'id',
             'order',
             'song',
+            'verses',
             'is_refrain',
             'added_date',
             'updated_date'
