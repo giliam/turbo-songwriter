@@ -3,7 +3,9 @@
         <slot></slot>
         <h2>{{ result.title }}</h2>
         <div id="paragraphs" v-for="paragraph in result.paragraphs">
+            <hr>
             <songparagraph :paragraph="paragraph"></songparagraph>
+            <br>
         </div>
         <p><a @click.prevent="addParagraph()">Add a paragraph</a></p>
         <button @click.prevent="save()">Save</button>
@@ -29,7 +31,6 @@
         },
         methods:{
             addParagraph() {
-                console.log("Adds paragraph", this.$data.result.paragraphs.length)
                 let nb_paragraphs = this.$data.result.paragraphs.length
                 let paragraph = {
                     id: null,
@@ -46,7 +47,6 @@
         },
         watch : {
             item_id : function (value) {
-                console.log("Receives", value)
                 this.item_id = value
                 if( this.item_id ){
                     axios.get("http://localhost:8000/songs/" + this.item_id + ".json")

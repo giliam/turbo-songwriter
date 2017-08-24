@@ -1,7 +1,6 @@
 <template>
     <div>
-        <p>{{ verse.content }}</p>
-        <p><a @click.prevent="editVerse()">Edit verse</a></p>
+        <p>{{ verse.content }} - <a @click.prevent="editVerse()">Edit verse</a></p>
     </div>
 </template>
 
