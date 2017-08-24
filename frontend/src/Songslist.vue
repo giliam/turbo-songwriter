@@ -31,7 +31,7 @@
                 .then(response => {
                     console.log(response.data);
                     this.results = response.data;
-                });
+                }, 	(error) => { console.log(error) });
             console.log("done Request");
         }
     }

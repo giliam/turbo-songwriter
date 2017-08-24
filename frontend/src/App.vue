@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1>Titre</h1>
+        <h1>Turbo songwriter !</h1>
         <songslist></songslist>
     </div>
 </template>
