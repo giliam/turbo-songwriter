@@ -88,6 +88,24 @@ class ParagraphSerializer(serializers.ModelSerializer):
 
 
 class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = (
+            'id',
+            'title',
+            'author',
+            'editor',
+            'theme',
+            'rights_paid',
+            'secli_number',
+            'sacem_number',
+            'comments',
+            'added_date',
+            'updated_date'
+        )
+
+
+class SongReadSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
     editor = EditorSerializer()
     theme = ThemeSerializer(many=True)

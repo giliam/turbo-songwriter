@@ -22,12 +22,28 @@ class UserDetail(generics.RetrieveAPIView):
 
 class SongList(generics.ListCreateAPIView):
     queryset = models.Song.objects.all()
-    serializer_class = serializers.SongSerializer
+
+    def get_serializer_class(self):
+        # Thanks to https://stackoverflow.com/a/41313121
+        # Define your HTTP method-to-serializer mapping freely.
+        # This also works with CoreAPI and Swagger documentation,
+        # which produces clean and readable API documentation,
+        # so I have chosen to believe this is the way the
+        # Django REST Framework author intended things to work:
+        if self.request.method in ('GET',):
+            # Since the ReadSerializer does nested lookups
+            # in multiple tables, only use it when necessary
+            return serializers.SongReadSerializer
+        return serializers.SongSerializer
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Song.objects.all()
-    serializer_class = serializers.SongSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.SongReadSerializer
+        return serializers.SongSerializer
 
 
 class AuthorList(generics.ListCreateAPIView):
