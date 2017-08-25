@@ -1,39 +1,39 @@
 <template>
-    <form id="songform">
+    <form id="songform" class="ui form">
         <fieldset>
-            <legend>Add a song</legend>
-            <p>
+            <legend class="ui dividing header">Add a song</legend>
+            <p class="field">
                 <label for="title">Title:</label>
                 <input type="text" name="title" v-model="title">
             </p>
-            <p>
+            <p class="field">
                 <label for="author">Author:</label>
                 <select name="author" v-model="author">
                     <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}</option>
                 </select>
             </p>
-            <p>
+            <p class="field">
                 <label for="editor">Editor:</label>
                 <select name="editor" v-model="editor">
                     <option :value="seditor.id" v-for="seditor in editors">{{ seditor.name }}</option>
                 </select>
             </p>
-            <p>
+            <p class="field">
                 <label for="theme">Theme:</label>
                 <select name="theme" v-model="theme" multiple="multiple">
                     <option :value="stheme.id" v-for="stheme in themes">{{ stheme.name }}</option>
                 </select>
             </p>
-            <p>
+            <p class="field">
                 <label for="secli_number">SECLI Number :</label>
                 <input type="text" name="secli_number" v-model="secli_number">
             </p>
-            <p>
+            <p class="field">
             <label for="comments">Comments:</label>
             <textarea name="comments" v-model="comments"></textarea>
             </p>
 
-            <p><button @click.prevent="save()">Save</button></p>
+            <p class="field"><button @click.prevent="save()" class="ui button">Save</button></p>
         </fieldset>
     </form>
 </template>

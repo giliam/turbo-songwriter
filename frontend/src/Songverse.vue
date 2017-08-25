@@ -6,8 +6,17 @@
                 - <a @click.prevent="launchEdition()">Edit verse</a>
             </div>
             <div v-if="is_editing">
-                <input type="text" v-model="verse.content" v-if="is_editing" @keyup.enter="saveEdition()"/>
-                <button v-if="is_editing" @click.prevent="saveEdition()">Save</button>
+                <form class="ui form">
+                    <fieldset>
+                        <p class="field">
+                            <input type="text" name="verse" v-model="verse.content" @keyup.enter="saveEdition()"/>
+                        </p>
+                        <p>
+                            <button @click.prevent="saveEdition()" class="ui button">Save</button>
+                            <button @click.prevent="cancelEdition()" class="ui button">Cancel</button>
+                        </p>
+                    </fieldset>
+                </form>
             </div>
         </p>
     </div>
@@ -28,6 +37,9 @@
         methods: {
             launchEdition() {
                 this.$data.is_editing = true
+            },
+            cancelEdition() {
+                this.$data.is_editing = false
             },
             saveEdition() {
                 axios.put("http://localhost:8000/verses/" + this.verse.id + "/", this.verse)

@@ -5,12 +5,10 @@
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
         <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
         <div v-for="paragraph in result.paragraphs">
-            <hr>
             <songparagraph :paragraph="paragraph"></songparagraph>
             <br>
         </div>
         <p><a @click.prevent="addParagraph()">Add a paragraph</a></p>
-        <button @click.prevent="save()">Save</button>
     </div>
 </template>
 
@@ -42,9 +40,6 @@
                     is_refrain: false
                 }
                 this.$data.result.paragraphs.push(paragraph)
-            },
-            save() {
-                console.log("Save")
             }
         },
         watch : {

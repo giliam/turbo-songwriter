@@ -3,12 +3,17 @@
         <div v-for="verse in paragraph.verses">
             <songverse :verse="verse"></songverse>
         </div>
-        <button @click.prevent="addVerse">Add a verse</button>
-        <form v-if="display_form_add">
-            <label for="content">Content</label>
-            <input type="text" v-model="new_verse_content" @keyup.enter="sendNewVerse()">
+        <p><button class="ui button" @click.prevent="addVerse">Add a verse</button></p>
+        <form v-if="display_form_add" class="ui form">
+            <fieldset>
+                <p class="field">
+                    <label for="content">Content:</label>
+                    <input type="text" v-model="new_verse_content" @keyup.enter="sendNewVerse()">
+                </p>
 
-            <button type="submit" @click.prevent="sendNewVerse()">Send</button>
+                <button class="ui button" type="submit" @click.prevent="sendNewVerse()">Send</button>
+                <button class="ui button" @click.prevent="cancelNewVerse()">Cancel</button>
+            </fieldset>
         </form>
     </div>
 </template>
@@ -33,8 +38,10 @@
         },
         methods: {
             addVerse(){
-                console.log("Add verse")
                 this.$data.display_form_add = true
+            },
+            cancelNewVerse() {
+                this.$data.display_form_add = false
             },
             sendNewVerse(){
                 console.log("Send new verse");
