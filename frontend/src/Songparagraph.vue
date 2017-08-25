@@ -18,10 +18,6 @@
 
     import Songverse from './Songverse.vue'
 
-    function sendRequestNewVerse(verse){
-
-    }
-
     export default {
         components: {
             Songverse
