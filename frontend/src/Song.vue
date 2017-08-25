@@ -2,7 +2,9 @@
     <div id="song">
         <slot></slot>
         <h2>{{ result.title }}</h2>
-        <div id="paragraphs" v-for="paragraph in result.paragraphs">
+        <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
+        <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
+        <div v-for="paragraph in result.paragraphs">
             <hr>
             <songparagraph :paragraph="paragraph"></songparagraph>
             <br>
