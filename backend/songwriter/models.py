@@ -29,7 +29,7 @@ class Author(models.Model):
     )
 
     def __str__(self):
-        return u"Author: {0} {1}".format(self.firstname, self.lastname.upper())
+        return u"{0} {1}".format(self.firstname, self.lastname.upper())
 
 
 class Editor(models.Model):
@@ -50,7 +50,7 @@ class Editor(models.Model):
     )
 
     def __str__(self):
-        return u"Editor: {0}".format(self.name)
+        return u"{0}".format(self.name)
 
 
 class Theme(models.Model):

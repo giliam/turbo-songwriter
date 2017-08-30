@@ -105,11 +105,18 @@ class SongSerializer(serializers.ModelSerializer):
         )
 
 
+class SongLaTeXCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SongLaTeXCode
+        fields = ('id', 'code')
+
+
 class SongReadSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
     editor = EditorSerializer()
     theme = ThemeSerializer(many=True)
     paragraphs = ParagraphSerializer(many=True, read_only=True)
+    latex_code = SongLaTeXCodeSerializer()
 
     class Meta:
         model = Song
@@ -120,6 +127,7 @@ class SongReadSerializer(serializers.ModelSerializer):
             'editor',
             'theme',
             'paragraphs',
+            'latex_code',
             'rights_paid',
             'secli_number',
             'sacem_number',
@@ -143,9 +151,3 @@ class HarmonizationSerializer(serializers.ModelSerializer):
             'added_date',
             'updated_date'
         )
-
-
-class SongLaTeXCodeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SongLaTeXCode
-        fields = ('id', 'song', 'code', 'added_date', 'updated_date')

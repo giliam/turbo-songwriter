@@ -1,10 +1,13 @@
 # coding:utf-8
 
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework import response
 
 from songwriter import models
 from songwriter import serializers
@@ -127,4 +130,34 @@ class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 def main(request):
-    return render(request, 'index.html', {})
+    return HttpResponse("Main")
+
+@csrf_exempt
+def convert_to_tex(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+
+    # TODO: disable regeneration everytime except when forced.
+    # TODO: adds PUT/DELETE actions
+    tex_output = "\\section{%s}" % (song.title,) + "\n"
+    tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
+
+    for paragraph in song.paragraphs.all():
+        for verse in paragraph.verses.all():
+            if paragraph.is_refrain:
+                tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
+            else:
+                tex_output += verse.content + "\n"
+            tex_output += "\\newline\n"
+        tex_output += "\\newline\n"
+
+    if models.SongLaTeXCode.objects.filter(song=song).exists():
+        latex_code = song.latex_code
+    else:        
+        latex_code = models.SongLaTeXCode()
+        latex_code.song = song
+
+    latex_code.code = tex_output
+    latex_code.save()
+
+    serializer = serializers.SongLaTeXCodeSerializer(latex_code)
+    return JsonResponse(serializer.data, safe=False)

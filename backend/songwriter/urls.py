@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^$', views.main, name="main"),
     url(r'^songs/list/$', views.SongList.as_view(), name="songs_list"),
     url(r'^songs/(?P<pk>[0-9]+)/$', views.SongDetail.as_view(), name="songs_detail"),
+    url(r'^song/convert/to/tex/(?P<song_id>[0-9]+)/$', views.convert_to_tex, name="song_convert_to_tex"),
     url(r'^authors/list/$', views.AuthorList.as_view(), name="authors_list"),
     url(r'^authors/(?P<pk>[0-9]+)/$', views.AuthorDetail.as_view(), name="authors_detail"),
     url(r'^editors/list/$', views.EditorList.as_view(), name="editors_list"),
