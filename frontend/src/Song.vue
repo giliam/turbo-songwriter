@@ -2,7 +2,13 @@
     <div id="song">
         <slot></slot>
         <form class="ui form">
-            <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex()">Convert to LaTeX</button></p>
+            <div v-if="result.latex_code == null">
+                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Convert to LaTeX</button></p>
+            </div>
+            <div v-else>
+                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(false)">Edit LaTeX code</button></p>
+                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Force conversion to LaTeX</button></p>
+            </div>
         </form>
         <h2>{{ result.title }}</h2>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
@@ -44,8 +50,8 @@
                 }
                 this.$data.result.paragraphs.push(paragraph)
             },
-            launch_convert_to_tex(){
-                this.$emit("convert_to_tex", this.item_id)
+            launch_convert_to_tex(force_conversion){
+                this.$emit("convert_to_tex", this.item_id, force_conversion)
             }
         },
         watch : {

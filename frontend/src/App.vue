@@ -17,7 +17,7 @@
             <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
                 <a @click.prevent="show_list">Retour à la liste</a>
             </songform>
-            <songtexform :song="current_song" v-if="is_tex_shown"></songtexform>
+            <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown"></songtexform>
         </div>
     </div>
 </template>
@@ -40,6 +40,7 @@
             return {
                 msg: 'Welcome to Your Vue.js App',
                 current_song: 0,
+                force_latex_conversion: false,
                 is_song_shown: false,
                 is_list_shown: true,
                 is_tex_shown: false,
@@ -68,8 +69,9 @@
                 this.$data.is_form_edition_shown = false
                 this.$data.current_song = 0
             },
-            convert_to_tex(song_id){
+            convert_to_tex(song_id, force_latex_conversion){
                 this.$data.current_song = song_id
+                this.$data.force_latex_conversion = force_latex_conversion
                 this.$data.is_tex_shown = true
                 this.$data.is_song_shown = false
                 this.$data.is_list_shown = false
