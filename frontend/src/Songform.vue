@@ -1,7 +1,8 @@
 <template>
     <form id="songform" class="ui form">
         <fieldset>
-            <legend class="ui dividing header">Add a song</legend>
+            <slot></slot>
+            <legend class="ui dividing header">{{ titleform }}</legend>
             <p class="field">
                 <label for="title">Title:</label>
                 <input type="text" name="title" v-model="title">
@@ -9,19 +10,24 @@
             <p class="field">
                 <label for="author">Author:</label>
                 <select name="author" v-model="author">
-                    <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}</option>
+                    <option :value="sauthor.id" v-for="sauthor in authors" :selected="is_selected(author_selected.id, sauthor.id)">{{ sauthor.firstname }} {{ sauthor.lastname }}
+                    </option>
                 </select>
             </p>
             <p class="field">
                 <label for="editor">Editor:</label>
                 <select name="editor" v-model="editor">
-                    <option :value="seditor.id" v-for="seditor in editors">{{ seditor.name }}</option>
+                    <option :value="seditor.id" v-for="seditor in editors" :selected="is_selected(editor_selected.id, seditor.id)">
+                        {{ seditor.name }}
+                    </option>
                 </select>
             </p>
             <p class="field">
                 <label for="theme">Theme:</label>
                 <select name="theme" v-model="theme" multiple="multiple">
-                    <option :value="stheme.id" v-for="stheme in themes">{{ stheme.name }}</option>
+                    <option :value="stheme.id" v-for="stheme in themes" :selected="is_selected_theme(stheme.id)">
+                        {{ stheme.name }}
+                    </option>
                 </select>
             </p>
             <p class="field">
@@ -52,8 +58,15 @@
                 theme: Array(),
                 authors: Array(),
                 editors: Array(),
-                themes: Array()
+                themes: Array(),
+                theme_selected: Array(),
+                author_selected: Object,
+                editor_selected: Object
             }
+        },
+        props: {
+            titleform: String,
+            song: Number
         },
         mounted() {
             axios.get("http://localhost:8000/authors/list/")
@@ -68,6 +81,19 @@
                 .then(response => {
                     this.$data.themes = response.data;
                 }, 	(error) => { console.log(error) });
+
+            if( this.song != 0 ){
+                axios.get("http://localhost:8000/songs/" + this.song + ".json")
+                    .then(response => {
+                        console.log("Received", response.data)
+                        this.$data.title = response.data.title
+                        this.$data.author_selected = response.data.author
+                        this.$data.theme_selected = response.data.theme
+                        this.$data.editor_selected = response.data.editor
+                        this.$data.secli_number = response.data.secli_number
+                        this.$data.comments = response.data.comments
+                    })
+            }
         },
         methods: {
             save(){
@@ -83,10 +109,27 @@
                     comments: this.$data.comments,
                     theme: new_themes
                 };
-                axios.post("http://localhost:8000/songs/list/", song)
-                    .then(response => {
-                        this.$emit("song_saved")
-                    }, (error) => { console.log(error)});
+                if( this.song != 0 ) {
+                    axios.put("http://localhost:8000/songs/" + this.song + "/", song)
+                        .then(response => {
+                            this.$emit("song_saved")
+                        }, (error) => { console.log(error)});
+                } else {
+                    axios.post("http://localhost:8000/songs/list/", song)
+                        .then(response => {
+                            this.$emit("song_saved")
+                        }, (error) => { console.log(error)});
+                }
+            },
+            is_selected(ref_id, current_id){
+                return (ref_id == current_id ? "selected" : null)
+            },
+            is_selected_theme(current_id){
+                for (var i = 0; i < this.$data.theme_selected.length; i++) {
+                    if(current_id == this.$data.theme_selected[i])
+                        return "selected"
+                }
+                return null
             }
         }
     }

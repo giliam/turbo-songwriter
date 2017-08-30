@@ -1,6 +1,9 @@
 <template>
     <div id="song">
         <slot></slot>
+        <form class="ui form">
+            <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex()">Convert to LaTeX</button></p>
+        </form>
         <h2>{{ result.title }}</h2>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
         <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
@@ -40,6 +43,9 @@
                     is_refrain: false
                 }
                 this.$data.result.paragraphs.push(paragraph)
+            },
+            launch_convert_to_tex(){
+                this.$emit("convert_to_tex", this.item_id)
             }
         },
         watch : {

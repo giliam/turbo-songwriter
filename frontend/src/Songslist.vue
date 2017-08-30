@@ -4,13 +4,13 @@
             <h2>List of songs</h2>
             <ul>
                 <li v-for="item in results">
-                    <songtitle :item="item" @show_song="launch_show_song"></songtitle>
+                    <songtitle :item="item" @show_song="launch_show_song" @edit_song="launch_edit_song"></songtitle>
                 </li>
             </ul>
         </div>
         <div>
             <p><a @click.prevent="addSong()">Add a song</a></p>
-            <songform v-if="is_adding" @song_saved="hideSongForm()"></songform>
+            <songform v-if="is_adding" @song_saved="hideSongForm()" titleform="Add a song"></songform>
         </div>
     </div>
 </template>
@@ -43,6 +43,9 @@
             // TODO: Use VueX to prevent passing this signal all the way up
             launch_show_song(item_id) {
                 this.$emit("show_song", item_id)
+            },
+            launch_edit_song(item_id) {
+                this.$emit("edit_song", item_id)
             },
             addSong() {
                 this.$data.is_adding = !this.$data.is_adding
