@@ -17,7 +17,7 @@
             <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
                 <a @click.prevent="show_list">Retour à la liste</a>
             </songform>
-            <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown"></songtexform>
+            <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
         </div>
     </div>
 </template>

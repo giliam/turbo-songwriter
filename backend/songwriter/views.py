@@ -134,30 +134,40 @@ def main(request):
 
 @csrf_exempt
 def convert_to_tex(request, song_id):
+    return edit_tex(request, song_id, True)
+
+@csrf_exempt
+def edit_tex(request, song_id, force=False):
     song = get_object_or_404(models.Song, pk=song_id)
 
-    # TODO: disable regeneration everytime except when forced.
     # TODO: adds PUT/DELETE actions
-    tex_output = "\\section{%s}" % (song.title,) + "\n"
-    tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
-
-    for paragraph in song.paragraphs.all():
-        for verse in paragraph.verses.all():
-            if paragraph.is_refrain:
-                tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
-            else:
-                tex_output += verse.content + "\n"
-            tex_output += "\\newline\n"
-        tex_output += "\\newline\n"
 
     if models.SongLaTeXCode.objects.filter(song=song).exists():
         latex_code = song.latex_code
     else:        
         latex_code = models.SongLaTeXCode()
         latex_code.song = song
+        # The LaTeX code doesn't exist, force the change
+        force = True
+    
+    if force:
+        tex_output = "\\section{%s}" % (song.title,) + "\n"
+        tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
 
-    latex_code.code = tex_output
-    latex_code.save()
+        for paragraph in song.paragraphs.all():
+            for verse in paragraph.verses.all():
+                if paragraph.is_refrain:
+                    tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
+                else:
+                    tex_output += verse.content + "\n"
+                tex_output += "\\newline\n"
+            tex_output += "\\newline\n"
+        latex_code.code = tex_output
+        latex_code.save()
 
-    serializer = serializers.SongLaTeXCodeSerializer(latex_code)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == "GET" or force:
+        serializer = serializers.SongLaTeXCodeSerializer(latex_code)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == "PUT":
+        serializer = serializers.SongLaTeXCodeSerializer(latex_code, data=request.data)
+        return JsonResponse(serializer.data, safe=False)
