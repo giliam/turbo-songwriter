@@ -10,7 +10,7 @@
                         {{ verse.content }}
                     </span>
                 </span>
-                - <a @click.prevent="launchEdition()">Edit verse</a>
+                - <a @click.prevent="launchEdition()">Edit verse</a> - <slot></slot>
             </div>
             <div v-if="is_editing">
                 <form class="ui form">

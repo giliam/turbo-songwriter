@@ -1,7 +1,11 @@
 <template>
     <div>
-        <div v-for="verse in paragraph.verses">
-            <songverse :verse="verse" :is_refrain="is_refrain"></songverse>
+        <div v-for="(verse,index) in paragraph.verses">
+            <songverse :verse="verse" :is_refrain="is_refrain">
+                <span @click="sendUp(verse, index)" v-if="verse.order>0">Up</span>
+                <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order">-</span>
+                <span @click="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</span>
+            </songverse>
         </div>
         <fieldset>
             <p>
@@ -52,6 +56,14 @@
                 this.$data.is_refrain = this.paragraph.is_refrain
         },
         methods: {
+            invertVerse(id_top, id_bottom){
+                id_top = this.paragraph.verses[id_top].id
+                id_bottom = this.paragraph.verses[id_bottom].id
+
+                axios.get("http://localhost:8000/verses/invert/" + id_top + "/and/" + id_bottom + "/")
+                    .then(response => { console.log("Verse #", id_top, " and #", id_bottom, "inverted") },
+                        (error) => { console.log("Error", error) });
+            },
             addVerse(){
                 this.$data.display_form_add = true
             },
@@ -119,6 +131,38 @@
                     this.paragraph.verses.push(verse)
                     this.$data.display_form_add = false
                     this.new_verse_content = ""
+                }
+            },
+            sendUp(verse, index){
+                let other_index = -1
+                for (var i = 0; i < this.paragraph.verses.length; i++) {
+                    if( this.paragraph.verses[i].order == verse.order-1 ){
+                        other_index = i
+                        this.paragraph.verses[i].order = verse.order
+                        verse.order--
+                        break
+                    }
+                }
+                if( other_index >= 0 ){
+                    this.paragraph.verses[index] = this.paragraph.verses[other_index]
+                    this.paragraph.verses[other_index] = verse
+                    this.invertVerse(index, other_index)
+                }
+            },
+            sendDown(verse, index){
+                let other_index = -1
+                for (var i = 0; i < this.paragraph.verses.length; i++) {
+                    if( this.paragraph.verses[i].order == verse.order+1 ){
+                        other_index = i
+                        this.paragraph.verses[i].order = verse.order
+                        verse.order++
+                        break
+                    }
+                }
+                if( other_index >= 0 ){
+                    this.paragraph.verses[index] = this.paragraph.verses[other_index]
+                    this.paragraph.verses[other_index] = verse
+                    this.invertVerse(index, other_index)
                 }
             }
         }

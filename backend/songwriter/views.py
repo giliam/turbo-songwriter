@@ -171,3 +171,15 @@ def edit_tex(request, song_id, force=False):
     elif request.method == "PUT":
         serializer = serializers.SongLaTeXCodeSerializer(latex_code, data=request.data)
         return JsonResponse(serializer.data, safe=False)
+
+@csrf_exempt
+def invert_verse(request, verse_id_top, verse_id_bottom):
+    verse_top = get_object_or_404(models.Verse, pk=verse_id_top)
+    verse_bottom = get_object_or_404(models.Verse, pk=verse_id_bottom)
+
+    order = verse_top.order
+    verse_top.order = verse_bottom.order
+    verse_bottom.order = order
+    verse_top.save()
+    verse_bottom.save()
+    return JsonResponse({}, safe=False)
