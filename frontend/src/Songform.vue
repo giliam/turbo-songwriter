@@ -39,7 +39,7 @@
             <textarea name="comments" v-model="comments"></textarea>
             </p>
 
-            <p class="field"><button @click.prevent="save()" class="ui button">Save</button></p>
+            <p class="field"><button @click.prevent="save()" class="ui button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
         </fieldset>
     </form>
 </template>
@@ -120,6 +120,9 @@
                             this.$emit("song_saved")
                         }, (error) => { console.log(error)});
                 }
+            },
+            cancel() {
+                this.$emit("song_saved")
             },
             is_selected(ref_id, current_id){
                 return (ref_id == current_id ? "selected" : null)

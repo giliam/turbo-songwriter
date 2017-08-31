@@ -8,7 +8,7 @@
                     <label for="content">Content:</label>
                     <textarea name="content" v-model="code"></textarea>
                 </p>
-                <p class="field"><button @click.prevent="save()" class="ui button">Save</button> - <button @click.prevent="cancel()" class="ui button">Cancel</button></p>
+                <p class="field"><button @click.prevent="save()" class="ui button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
             </fieldset>
         </form>
     </div>
