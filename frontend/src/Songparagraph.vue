@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="(verse,index) in paragraph.verses">
-            <songverse :verse="verse" :is_refrain="is_refrain">
+            <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
                 <span @click="sendUp(verse, index)" v-if="verse.order>0">Up</span>
                 <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order">-</span>
                 <span @click="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</span>
@@ -16,6 +16,7 @@
                     </p>
                 </form>
                 <button class="ui button" @click.prevent="addVerse">Add a verse</button>
+                <slot></slot>
             </p>
             <form v-if="display_form_add" class="ui form">
                 <fieldset>

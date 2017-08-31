@@ -37,13 +37,15 @@ urlpatterns = [
         name="paragraphs_list"),
     url(r'^paragraphs/(?P<pk>[0-9]+)/$', views.ParagraphDetail.as_view(), 
         name="paragraphs_detail"),
-    
+    url(r'^paragraphs/invert/(?P<paragraph_id_top>[0-9]+)/and/(?P<paragraph_id_bottom>[0-9]+)/$', 
+        views.invert_paragraphs, name="paragraphs_invert"),
+
     url(r'^verses/list/$', views.VerseList.as_view(), 
         name="verses_list"),
     url(r'^verses/(?P<pk>[0-9]+)/$', views.VerseDetail.as_view(), 
         name="verses_detail"),
     url(r'^verses/invert/(?P<verse_id_top>[0-9]+)/and/(?P<verse_id_bottom>[0-9]+)/$', 
-        views.invert_verse, name="verses_invert"),
+        views.invert_verses, name="verses_invert"),
     
     url(r'^harmonization/list/$', views.HarmonizationList.as_view(), 
         name="harmonization_list"),

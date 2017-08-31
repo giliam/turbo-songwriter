@@ -172,8 +172,9 @@ def edit_tex(request, song_id, force=False):
         serializer = serializers.SongLaTeXCodeSerializer(latex_code, data=request.data)
         return JsonResponse(serializer.data, safe=False)
 
+
 @csrf_exempt
-def invert_verse(request, verse_id_top, verse_id_bottom):
+def invert_verses(request, verse_id_top, verse_id_bottom):
     verse_top = get_object_or_404(models.Verse, pk=verse_id_top)
     verse_bottom = get_object_or_404(models.Verse, pk=verse_id_bottom)
 
@@ -182,4 +183,17 @@ def invert_verse(request, verse_id_top, verse_id_bottom):
     verse_bottom.order = order
     verse_top.save()
     verse_bottom.save()
+    return JsonResponse({}, safe=False)
+
+
+@csrf_exempt
+def invert_paragraphs(request, paragraph_id_top, paragraph_id_bottom):
+    paragraph_top = get_object_or_404(models.Paragraph, pk=paragraph_id_top)
+    paragraph_bottom = get_object_or_404(models.Paragraph, pk=paragraph_id_bottom)
+
+    order = paragraph_top.order
+    paragraph_top.order = paragraph_bottom.order
+    paragraph_bottom.order = order
+    paragraph_top.save()
+    paragraph_bottom.save()
     return JsonResponse({}, safe=False)
