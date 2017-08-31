@@ -2,7 +2,14 @@
     <div>
         <p>
             <div v-if="!is_editing">
-                <span @click="launchEdition()">{{ verse.content }}</span>
+                <span @click="launchEdition()">
+                    <b v-if="is_refrain">
+                        {{ verse.content }}
+                    </b>
+                    <span v-else>
+                        {{ verse.content }}
+                    </span>
+                </span>
                 - <a @click.prevent="launchEdition()">Edit verse</a>
             </div>
             <div v-if="is_editing">
@@ -32,7 +39,8 @@
             }
         },
         props: {
-            verse: Object
+            verse: Object,
+            is_refrain: Boolean
         },
         methods: {
             launchEdition() {
