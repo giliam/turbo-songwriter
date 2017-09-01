@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import response
+from rest_framework import status
+from rest_framework.decorators import api_view
 
 from songwriter import models
 from songwriter import serializers
@@ -133,10 +135,12 @@ def main(request):
     return HttpResponse("Main")
 
 @csrf_exempt
+@api_view(['GET', 'PUT'])
 def convert_to_tex(request, song_id):
     return edit_tex(request, song_id, True)
 
 @csrf_exempt
+@api_view(['GET', 'PUT'])
 def edit_tex(request, song_id, force=False):
     song = get_object_or_404(models.Song, pk=song_id)
 
@@ -170,7 +174,10 @@ def edit_tex(request, song_id, force=False):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == "PUT":
         serializer = serializers.SongLaTeXCodeSerializer(latex_code, data=request.data)
-        return JsonResponse(serializer.data, safe=False)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt

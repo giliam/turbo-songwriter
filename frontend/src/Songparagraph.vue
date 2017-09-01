@@ -2,8 +2,9 @@
     <div>
         <div v-for="(verse,index) in paragraph.verses">
             <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
+                <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
                 <span @click="sendUp(verse, index)" v-if="verse.order>0">Up</span>
-                <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order">-</span>
+                <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
                 <span @click="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</span>
             </songverse>
         </div>
@@ -12,7 +13,7 @@
                 <form class="ui form">
                     <p class="field">
                         <label for="content">Is refrain?</label>
-                        <input type="checkbox" v-model="is_refrain" @click="sendIsRefrain()">
+                        <input type="checkbox" v-model="paragraph.is_refrain" @click.prevent="sendIsRefrain()">
                     </p>
                 </form>
                 <button class="ui button" @click.prevent="addVerse">Add a verse</button>
@@ -45,16 +46,11 @@
         data(){
             return {
                 display_form_add: false,
-                is_refrain: false,
                 new_verse_content: ""
             }
         },
         props: {
             paragraph: Object
-        },
-        mounted(){
-            if( this.paragraph.id != null )
-                this.$data.is_refrain = this.paragraph.is_refrain
         },
         methods: {
             invertVerse(id_top, id_bottom){
@@ -74,7 +70,7 @@
             sendIsRefrain() {
                 // TODO: check why checkbox is not checked at the beginning and checked after. 
                 // FIX: sth like click.after ?
-                this.paragraph.is_refrain = !this.is_refrain
+                this.paragraph.is_refrain = !this.paragraph.is_refrain
                 if( this.paragraph.id === null ){
                     let new_paragraph = {
                         order: this.paragraph.order,
