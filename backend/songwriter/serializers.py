@@ -57,6 +57,22 @@ class ChordSerializer(serializers.ModelSerializer):
         )
 
 
+class VerseReadSerializer(serializers.ModelSerializer):
+    # harmonizations = HarmonizationSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Verse
+        fields = (
+            'id',
+            'order',
+            'content',
+            'paragraph',
+            'harmonizations',
+            'added_date',
+            'updated_date'
+        )
+
+
 class VerseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Verse
@@ -71,8 +87,23 @@ class VerseSerializer(serializers.ModelSerializer):
         )
 
 
+class HarmonizationSerializer(serializers.ModelSerializer):
+    chord = ChordSerializer()
+
+    class Meta:
+        model = Harmonization
+        fields = (
+            'id',
+            'chord',
+            'verse',
+            'spot_in_verse',
+            'added_date',
+            'updated_date'
+        )
+
+
 class ParagraphSerializer(serializers.ModelSerializer):
-    verses = VerseSerializer(many=True, read_only=True)
+    verses = VerseReadSerializer(many=True, read_only=True)
 
     class Meta:
         model = Paragraph
@@ -132,22 +163,6 @@ class SongReadSerializer(serializers.ModelSerializer):
             'secli_number',
             'sacem_number',
             'comments',
-            'added_date',
-            'updated_date'
-        )
-
-
-class HarmonizationSerializer(serializers.ModelSerializer):
-    verse = VerseSerializer()
-    chord = ChordSerializer()
-
-    class Meta:
-        model = Harmonization
-        fields = (
-            'id',
-            'verse',
-            'chord',
-            'spot_in_verse',
             'added_date',
             'updated_date'
         )

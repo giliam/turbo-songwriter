@@ -49,6 +49,8 @@ urlpatterns = [
     
     url(r'^harmonization/list/$', views.HarmonizationList.as_view(), 
         name="harmonization_list"),
+    url(r'^harmonization/list/song/(?P<song_id>[0-9]+)/$', views.get_song_harmonizations, 
+        name="get_song_harmonizations"),
     url(r'^harmonization/(?P<pk>[0-9]+)/$', views.HarmonizationDetail.as_view(), 
         name="harmonization_detail"),
     

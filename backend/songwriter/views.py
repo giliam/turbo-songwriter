@@ -103,12 +103,20 @@ class ParagraphDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class VerseList(generics.ListCreateAPIView):
     queryset = models.Verse.objects.all()
-    serializer_class = serializers.VerseSerializer
+        
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.VerseReadSerializer
+        return serializers.VerseSerializer
 
 
 class VerseDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Verse.objects.all()
-    serializer_class = serializers.VerseSerializer
+        
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.VerseReadSerializer
+        return serializers.VerseSerializer
 
 
 class HarmonizationList(generics.ListCreateAPIView):
@@ -134,10 +142,12 @@ class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
 def main(request):
     return HttpResponse("Main")
 
+
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def convert_to_tex(request, song_id):
     return edit_tex(request, song_id, True)
+
 
 @csrf_exempt
 @api_view(['GET', 'PUT'])
@@ -204,3 +214,11 @@ def invert_paragraphs(request, paragraph_id_top, paragraph_id_bottom):
     paragraph_top.save()
     paragraph_bottom.save()
     return JsonResponse({}, safe=False)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_song_harmonizations(request, song_id):
+    harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id)
+    serializer = serializers.HarmonizationSerializer(harmonizations, many=True)
+    return JsonResponse(serializer.data, safe=False)
