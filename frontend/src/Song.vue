@@ -9,19 +9,31 @@
                 <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(false)">Edit LaTeX code</button></p>
                 <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Force conversion to LaTeX</button></p>
             </div>
+            <div>
+                <p class="field">
+                    <label for="enable_harmonization">Enable harmonization:</label>
+                    <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
+                </p>
+            </div>
         </form>
         <h2>{{ result.title }}</h2>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
         <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
-        <div v-for="(paragraph, index) in result.paragraphs">
-            <songparagraph :paragraph="paragraph">
-                <span @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</span>
-                <span v-if="paragraph.order>0 && result.paragraphs.length-1>paragraph.order">-</span>
-                <span @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</span>
-            </songparagraph>
-            <br>
+        <div v-if="!enable_harmonization">
+            <div v-for="(paragraph, index) in result.paragraphs">
+                <songparagraph :paragraph="paragraph">
+                    <span @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</span>
+                    <span v-if="paragraph.order>0 && result.paragraphs.length-1>paragraph.order">-</span>
+                    <span @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</span>
+                </songparagraph>
+                <br>
+            </div>
+            <p><a @click.prevent="addParagraph()">Add a paragraph</a></p>
         </div>
-        <p><a @click.prevent="addParagraph()">Add a paragraph</a></p>
+        <div v-else>
+            <songharmonization :song="result">
+            </songharmonization>
+        </div>
     </div>
 </template>
 
@@ -29,17 +41,20 @@
     import axios from 'axios'
 
     import Songparagraph from './Songparagraph.vue'
+    import Songharmonization from './Songharmonization.vue'
 
     export default {
         components:{
-            Songparagraph
+            Songparagraph,
+            Songharmonization
         },
         props: {
             item_id: Number,
         },
         data() {
             return {
-                result: Object
+                result: Object,
+                enable_harmonization: false
             }
         },
         methods:{
