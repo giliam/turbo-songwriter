@@ -3,21 +3,29 @@
         <div class="ui fixed inverted menu">
             <div class="ui container">
                 <a href="http://localhost:8080/" class="header item">
-                    <img class="logo" src="./assets/logo.png">
+                    <!-- <img class="logo" src="./assets/logo.png"> -->
                     Turbo songwriter!
                 </a>
                 <a href="http://localhost:8080/" class="item">Home</a>
             </div>
         </div>
         <div class="ui main text container">
-            <song :item_id="current_song" v-show="is_song_shown" @convert_to_tex="convert_to_tex">
-                <a @click.prevent="show_list">Retour à la liste</a>
-            </song>
-            <songslist @show_song="show_song" @edit_song="edit_song" v-if="is_list_shown"></songslist>
-            <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
-                <a @click.prevent="show_list">Retour à la liste</a>
-            </songform>
-            <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
+            <div id="song_container">
+                <song :item_id="current_song" v-show="is_song_shown" @convert_to_tex="convert_to_tex">
+                    <a @click.prevent="show_list">Retour à la liste</a>
+                </song>
+                <songslist @show_song="show_song" @edit_song="edit_song" v-if="is_list_shown"></songslist>
+                <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
+                    <a @click.prevent="show_list">Retour à la liste</a>
+                </songform>
+                <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
+            </div>
+            <div id="author_container">
+                <authorlist></authorlist>
+            </div>
+            <div id="editor_container">
+                <editorlist></editorlist>
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +35,8 @@
     import Songform from './Songform.vue'
     import Songtexform from './Songtexform.vue'
     import Song from './Song.vue'
+    import Authorlist from './Authorlist.vue'
+    import Editorlist from './Editorlist.vue'
 
     export default {
         name: 'app',
@@ -34,7 +44,9 @@
             Songslist,
             Songtexform,
             Songform,
-            Song
+            Song,
+            Editorlist,
+            Authorlist,
         },
         data() {
             return {

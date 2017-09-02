@@ -28,6 +28,9 @@ class Author(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        ordering = ['lastname', 'firstname']
+
     def __str__(self):
         return u"{0} {1}".format(self.firstname, self.lastname.upper())
 
@@ -48,6 +51,9 @@ class Editor(models.Model):
         _('date updated to the database'),
         auto_now=True
     )
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return u"{0}".format(self.name)
@@ -70,6 +76,9 @@ class Theme(models.Model):
         auto_now=True
     )
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return u"Theme: {0}".format(self.name)
 
@@ -80,6 +89,9 @@ class Chord(models.Model):
         blank=False,
         default=""
     )
+
+    class Meta:
+        ordering = ['note']
 
     def __str__(self):
         return u"Note: {0}".format(self.note)
