@@ -26,6 +26,12 @@
             <div id="editor_container">
                 <editorlist></editorlist>
             </div>
+            <div id="theme_container">
+                <themelist></themelist>
+            </div>
+            <div id="chord_container">
+                <chordlist></chordlist>
+            </div>
         </div>
     </div>
 </template>
@@ -37,6 +43,8 @@
     import Song from './Song.vue'
     import Authorlist from './Authorlist.vue'
     import Editorlist from './Editorlist.vue'
+    import Themelist from './Themelist.vue'
+    import Chordlist from './Chordlist.vue'
 
     export default {
         name: 'app',
@@ -47,6 +55,8 @@
             Song,
             Editorlist,
             Authorlist,
+            Chordlist,
+            Themelist,
         },
         data() {
             return {
