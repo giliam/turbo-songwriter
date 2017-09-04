@@ -20,17 +20,19 @@
                 </songform>
                 <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
             </div>
-            <div id="author_container">
-                <authorlist></authorlist>
-            </div>
-            <div id="editor_container">
-                <editorlist></editorlist>
-            </div>
-            <div id="theme_container">
-                <themelist></themelist>
-            </div>
-            <div id="chord_container">
-                <chordlist></chordlist>
+            <div v-if="is_list_shown">
+                <div id="author_container">
+                    <authorlist></authorlist>
+                </div>
+                <div id="editor_container">
+                    <editorlist></editorlist>
+                </div>
+                <div id="theme_container">
+                    <themelist></themelist>
+                </div>
+                <div id="chord_container">
+                    <chordlist></chordlist>
+                </div>
             </div>
         </div>
     </div>

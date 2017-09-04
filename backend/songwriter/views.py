@@ -121,12 +121,20 @@ class VerseDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class HarmonizationList(generics.ListCreateAPIView):
     queryset = models.Harmonization.objects.all()
-    serializer_class = serializers.HarmonizationSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.HarmonizationReadSerializer
+        return serializers.HarmonizationSerializer
 
 
 class HarmonizationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Harmonization.objects.all()
-    serializer_class = serializers.HarmonizationSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.HarmonizationReadSerializer
+        return serializers.HarmonizationSerializer
 
 
 class SongLaTeXCodeList(generics.ListCreateAPIView):
@@ -220,5 +228,5 @@ def invert_paragraphs(request, paragraph_id_top, paragraph_id_bottom):
 @api_view(['GET'])
 def get_song_harmonizations(request, song_id):
     harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id)
-    serializer = serializers.HarmonizationSerializer(harmonizations, many=True)
+    serializer = serializers.HarmonizationReadSerializer(harmonizations, many=True)
     return JsonResponse(serializer.data, safe=False)

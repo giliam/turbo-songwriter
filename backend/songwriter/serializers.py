@@ -87,9 +87,22 @@ class VerseSerializer(serializers.ModelSerializer):
         )
 
 
-class HarmonizationSerializer(serializers.ModelSerializer):
+class HarmonizationReadSerializer(serializers.ModelSerializer):
     chord = ChordSerializer()
 
+    class Meta:
+        model = Harmonization
+        fields = (
+            'id',
+            'chord',
+            'verse',
+            'spot_in_verse',
+            'added_date',
+            'updated_date'
+        )
+
+
+class HarmonizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Harmonization
         fields = (
