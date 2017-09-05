@@ -119,17 +119,25 @@
                     comments: this.$data.comments,
                     theme: new_themes
                 };
+
+                let song_id = 0
+
                 if( this.$route.params.item_id && this.$route.params.item_id != 0 ) {
                     axios.put("http://localhost:8000/songs/" + this.$route.params.item_id + "/", song)
-                        .then(response => {}, (error) => { console.log(error)});
+                        .then(response => {
+                            song_id = this.$route.params.item_id
+                        }, (error) => { console.log(error)});
                 } else {
                     axios.post("http://localhost:8000/songs/list/", song)
-                        .then(response => {}, (error) => { console.log(error)});
+                        .then(response => {
+                            song_id = response.data.id
+                        }, (error) => { console.log(error)});
                 }
-                this.$router.push('/');
+
+                this.$router.go(-1)
             },
             cancel() {
-                this.$emit("song_saved")
+                this.$router.go(-1)
             },
             is_selected_theme(current_id){
                 for (var i = 0; i < this.$data.theme_selected.length; i++) {
