@@ -1,6 +1,6 @@
 <template>
     <div id="song">
-        <slot></slot>
+        <router-link :to="{name:'root'}">Retour à la liste</router-link>
         <form class="ui form">
             <div v-if="result.latex_code == null">
                 <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Convert to LaTeX</button></p>
@@ -78,7 +78,7 @@
                 this.$data.result.paragraphs.push(paragraph)
             },
             launch_convert_to_tex(force_conversion){
-                this.$emit("convert_to_tex", this.item_id, force_conversion)
+                this.$emit("convert_to_tex", this.$route.params.item_id, force_conversion)
             },
             sendUp(paragraph, index){
                 let other_index = -1
@@ -113,16 +113,13 @@
                 }
             }
         },
-        watch : {
-            item_id : function (value) {
-                this.item_id = value
-                if( this.item_id ){
-                    axios.get("http://localhost:8000/songs/" + this.item_id + ".json")
-                        .then(response => {
-                            console.log("Received", response.data)
-                            this.$data.result = response.data;
-                        })
-                }
+        mounted() {
+            if( this.$route.params.item_id ){
+                axios.get("http://localhost:8000/songs/" + this.$route.params.item_id + ".json")
+                    .then(response => {
+                        console.log("Received", response.data)
+                        this.$data.result = response.data;
+                    })
             }
         }
     }

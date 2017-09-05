@@ -2,38 +2,25 @@
     <div id="app">
         <div class="ui fixed inverted menu">
             <div class="ui container">
-                <a href="http://localhost:8080/" class="header item">
-                    <!-- <img class="logo" src="./assets/logo.png"> -->
+                <router-link :to="{name:'root'}" class="header item">
+                    <img class="logo" src="./assets/logo.png">
                     Turbo songwriter!
-                </a>
-                <a href="http://localhost:8080/" class="item">Home</a>
+                </router-link>
+                <router-link :to="{name:'root'}" class="item">Songs</router-link>
+                <router-link :to="{name:'authors_list'}" class="item">Authors</router-link>
+                <router-link :to="{name:'editors_list'}" class="item">Editors</router-link>
+                <router-link :to="{name:'themes_list'}" class="item">Themes</router-link>
+                <router-link :to="{name:'chords_list'}" class="item">Chords</router-link>
             </div>
         </div>
         <div class="ui main text container">
             <div id="song_container">
-                <song :item_id="current_song" v-show="is_song_shown" @convert_to_tex="convert_to_tex">
-                    <a @click.prevent="show_list">Retour à la liste</a>
-                </song>
-                <songslist @show_song="show_song" @edit_song="edit_song" v-if="is_list_shown"></songslist>
                 <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
                     <a @click.prevent="show_list">Retour à la liste</a>
                 </songform>
                 <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
             </div>
-            <div v-if="is_list_shown">
-                <div id="author_container">
-                    <authorlist></authorlist>
-                </div>
-                <div id="editor_container">
-                    <editorlist></editorlist>
-                </div>
-                <div id="theme_container">
-                    <themelist></themelist>
-                </div>
-                <div id="chord_container">
-                    <chordlist></chordlist>
-                </div>
-            </div>
+            <router-view></router-view>
         </div>
     </div>
 </template>

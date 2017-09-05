@@ -1,5 +1,9 @@
 <template>
-    <p>{{item.title}} - <a @click.prevent="launch_show_song(item)">Show</a> - <a @click.prevent="launch_edit_song(item)">Edit</a></p>
+    <p>
+        {{item.title}} - 
+        <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">Show</router-link> - 
+        <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">Edit</router-link>
+    </p>
 </template>
 
 <script>
