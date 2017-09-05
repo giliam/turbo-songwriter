@@ -22,6 +22,16 @@ const router = new VueRouter({
         component: require('./Songeditform.vue'),
         name: 'song_edit'
     },{
+        path: '/song/force/latex/conversion/:item_id(\\d+)',
+        component: require('./Songtexform.vue'),
+        name: 'song_force_conversion',
+        props: { force_conversion: true }
+    },{
+        path: '/song/edit/latex/:item_id(\\d+)',
+        component: require('./Songtexform.vue'),
+        name: 'song_edit_latex',
+        props: { force_conversion: false }
+    },{
         path: '/authors/',
         component: require('./Authorlist.vue'),
         name: 'authors_list'

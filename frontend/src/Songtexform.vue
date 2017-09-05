@@ -24,15 +24,14 @@
                 title: ""
             }
         },
-        props: {
-            song: Number,
-            force_conversion: Boolean
+        props:{
+            force_conversion: false,
         },
         mounted() {
-            if( this.song ){
-                let url = "http://localhost:8000/song/edit/tex/" + this.song + "/"
+            if( this.$route.params.item_id ){
+                let url = "http://localhost:8000/song/edit/tex/" + this.$route.params.item_id + "/"
                 if( this.force_conversion ) {
-                    url = "http://localhost:8000/song/convert/to/tex/" + this.song + "/"
+                    url = "http://localhost:8000/song/convert/to/tex/" + this.$route.params.item_id + "/"
                 }
                 axios.get(url)
                     .then(response => {
@@ -46,14 +45,14 @@
                 let data_code = {
                     code: this.$data.code
                 }
-                axios.put("http://localhost:8000/song/edit/tex/" + this.song + "/", data_code)
+                axios.put("http://localhost:8000/song/edit/tex/" + this.$route.params.item_id + "/", data_code)
                     .then(response => {
                         this.$data.code = response.data.code
                     },  (error) => { console.log(error) })
-                this.$emit("song_saved")
+                this.$router.push({name:'song_detail', params:{item_id:this.$route.params.item_id}})
             },
             cancel() {
-                this.$emit("song_saved")
+                this.$router.push({name:'song_detail', params:{item_id:this.$route.params.item_id}})
             }
         }
     }

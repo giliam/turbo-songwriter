@@ -3,11 +3,11 @@
         <router-link :to="{name:'root'}">Retour à la liste</router-link>
         <form class="ui form">
             <div v-if="result.latex_code == null">
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Convert to LaTeX</button></p>
+                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Convert to LaTeX</router-link></p>
             </div>
             <div v-else>
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(false)">Edit LaTeX code</button></p>
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Force conversion to LaTeX</button></p>
+                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex'}">Edit LaTeX code</router-link></p>
+                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Force conversion to LaTeX</router-link></p>
             </div>
             <div>
                 <p class="field">
