@@ -17,7 +17,7 @@
 <script>
     import axios from 'axios'
 
-    import Songtitle from './Songtitle.vue'
+    import Songtitle from '@/components/Songtitle.vue'
 
     export default {
         name: "songslist",

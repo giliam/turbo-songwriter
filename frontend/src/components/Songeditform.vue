@@ -4,7 +4,7 @@
 </template>
 
 <script>
-    import Songform from './Songform.vue'
+    import Songform from '@/components/Songform.vue'
 
     export default {
         components: {

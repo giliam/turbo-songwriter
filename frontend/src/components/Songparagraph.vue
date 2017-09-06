@@ -37,7 +37,7 @@
 <script>
     import axios from 'axios'
 
-    import Songverse from './Songverse.vue'
+    import Songverse from '@/components/Songverse.vue'
 
     export default {
         components: {

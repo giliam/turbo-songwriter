@@ -39,8 +39,8 @@
 <script>
     import axios from 'axios'
 
-    import Songparagraph from './Songparagraph.vue'
-    import Songharmonization from './Songharmonization.vue'
+    import Songparagraph from '@/components/Songparagraph.vue'
+    import Songharmonization from '@/components/Songharmonization.vue'
 
     export default {
         components:{

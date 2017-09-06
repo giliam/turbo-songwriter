@@ -26,14 +26,14 @@
 </template>
 
 <script>
-    import Songslist from './Songslist.vue'
-    import Songform from './Songform.vue'
-    import Songtexform from './Songtexform.vue'
-    import Song from './Song.vue'
-    import Authorlist from './Authorlist.vue'
-    import Editorlist from './Editorlist.vue'
-    import Themelist from './Themelist.vue'
-    import Chordlist from './Chordlist.vue'
+    import Songslist from '@/components/Songslist.vue'
+    import Songform from '@/components/Songform.vue'
+    import Songtexform from '@/components/Songtexform.vue'
+    import Song from '@/components/Song.vue'
+    import Authorlist from '@/components/Authorlist.vue'
+    import Editorlist from '@/components/Editorlist.vue'
+    import Themelist from '@/components/Themelist.vue'
+    import Chordlist from '@/components/Chordlist.vue'
 
     export default {
         name: 'app',
