@@ -48,6 +48,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         name: "themeslist",
@@ -64,7 +65,7 @@
         components: {
         },
         created() {
-            axios.get("http://localhost:8000/themes/list/")
+            axios.get(root_url + "themes/list/")
                 .then(response => {
                     this.$data.themes = response.data;
                 },  (error) => { console.log(error) });
@@ -82,7 +83,7 @@
                 this.$data.name = ""
             },
             hideThemeForm() {
-                axios.get("http://localhost:8000/themes/list/")
+                axios.get(root_url + "themes/list/")
                     .then(response => {
                         this.$data.themes = response.data;
                     },  (error) => { console.log(error) });
@@ -91,7 +92,7 @@
             },
             synchronize(){
                 this.$data.is_updating = true
-                axios.get("http://localhost:8000/themes/list/")
+                axios.get(root_url + "themes/list/")
                     .then(response => {
                         this.$data.themes = response.data;
                         this.$data.is_updating = false
@@ -103,18 +104,18 @@
                 };
                 this.$data.is_updating = true
                 if( is_editing ) {
-                    axios.put("http://localhost:8000/themes/" + this.$data.theme_id + "/", theme)
+                    axios.put(root_url + "themes/" + this.$data.theme_id + "/", theme)
                         .then(response => {
-                            axios.get("http://localhost:8000/themes/list/")
+                            axios.get(root_url + "themes/list/")
                                 .then(response => {
                                     this.$data.themes = response.data;
                                     this.$data.is_updating = false
                                 },  (error) => { console.log(error) });
                         }, (error) => { console.log(error)});
                 } else {
-                    axios.post("http://localhost:8000/themes/list/", theme)
+                    axios.post(root_url + "themes/list/", theme)
                         .then(response => {
-                            axios.get("http://localhost:8000/themes/list/")
+                            axios.get(root_url + "themes/list/")
                                 .then(response => {
                                     this.$data.themes = response.data;
                                     this.$data.is_updating = false

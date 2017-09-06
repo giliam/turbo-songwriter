@@ -16,6 +16,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         data() {
@@ -29,9 +30,9 @@
         },
         mounted() {
             if( this.$route.params.item_id ){
-                let url = "http://localhost:8000/song/edit/tex/" + this.$route.params.item_id + "/"
+                let url = root_url + "song/edit/tex/" + this.$route.params.item_id + "/"
                 if( this.force_conversion ) {
-                    url = "http://localhost:8000/song/convert/to/tex/" + this.$route.params.item_id + "/"
+                    url = root_url + "song/convert/to/tex/" + this.$route.params.item_id + "/"
                 }
                 axios.get(url)
                     .then(response => {
@@ -45,7 +46,7 @@
                 let data_code = {
                     code: this.$data.code
                 }
-                axios.put("http://localhost:8000/song/edit/tex/" + this.$route.params.item_id + "/", data_code)
+                axios.put(root_url + "song/edit/tex/" + this.$route.params.item_id + "/", data_code)
                     .then(response => {
                         this.$data.code = response.data.code
                     },  (error) => { console.log(error) })

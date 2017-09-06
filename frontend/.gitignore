@@ -17,3 +17,6 @@ yarn-error.log*
 .esl*
 .postcssrc.js
 .editorconfig
+
+# Removes root sample
+src/common/index.js

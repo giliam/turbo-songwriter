@@ -48,6 +48,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         data() {
@@ -75,21 +76,21 @@
             song: Number
         },
         created() {
-            axios.get("http://localhost:8000/authors/list/")
+            axios.get(root_url + "authors/list/")
                 .then(response => {
                     this.$data.authors = response.data;
                 }, 	(error) => { console.log(error) });
-            axios.get("http://localhost:8000/editors/list/")
+            axios.get(root_url + "editors/list/")
                 .then(response => {
                     this.$data.editors = response.data;
                 }, 	(error) => { console.log(error) });
-            axios.get("http://localhost:8000/themes/list/")
+            axios.get(root_url + "themes/list/")
                 .then(response => {
                     this.$data.themes = response.data;
                 }, 	(error) => { console.log(error) });
 
             if( this.$route.params.item_id && this.$route.params.item_id != 0 ){
-                axios.get("http://localhost:8000/songs/" + this.$route.params.item_id + ".json")
+                axios.get(root_url + "songs/" + this.$route.params.item_id + ".json")
                     .then(response => {
                         console.log("Received", response.data)
                         this.$data.title = response.data.title
@@ -123,12 +124,12 @@
                 let song_id = 0
 
                 if( this.$route.params.item_id && this.$route.params.item_id != 0 ) {
-                    axios.put("http://localhost:8000/songs/" + this.$route.params.item_id + "/", song)
+                    axios.put(root_url + "songs/" + this.$route.params.item_id + "/", song)
                         .then(response => {
                             song_id = this.$route.params.item_id
                         }, (error) => { console.log(error)});
                 } else {
-                    axios.post("http://localhost:8000/songs/list/", song)
+                    axios.post(root_url + "songs/list/", song)
                         .then(response => {
                             song_id = response.data.id
                         }, (error) => { console.log(error)});

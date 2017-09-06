@@ -38,6 +38,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     import Songparagraph from '@/components/Songparagraph.vue'
     import Songharmonization from '@/components/Songharmonization.vue'
@@ -61,7 +62,7 @@
                 id_top = this.$data.result.paragraphs[id_top].id
                 id_bottom = this.$data.result.paragraphs[id_bottom].id
 
-                axios.get("http://localhost:8000/paragraphs/invert/" + id_top + "/and/" + id_bottom + "/")
+                axios.get(root_url + "paragraphs/invert/" + id_top + "/and/" + id_bottom + "/")
                     .then(response => { console.log("Paragraph #", id_top, " and #", id_bottom, "inverted") },
                         (error) => { console.log("Error", error) });
             },
@@ -111,7 +112,7 @@
         },
         mounted() {
             if( this.$route.params.item_id ){
-                axios.get("http://localhost:8000/songs/" + this.$route.params.item_id + ".json")
+                axios.get(root_url + "songs/" + this.$route.params.item_id + ".json")
                     .then(response => {
                         console.log("Received", response.data)
                         this.$data.result = response.data;

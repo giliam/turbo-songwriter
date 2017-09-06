@@ -31,6 +31,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         data () {
@@ -50,7 +51,7 @@
                 this.$data.is_editing = false
             },
             saveEdition() {
-                axios.put("http://localhost:8000/verses/" + this.verse.id + "/", this.verse)
+                axios.put(root_url + "verses/" + this.verse.id + "/", this.verse)
                     .then(response2 => { console.log(response2.data)
                     }, 	(error2) => { console.log(error2) });
                 this.$data.is_editing = false

@@ -27,6 +27,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         props:{
@@ -44,12 +45,12 @@
             }
         },
         created(){
-            axios.get("http://localhost:8000/chords/list/")
+            axios.get(root_url + "chords/list/")
                 .then(response => {
                     console.log("Received chords", response.data)
                     this.$data.chords = response.data;
                 })
-            axios.get("http://localhost:8000/harmonization/list/song/" + this.song.id + "/")
+            axios.get(root_url + "harmonization/list/song/" + this.song.id + "/")
                 .then(response => {
                     console.log("Received harmonizations", response.data)
                     for (var i = 0; i < response.data.length; i++) {
@@ -126,7 +127,7 @@
                         spot_in_verse: this.$data.l_id_enabled
                     }
 
-                    axios.post("http://localhost:8000/harmonization/list/", harmonization)
+                    axios.post(root_url + "harmonization/list/", harmonization)
                         .then(response => {
                             console.log("Saved!", response.data)
                             for (var i = 0; i < this.$data.chords.length; i++) {

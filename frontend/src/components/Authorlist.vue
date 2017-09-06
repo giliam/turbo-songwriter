@@ -56,6 +56,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         name: "authorslist",
@@ -73,7 +74,7 @@
         components: {
         },
         created() {
-            axios.get("http://localhost:8000/authors/list/")
+            axios.get(root_url + "authors/list/")
                 .then(response => {
                     this.$data.authors = response.data;
                 },  (error) => { console.log(error) });
@@ -92,7 +93,7 @@
                 this.$data.lastname = ""
             },
             hideAuthorForm() {
-                axios.get("http://localhost:8000/authors/list/")
+                axios.get(root_url + "authors/list/")
                     .then(response => {
                         this.$data.authors = response.data;
                     },  (error) => { console.log(error) });
@@ -101,7 +102,7 @@
             },
             synchronize(){
                 this.$data.is_updating = true
-                axios.get("http://localhost:8000/authors/list/")
+                axios.get(root_url + "authors/list/")
                     .then(response => {
                         this.$data.authors = response.data;
                         this.$data.is_updating = false
@@ -114,18 +115,18 @@
                 };
                 this.$data.is_updating = true
                 if( is_editing ) {
-                    axios.put("http://localhost:8000/authors/" + this.$data.author_id + "/", author)
+                    axios.put(root_url + "authors/" + this.$data.author_id + "/", author)
                         .then(response => {
-                            axios.get("http://localhost:8000/authors/list/")
+                            axios.get(root_url + "authors/list/")
                                 .then(response => {
                                     this.$data.authors = response.data;
                                     this.$data.is_updating = false
                                 },  (error) => { console.log(error) });
                         }, (error) => { console.log(error)});
                 } else {
-                    axios.post("http://localhost:8000/authors/list/", author)
+                    axios.post(root_url + "authors/list/", author)
                         .then(response => {
-                            axios.get("http://localhost:8000/authors/list/")
+                            axios.get(root_url + "authors/list/")
                                 .then(response => {
                                     this.$data.authors = response.data;
                                     this.$data.is_updating = false

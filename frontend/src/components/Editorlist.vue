@@ -48,6 +48,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         name: "editorslist",
@@ -64,7 +65,7 @@
         components: {
         },
         created() {
-            axios.get("http://localhost:8000/editors/list/")
+            axios.get(root_url + "editors/list/")
                 .then(response => {
                     this.$data.editors = response.data;
                 },  (error) => { console.log(error) });
@@ -82,7 +83,7 @@
                 this.$data.name = ""
             },
             hideEditorForm() {
-                axios.get("http://localhost:8000/editors/list/")
+                axios.get(root_url + "editors/list/")
                     .then(response => {
                         this.$data.editors = response.data;
                     },  (error) => { console.log(error) });
@@ -91,7 +92,7 @@
             },
             synchronize(){
                 this.$data.is_updating = true
-                axios.get("http://localhost:8000/editors/list/")
+                axios.get(root_url + "editors/list/")
                     .then(response => {
                         this.$data.editors = response.data;
                         this.$data.is_updating = false
@@ -103,18 +104,18 @@
                 };
                 this.$data.is_updating = true
                 if( is_editing ) {
-                    axios.put("http://localhost:8000/editors/" + this.$data.editor_id + "/", editor)
+                    axios.put(root_url + "editors/" + this.$data.editor_id + "/", editor)
                         .then(response => {
-                            axios.get("http://localhost:8000/editors/list/")
+                            axios.get(root_url + "editors/list/")
                                 .then(response => {
                                     this.$data.editors = response.data;
                                     this.$data.is_updating = false
                                 },  (error) => { console.log(error) });
                         }, (error) => { console.log(error)});
                 } else {
-                    axios.post("http://localhost:8000/editors/list/", editor)
+                    axios.post(root_url + "editors/list/", editor)
                         .then(response => {
-                            axios.get("http://localhost:8000/editors/list/")
+                            axios.get(root_url + "editors/list/")
                                 .then(response => {
                                     this.$data.editors = response.data;
                                     this.$data.is_updating = false

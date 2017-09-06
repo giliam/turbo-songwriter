@@ -16,6 +16,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     import Songtitle from '@/components/Songtitle.vue'
 
@@ -30,7 +31,7 @@
             Songtitle,
         },
         created() {
-            axios.get("http://localhost:8000/songs/list.json")
+            axios.get(root_url + "songs/list.json")
                 .then(response => {
                     this.results = response.data;
                 }, 	(error) => { console.log(error) });

@@ -36,6 +36,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     import Songverse from '@/components/Songverse.vue'
 
@@ -57,7 +58,7 @@
                 id_top = this.paragraph.verses[id_top].id
                 id_bottom = this.paragraph.verses[id_bottom].id
 
-                axios.get("http://localhost:8000/verses/invert/" + id_top + "/and/" + id_bottom + "/")
+                axios.get(root_url + "verses/invert/" + id_top + "/and/" + id_bottom + "/")
                     .then(response => { console.log("Verse #", id_top, " and #", id_bottom, "inverted") },
                         (error) => { console.log("Error", error) });
             },
@@ -78,7 +79,7 @@
                         is_refrain: this.paragraph.is_refrain,
                         verses: null
                     };
-                    axios.post("http://localhost:8000/paragraphs/list/", new_paragraph)
+                    axios.post(root_url + "paragraphs/list/", new_paragraph)
                         .then(response => {
                             this.paragraph.id = response.data.id;
                             console.log("Is refrain (", this.paragraph.is_refrain, ") saved")
@@ -90,7 +91,7 @@
                         order: this.paragraph.order,
                         is_refrain: this.paragraph.is_refrain
                     };
-                    axios.put("http://localhost:8000/paragraphs/" + this.paragraph.id + "/", update_paragraph)
+                    axios.put(root_url + "paragraphs/" + this.paragraph.id + "/", update_paragraph)
                         .then(response => { console.log("Is refrain (", this.paragraph.is_refrain, ") saved") },
                             (error) => { console.log("Error", error) });
                 }
@@ -111,10 +112,10 @@
                         verses: null
                     };
                     console.log("Saves paragraph first", new_paragraph);
-                    axios.post("http://localhost:8000/paragraphs/list/", new_paragraph)
+                    axios.post(root_url + "paragraphs/list/", new_paragraph)
                         .then(response => {
                             verse.paragraph = response.data.id;
-                            axios.post("http://localhost:8000/verses/list/", verse)
+                            axios.post(root_url + "verses/list/", verse)
                                 .then(response2 => { console.log(response2.data)
                                 }, 	(error2) => { console.log(error2) });
                             this.$data.display_form_add = false
@@ -122,7 +123,7 @@
                     this.paragraph.verses = [verse];
                     this.new_verse_content = ""
                 }else{
-                    axios.post("http://localhost:8000/verses/list/", verse)
+                    axios.post(root_url + "verses/list/", verse)
                         .then(response => { console.log(response.data)
                         }, 	(error) => { console.log(error) });
                     this.paragraph.verses.push(verse)

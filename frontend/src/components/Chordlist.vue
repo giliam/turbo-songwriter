@@ -48,6 +48,7 @@
 
 <script>
     import axios from 'axios'
+    import {root_url} from '@/common/index.js'
 
     export default {
         data() {
@@ -63,7 +64,7 @@
         components: {
         },
         created() {
-            axios.get("http://localhost:8000/chords/list/")
+            axios.get(root_url + "chords/list/")
                 .then(response => {
                     this.$data.chords = response.data;
                 },  (error) => { console.log(error) });
@@ -81,7 +82,7 @@
                 this.$data.note = ""
             },
             hideChordForm() {
-                axios.get("http://localhost:8000/chords/list/")
+                axios.get(root_url + "chords/list/")
                     .then(response => {
                         this.$data.chords = response.data;
                     },  (error) => { console.log(error) });
@@ -90,7 +91,7 @@
             },
             synchronize(){
                 this.$data.is_updating = true
-                axios.get("http://localhost:8000/chords/list/")
+                axios.get(root_url + "chords/list/")
                     .then(response => {
                         this.$data.chords = response.data;
                         this.$data.is_updating = false
@@ -102,18 +103,18 @@
                 };
                 this.$data.is_updating = true
                 if( is_editing ) {
-                    axios.put("http://localhost:8000/chords/" + this.$data.chord_id + "/", chord)
+                    axios.put(root_url + "chords/" + this.$data.chord_id + "/", chord)
                         .then(response => {
-                            axios.get("http://localhost:8000/chords/list/")
+                            axios.get(root_url + "chords/list/")
                                 .then(response => {
                                     this.$data.chords = response.data;
                                     this.$data.is_updating = false
                                 },  (error) => { console.log(error) });
                         }, (error) => { console.log(error)});
                 } else {
-                    axios.post("http://localhost:8000/chords/list/", chord)
+                    axios.post(root_url + "chords/list/", chord)
                         .then(response => {
-                            axios.get("http://localhost:8000/chords/list/")
+                            axios.get(root_url + "chords/list/")
                                 .then(response => {
                                     this.$data.chords = response.data;
                                     this.$data.is_updating = false
