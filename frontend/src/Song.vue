@@ -1,24 +1,23 @@
 <template>
     <div id="song">
-        <slot></slot>
+        <router-link :to="{name:'root'}">Retour à la liste</router-link>
+        <h1>{{ result.title }}</h1>
+        <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
+        <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
         <form class="ui form">
             <div v-if="result.latex_code == null">
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Convert to LaTeX</button></p>
+                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Convert to LaTeX</router-link></p>
             </div>
             <div v-else>
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(false)">Edit LaTeX code</button></p>
-                <p><button class="ui form button submit" @click.prevent="launch_convert_to_tex(true)">Force conversion to LaTeX</button></p>
+                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">Edit LaTeX code</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">Force conversion to LaTeX</router-link></p>
             </div>
             <div>
                 <p class="field">
-                    <label for="enable_harmonization">Enable harmonization:</label>
-                    <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
+                    <label for="enable_harmonization">Enable harmonization:</label> <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
                 </p>
             </div>
         </form>
-        <h2>{{ result.title }}</h2>
-        <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
-        <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
+        <router-link :to="{name: 'song_edit', params:{'item_id': result.id}}">Edit song caracteristics</router-link>        
         <div v-if="!enable_harmonization">
             <div v-for="(paragraph, index) in result.paragraphs">
                 <songparagraph :paragraph="paragraph">
@@ -77,9 +76,6 @@
                 }
                 this.$data.result.paragraphs.push(paragraph)
             },
-            launch_convert_to_tex(force_conversion){
-                this.$emit("convert_to_tex", this.item_id, force_conversion)
-            },
             sendUp(paragraph, index){
                 let other_index = -1
                 for (var i = 0; i < this.$data.result.paragraphs.length; i++) {
@@ -113,16 +109,13 @@
                 }
             }
         },
-        watch : {
-            item_id : function (value) {
-                this.item_id = value
-                if( this.item_id ){
-                    axios.get("http://localhost:8000/songs/" + this.item_id + ".json")
-                        .then(response => {
-                            console.log("Received", response.data)
-                            this.$data.result = response.data;
-                        })
-                }
+        mounted() {
+            if( this.$route.params.item_id ){
+                axios.get("http://localhost:8000/songs/" + this.$route.params.item_id + ".json")
+                    .then(response => {
+                        console.log("Received", response.data)
+                        this.$data.result = response.data;
+                    })
             }
         }
     }

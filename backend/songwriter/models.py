@@ -123,7 +123,7 @@ class Song(models.Model):
     )
 
     comments = models.TextField(
-        blank=False,
+        blank=True,
         verbose_name=_("comments").capitalize()
     )
 
