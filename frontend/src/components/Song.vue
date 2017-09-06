@@ -21,9 +21,11 @@
         <div v-if="!enable_harmonization">
             <div v-for="(paragraph, index) in result.paragraphs">
                 <songparagraph :paragraph="paragraph">
-                    <span @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</span>
-                    <span v-if="paragraph.order>0 && result.paragraphs.length-1>paragraph.order">-</span>
-                    <span @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</span>
+                    <button class="ui button" @click="deleteParagraph(paragraph, index)">Delete the paragraph</button>
+                    <span v-if="paragraph.id">
+                        <button class="ui button" @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</button>
+                        <button class="ui button" @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</button>
+                    </span>
                 </songparagraph>
                 <br>
             </div>
@@ -68,16 +70,36 @@
             },
             addParagraph() {
                 let nb_paragraphs = this.$data.result.paragraphs.length
+                console.log(nb_paragraphs)
                 let paragraph = {
                     id: null,
                     order: nb_paragraphs,
                     song: this.$data.result.id,
-                    verses: Array,
+                    verses: null,
                     is_refrain: false
                 }
                 this.$data.result.paragraphs.push(paragraph)
             },
+            sync(){
+                axios.get(root_url + "songs/" + this.$route.params.item_id + ".json")
+                    .then(response => {
+                        console.log("Received", response.data)
+                        this.$data.result = response.data;
+                    })
+            },
+            deleteParagraph(paragraph, index){
+                axios.delete(root_url + "paragraphs/" + paragraph.id + "/")
+                    .then(response => { 
+                        console.log("Deleted Paragraph #", paragraph.id)
+                        this.sync()
+                     },
+                    (error) => { console.log("Error", error) });
+
+            },
             sendUp(paragraph, index){
+                if( !paragraph.id ){
+                    return ""
+                }
                 let other_index = -1
                 for (var i = 0; i < this.$data.result.paragraphs.length; i++) {
                     if( this.$data.result.paragraphs[i].order == paragraph.order-1 ){
@@ -94,6 +116,9 @@
                 }
             },
             sendDown(paragraph, index){
+                if( !paragraph.id ){
+                    return ""
+                }
                 let other_index = -1
                 for (var i = 0; i < this.$data.result.paragraphs.length; i++) {
                     if( this.$data.result.paragraphs[i].order == paragraph.order+1 ){
@@ -112,11 +137,7 @@
         },
         mounted() {
             if( this.$route.params.item_id ){
-                axios.get(root_url + "songs/" + this.$route.params.item_id + ".json")
-                    .then(response => {
-                        console.log("Received", response.data)
-                        this.$data.result = response.data;
-                    })
+                this.sync()
             }
         }
     }

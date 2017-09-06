@@ -3,9 +3,9 @@
         <div v-for="(verse,index) in paragraph.verses">
             <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
                 <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
-                <span @click="sendUp(verse, index)" v-if="verse.order>0">Up</span>
+                <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">Up</a>
                 <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
-                <span @click="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</span>
+                <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</a>
             </songverse>
         </div>
         <fieldset>
@@ -23,7 +23,7 @@
                 <fieldset>
                     <p class="field">
                         <label for="content">Content:</label>
-                        <input type="text" v-model="new_verse_content" @keyup.enter="sendNewVerse()">
+                        <input type="text" v-model="new_verse_content">
                     </p>
 
                     <button class="ui button" type="submit" @click.prevent="sendNewVerse()">Send</button>
@@ -100,7 +100,7 @@
                 let verse = {
                     id: null,
                     paragraph: this.paragraph.id,
-                    order: this.paragraph.verses.length,
+                    order: this.paragraph.verses ? this.paragraph.verses.length : 0,
                     content: this.$data.new_verse_content
                 };
 
@@ -111,22 +111,27 @@
                         is_refrain: this.paragraph.is_refrain,
                         verses: null
                     };
-                    console.log("Saves paragraph first", new_paragraph);
+                    
                     axios.post(root_url + "paragraphs/list/", new_paragraph)
                         .then(response => {
                             verse.paragraph = response.data.id;
+                            this.paragraph.id = response.data.id;
                             axios.post(root_url + "verses/list/", verse)
-                                .then(response2 => { console.log(response2.data)
+                                .then(response2 => { 
+                                    verse = response2.data
+                                    this.paragraph.verses = [verse];
                                 }, 	(error2) => { console.log(error2) });
-                            this.$data.display_form_add = false
-                        }, 	(error) => { console.log("Error", error) });
-                    this.paragraph.verses = [verse];
+                        },  (error) => { console.log("Error", error) });
+
+                    this.$data.display_form_add = false
                     this.new_verse_content = ""
                 }else{
                     axios.post(root_url + "verses/list/", verse)
-                        .then(response => { console.log(response.data)
-                        }, 	(error) => { console.log(error) });
-                    this.paragraph.verses.push(verse)
+                        .then(response => { 
+                            verse = response.data
+                            this.paragraph.verses.push(verse)
+                        },  (error) => { console.log(error) });
+
                     this.$data.display_form_add = false
                     this.new_verse_content = ""
                 }

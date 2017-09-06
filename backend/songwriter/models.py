@@ -103,8 +103,8 @@ class Song(models.Model):
         blank=False
     )
 
-    author = models.ForeignKey(Author, related_name="+")
-    editor = models.ForeignKey(Editor, related_name="+")
+    author = models.ForeignKey(Author, null=True, related_name="+")
+    editor = models.ForeignKey(Editor, null=True, related_name="+")
     theme = models.ManyToManyField(Theme)
 
     rights_paid = models.BooleanField(
