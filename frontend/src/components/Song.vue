@@ -1,31 +1,36 @@
 <template>
     <div id="song">
+
+        <div class="overlay">
+          <div class="ui labeled icon vertical menu">
+            <form class="ui form">
+                <div v-if="result.latex_code == null">
+                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Convert to LaTeX</router-link></p>
+                </div>
+                <div v-else>
+                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">Edit LaTeX code</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">Force conversion to LaTeX</router-link></p>
+                </div>
+                <div>
+                    <p class="field">
+                        <label for="enable_harmonization">Enable harmonization:</label> <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
+                    </p>
+                </div>
+            </form>
+            <router-link :to="{name: 'song_edit', params:{'item_id': result.id}}">Edit song caracteristics</router-link>        
+          </div>
+        </div>
         <router-link :to="{name:'root'}">Retour à la liste</router-link>
         <h1>{{ result.title }}</h1>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
         <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
-        <form class="ui form">
-            <div v-if="result.latex_code == null">
-                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Convert to LaTeX</router-link></p>
-            </div>
-            <div v-else>
-                <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">Edit LaTeX code</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">Force conversion to LaTeX</router-link></p>
-            </div>
-            <div>
-                <p class="field">
-                    <label for="enable_harmonization">Enable harmonization:</label> <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
-                </p>
-            </div>
-        </form>
-        <router-link :to="{name: 'song_edit', params:{'item_id': result.id}}">Edit song caracteristics</router-link>        
         <div v-if="!enable_harmonization">
             <div v-for="(paragraph, index) in result.paragraphs">
                 <songparagraph :paragraph="paragraph">
-                    <button class="ui button" @click="deleteParagraph(paragraph, index)">Delete the paragraph</button>
-                    <span v-if="paragraph.id">
+                    <p><button class="ui red button" @click="deleteParagraph(paragraph, index)">Delete the paragraph</button></p>
+                    <p v-if="paragraph.id">
                         <button class="ui button" @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</button>
                         <button class="ui button" @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</button>
-                    </span>
+                    </p>
                 </songparagraph>
                 <br>
             </div>

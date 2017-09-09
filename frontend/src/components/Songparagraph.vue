@@ -1,24 +1,18 @@
 <template>
-    <div>
-        <div v-for="(verse,index) in paragraph.verses">
-            <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
-                <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
-                <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">Up</a>
-                <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
-                <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</a>
-            </songverse>
-        </div>
-        <fieldset>
+    <div class="ui grid sixteen columns">
+        <div class="four wide column center">
             <p>
                 <form class="ui form">
-                    <p class="field">
+                    <span class="field">
                         <label for="content">Is refrain?</label>
                         <input type="checkbox" v-model="paragraph.is_refrain" @click.prevent="sendIsRefrain()">
-                    </p>
+                    </span>
                 </form>
-                <button class="ui button" @click.prevent="addVerse">Add a verse</button>
-                <slot></slot>
             </p>
+            <p>
+                <button class="ui button" @click.prevent="addVerse">Add a verse</button>
+            </p>
+            <slot></slot>
             <form v-if="display_form_add" class="ui form">
                 <fieldset>
                     <p class="field">
@@ -30,7 +24,17 @@
                     <button class="ui button" @click.prevent="cancelNewVerse()">Cancel</button>
                 </fieldset>
             </form>
-        </fieldset>
+        </div>
+        <div class="twelve wide column">
+            <div v-for="(verse,index) in paragraph.verses">
+                <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
+                    <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
+                    <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">Up</a>
+                    <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
+                    <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</a>
+                </songverse>
+            </div>
+        </div>
     </div>
 </template>
 

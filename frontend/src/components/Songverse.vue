@@ -19,7 +19,7 @@
                             <input type="text" name="verse" v-model="verse.content" @keyup.enter="saveEdition()"/>
                         </p>
                         <p>
-                            <button @click.prevent="saveEdition()" class="ui button">Save</button>
+                            <button @click.prevent="saveEdition()" class="ui button primary">Save</button>
                             <button @click.prevent="cancelEdition()" class="ui button">Cancel</button>
                         </p>
                     </fieldset>

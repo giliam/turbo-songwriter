@@ -12,8 +12,8 @@
                             <input type="text" name="name" v-model="name">
                         </p>
                         <p class="field">
-                            <button @click.prevent="saveTheme(true)">Save</button>
-                            <button @click.prevent="hideThemeForm()">Cancel</button>
+                            <button class="ui primary button" @click.prevent="saveTheme(true)">Save</button>
+                            <button class="ui button" @click.prevent="hideThemeForm()">Cancel</button>
                         </p>
                     </fieldset>
                 </form>
@@ -32,8 +32,8 @@
                                 <input type="text" name="name" v-model="name">
                             </p>
                             <p class="field">
-                                <button @click.prevent="saveTheme(false)">Save</button>
-                                <button @click.prevent="hideThemeForm()">Cancel</button>
+                                <button class="ui primary button" @click.prevent="saveTheme(false)">Save</button>
+                                <button class="ui button" @click.prevent="hideThemeForm()">Cancel</button>
                             </p>
                         </fieldset>
                     </form>

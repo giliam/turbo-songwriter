@@ -2,11 +2,9 @@
     <div>
         <div id="listsongs">
             <h2>List of songs</h2>
-            <ul>
-                <li v-for="item in results">
-                    <songtitle :item="item"></songtitle>
-                </li>
-            </ul>
+            <div v-for="item in results">
+                <songtitle :item="item"></songtitle>
+            </div>
         </div>
         <div>
             <p><router-link :to="{name: 'song_new'}">Add a song</router-link></p>

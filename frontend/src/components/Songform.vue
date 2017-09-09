@@ -38,7 +38,7 @@
             <textarea name="comments" v-model="comments"></textarea>
             </p>
 
-            <p class="field"><button @click.prevent="save()" class="ui button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
+            <p class="field"><button @click.prevent="save()" class="ui primary button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
         </fieldset>
         <p v-else>
            Loading...  

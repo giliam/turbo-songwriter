@@ -1,9 +1,11 @@
 <template>
-    <p>
-        {{item.title}} - 
-        <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">Show</router-link> - 
-        <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">Edit</router-link>
-    </p>
+    <div class="ui grid">
+        <div class="ten wide column">{{item.title}}</div>
+        <div class="six wide column">
+            <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">Show</router-link> - 
+            <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">Edit</router-link>
+        </div>
+    </div>
 </template>
 
 <script>
