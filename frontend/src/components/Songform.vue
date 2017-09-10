@@ -9,22 +9,22 @@
             <p class="field">
                 <label for="author">Author:</label>
                 <select name="author" v-model="author">
-                    <option :value="sauthor.id" v-for="sauthor in authors" :selected="author_selected.id == sauthor.id ? 'selected' : null">{{ sauthor.firstname }} {{ sauthor.lastname }}
+                    <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}
                     </option>
                 </select>
             </p>
             <p class="field">
                 <label for="editor">Editor:</label>
                 <select name="editor" v-model="editor">
-                    <option :value="seditor.id" v-for="seditor in editors" :selected="editor_selected.id == seditor.id ? 'selected' : null">
+                    <option :value="seditor.id" v-for="seditor in editors">
                         {{ seditor.name }}
                     </option>
                 </select>
             </p>
             <p class="field">
                 <label for="theme">Theme:</label>
-                <select name="theme" v-model="theme" multiple="multiple">
-                    <option :value="stheme.id" v-for="stheme in themes" :selected="is_selected_theme(stheme.id)">
+                <select name="theme" v-model="theme" multiple="multiple" @click="print()">
+                    <option :value="stheme.id" v-for="stheme in themes">
                         {{ stheme.name }}
                     </option>
                 </select>
@@ -94,9 +94,12 @@
                     .then(response => {
                         console.log("Received", response.data)
                         this.$data.title = response.data.title
-                        this.$data.author_selected = response.data.author
-                        this.$data.theme_selected = response.data.theme
-                        this.$data.editor_selected = response.data.editor
+                        this.$data.author = response.data.author.id
+                        this.$data.theme = new Array()
+                        for (var i = 0; i < response.data.theme.length; i++) {
+                            this.$data.theme.push(response.data.theme[i].id)
+                        }
+                        this.$data.editor = response.data.editor.id
                         this.$data.secli_number = response.data.secli_number
                         this.$data.comments = response.data.comments
                         this.$data.loaded = true
@@ -107,6 +110,9 @@
             }
         },
         methods: {
+            print(){
+                console.log(this.$data.theme)
+            },
             save(){
                 let new_themes = [];
                 for(let theme in this.$data.theme){
@@ -127,15 +133,17 @@
                     axios.put(root_url + "songs/" + this.$route.params.item_id + "/", song)
                         .then(response => {
                             song_id = this.$route.params.item_id
+                            console.log(song_id)
+                            this.$router.push({name:'song_detail', params:{item_id:song_id}})
                         }, (error) => { console.log(error)});
                 } else {
                     axios.post(root_url + "songs/list/", song)
                         .then(response => {
                             song_id = response.data.id
+                            this.$router.push({name:'song_detail', params:{item_id:song_id}})
                         }, (error) => { console.log(error)});
                 }
 
-                this.$router.go(-1)
             },
             cancel() {
                 this.$router.go(-1)

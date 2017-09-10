@@ -13,17 +13,6 @@
                 <button class="ui button" @click.prevent="addVerse">Add a verse</button>
             </p>
             <slot></slot>
-            <form v-if="display_form_add" class="ui form">
-                <fieldset>
-                    <p class="field">
-                        <label for="content">Content:</label>
-                        <input type="text" v-model="new_verse_content">
-                    </p>
-
-                    <button class="ui button" type="submit" @click.prevent="sendNewVerse()">Send</button>
-                    <button class="ui button" @click.prevent="cancelNewVerse()">Cancel</button>
-                </fieldset>
-            </form>
         </div>
         <div class="twelve wide column">
             <div v-for="(verse,index) in paragraph.verses">
@@ -34,6 +23,15 @@
                     <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</a>
                 </songverse>
             </div>
+            <form v-if="display_form_add" class="ui form">
+                <p class="field">
+                    <label for="content">Content:</label>
+                    <input type="text" v-model="new_verse_content">
+                </p>
+
+                <button class="ui button" type="submit" @click.prevent="sendNewVerse()">Send</button>
+                <button class="ui button" @click.prevent="cancelNewVerse()">Cancel</button>
+            </form>
         </div>
     </div>
 </template>
