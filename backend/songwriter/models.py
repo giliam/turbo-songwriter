@@ -122,6 +122,17 @@ class Song(models.Model):
         blank=True
     )
 
+    page_number = models.CharField(
+        max_length=20,
+        default="0",
+        blank=True
+    )
+    old_page_number = models.CharField(
+        max_length=20,
+        default="0",
+        blank=True
+    )
+
     comments = models.TextField(
         blank=True,
         verbose_name=_("comments").capitalize()

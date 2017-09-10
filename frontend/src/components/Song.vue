@@ -21,6 +21,7 @@
         </div>
         <router-link :to="{name:'root'}">Retour à la liste</router-link>
         <h1>{{ result.title }}</h1>
+        <h3>Old page number: {{ result.old_page_number }} - Page number: {{ result.page_number }}</h3>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
         <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
         <div v-if="!enable_harmonization">

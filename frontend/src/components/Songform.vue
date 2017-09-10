@@ -34,6 +34,14 @@
                 <input type="text" name="secli_number" v-model="secli_number">
             </p>
             <p class="field">
+                <label for="old_page_number">V1 page number :</label>
+                <input type="text" name="old_page_number" v-model="old_page_number">
+            </p>
+            <p class="field">
+                <label for="page_number">V2 page number :</label>
+                <input type="text" name="page_number" v-model="page_number">
+            </p>
+            <p class="field">
             <label for="comments">Comments:</label>
             <textarea name="comments" v-model="comments"></textarea>
             </p>
@@ -57,6 +65,8 @@
                 title: "",
                 author: 0,
                 editor: 0,
+                page_number: 0,
+                old_page_number: 0,
                 secli_number: "",
                 comments: "",
                 theme: Array(),
@@ -101,6 +111,8 @@
                         }
                         this.$data.editor = response.data.editor.id
                         this.$data.secli_number = response.data.secli_number
+                        this.$data.page_number = response.data.page_number
+                        this.$data.old_page_number = response.data.old_page_number
                         this.$data.comments = response.data.comments
                         this.$data.loaded = true
                     })
@@ -123,6 +135,8 @@
                     author: this.$data.author,
                     editor: this.$data.editor,
                     secli_number: this.$data.secli_number,
+                    page_number: this.$data.page_number,
+                    old_page_number: this.$data.old_page_number,
                     comments: this.$data.comments,
                     theme: new_themes
                 };

@@ -143,6 +143,8 @@ class SongSerializer(serializers.ModelSerializer):
             'rights_paid',
             'secli_number',
             'sacem_number',
+            'page_number',
+            'old_page_number',
             'comments',
             'added_date',
             'updated_date'
@@ -173,6 +175,8 @@ class SongReadSerializer(serializers.ModelSerializer):
             'paragraphs',
             'latex_code',
             'rights_paid',
+            'page_number',
+            'old_page_number',
             'secli_number',
             'sacem_number',
             'comments',
