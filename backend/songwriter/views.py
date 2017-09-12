@@ -147,10 +147,6 @@ class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.SongLaTeXCodeSerializer
 
 
-def main(request):
-    return HttpResponse("Main")
-
-
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def convert_to_tex(request, song_id):
