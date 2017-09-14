@@ -6,9 +6,7 @@
                 <songtitle :item="item"></songtitle>
             </div>
         </div>
-        <div>
-            <p><router-link :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
-        </div>
+        <p><router-link tag="button" class="ui button primary" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
     </div>
 </template>
 
