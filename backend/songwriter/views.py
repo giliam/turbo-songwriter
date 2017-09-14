@@ -9,10 +9,26 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import response
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.decorators import api_view
 
 from songwriter import models
 from songwriter import serializers
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return response.Response({
+        'songs_list': reverse('songs_list', request=request, format=format),
+        'authors_list': reverse('authors_list', request=request, format=format),
+        'editors_list': reverse('editors_list', request=request, format=format),
+        'themes_list': reverse('themes_list', request=request, format=format),
+        'paragraphs_list': reverse('paragraphs_list', request=request, format=format),
+        'verses_list': reverse('verses_list', request=request, format=format),
+        'harmonization_list': reverse('harmonization_list', request=request, format=format),
+        'chords_list': reverse('chords_list', request=request, format=format),
+        'latexcode_list': reverse('latexcode_list', request=request, format=format),
+    })
 
 
 class UserList(generics.ListAPIView):

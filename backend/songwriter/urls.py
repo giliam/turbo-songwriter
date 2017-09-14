@@ -7,6 +7,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from songwriter import views
 
 urlpatterns = [
+    url(r'^$', views.api_root, 
+        name="root"),
     url(r'^songs/list/$', views.SongList.as_view(), 
         name="songs_list"),
     url(r'^songs/(?P<pk>[0-9]+)/$', views.SongDetail.as_view(), 

@@ -11,9 +11,11 @@
         * https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e
         * ? https://github.com/dgrubelic/vue-authenticate
 * Endpoint and schemas:
-    * backend: 
-        * http://www.django-rest-framework.org/tutorial/5-relationships-and-hyperlinked-apis/
-        * http://www.django-rest-framework.org/tutorial/7-schemas-and-client-libraries/
+    * ~~backend: ~~
+        * ~~http://www.django-rest-framework.org/tutorial/5-relationships-and-hyperlinked-apis/~~
+        * ~~http://www.django-rest-framework.org/tutorial/7-schemas-and-client-libraries/~~
+    * frontend:
+        * implement the use of the endpoints
 * Secure connection:
     * backend:
         * https://github.com/GetBlimp/django-rest-framework-jwt
@@ -25,7 +27,7 @@
 * Harmonization:
     * delete chord
     * delete harmonization on verse
-    * possibility to add harmonization on sillabus ?
+    * possibility to add harmonization on syllable ?
 * Lists (editors, authors, ...):
     * delete ?
 * ~~Translation:~~
