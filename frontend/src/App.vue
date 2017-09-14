@@ -36,16 +36,13 @@
             this.$translate.setLang('fr_FR');
         },
         created(){
-            if( this.$session.exists() ){
-                console.log(this.$session.getAll())
+            if( this.$cookie.get('token') && this.$cookie.get('username') ){
                 let userdata = {
-                    username: this.$session.get('username'),
-                    token: this.$session.get('token'),
+                    username: this.$cookie.get('username'),
+                    token: this.$cookie.get('token'),
                 }
-                this.check_session(userdata)
+                this.check_cookie(userdata)
             }else{
-                this.$session.start()
-                console.log(this.$session.getAll())
             }
         },
         methods: {
@@ -53,7 +50,7 @@
                 'has_jwt_token'
             ]),
             ...mapActions([
-                'check_session'
+                'check_cookie'
             ]),
             print_root_url(){
                 return root_url

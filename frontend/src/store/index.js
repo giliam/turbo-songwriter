@@ -24,7 +24,7 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        check_session(context, userdata) {
+        check_cookie(context, userdata) {
             let data = {
                 username: userdata.username,
                 token: userdata.token
@@ -44,9 +44,8 @@ export default new Vuex.Store({
                     context.commit("set_jwt_token", response.data.token);
                     context.commit("set_authorized", true);
                     axios.defaults.headers.common['Authorization'] = "JWT " + response.data.token;
-                    this._vm.$session.start()
-                    this._vm.$session.set('token', response.data.token)
-                    this._vm.$session.set('username', data.username)
+                    this._vm.$cookie.set('token', response.data.token, {expires:1})
+                    this._vm.$cookie.set('username', data.username, {expires:1})
                 },  (error) => {
                     console.log(error)
              });
@@ -55,7 +54,8 @@ export default new Vuex.Store({
         log_out(context) {
             context.commit("set_jwt_token", null)
             context.commit("set_authorized", false);
-            this._vm.$session.destroy()
+            this._vm.$cookie.delete('token')
+            this._vm.$cookie.delete('username')
             axios.defaults.headers.common['Authorization'] = "";
         }
     }
