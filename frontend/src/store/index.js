@@ -24,22 +24,25 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        log_in(context, user) {
+        async log_in(context, user) {
             let data = {
                 username: user.username,
                 password: user.password
             }
-            axios.post(root_url + "auth/login/", data)
+            await axios.post(root_url + "auth/login/", data)
                 .then(response => {
                     context.commit("set_jwt_token", response.data.token);
                     context.commit("set_authorized", true);
-                    return true
-                },  (error) => { console.log(error) });
-            return false
+                    axios.defaults.headers.common['Authorization'] = "JWT " + response.data.token;
+                },  (error) => { 
+                    console.log(error)
+             });
+            return context.getters.has_jwt_token
         },
-        log_out(context, username, password) {
+        log_out(context) {
             context.commit("set_jwt_token", null)
             context.commit("set_authorized", false);
+            axios.defaults.headers.common['Authorization'] = "";
         }
     }
 })

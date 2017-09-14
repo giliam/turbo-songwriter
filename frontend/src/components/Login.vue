@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div class="ui negative message" v-if="error_message">
+            <i class="close icon" @click="error_message = false"></i>
+            <div class="header">
+                {{ t("Sorry, we couldn't log you in") }}
+            </div>
+            <p>{{ t('The credentials are wrong!') }}</p>
+        </div>
         <form class="ui form">
             <fieldset>
                 <p class="field">
@@ -17,26 +24,43 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
 
     export default {
         data() {
             return {
                 username: "",
-                password: ""
+                password: "",
+                error_message: false
             }
         },
         methods: {
             ...mapActions({
-                launch_login: "log_in"
+                launch_login: "log_in",
+                log_out: "log_out",
             }),
-            log_in(){
-                if( this.launch_login({
+            ...mapGetters([
+                'has_jwt_token',
+            ]),
+            async log_in(){
+                this.$data.error_message = false
+                var b = await this.launch_login({
                     username: this.$data.username, 
                     password: this.$data.password
-                }) ){
+                })
+                if( b ){
+                    this.$router.push("/")
                 }else{
+                    this.$data.error_message = true
                 }
+            }
+        },
+        created(){
+            console.log(this.$route.name)
+            if( this.has_jwt_token() && this.$route.name == "logout" ) {
+                this.log_out()
+            } else if( this.has_jwt_token() ){
+                this.$router.push("/")
             }
         }
     }

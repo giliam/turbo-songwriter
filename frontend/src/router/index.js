@@ -59,6 +59,11 @@ var router = new Router({
         name: 'chords_list',
         auth: true
     },{
+        path: '/logout/',
+        component: require('@/components/Login.vue').default,
+        name: 'logout',
+        auth: true
+    },{
         path: '/login/',
         component: require('@/components/Login.vue').default,
         name: 'login',
@@ -68,8 +73,9 @@ var router = new Router({
 
 
 router.beforeEach(function (to, from, next) {
-    if (!store.state.authorized && to.name != "login") {
+    if (!store.getters.has_jwt_token && to.name != "login") {
         // if route requires auth and user isn't authenticated
+        console.log("MUST BE AUTHENTICATED")
         next('/login')
     } else {
         next()

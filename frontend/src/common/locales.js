@@ -56,5 +56,7 @@ export const locales = {
         'Comments': "Commentaires",
         'Is refrain?': "Refrain ?",
         'Lastname:': "Nom",
+        'Login': 'Se connecter',
+        'Logout': 'Se déconnecter'
     }
 }

@@ -6,11 +6,17 @@
                     <img class="logo" src="./assets/logo.png">
                     Turbo songwriter!
                 </router-link>
-                <router-link :to="{name:'root'}" class="item">{{ t('Songs') }}</router-link>
-                <router-link :to="{name:'authors_list'}" class="item">{{ t('Authors') }}</router-link>
-                <router-link :to="{name:'editors_list'}" class="item">{{ t('Editors') }}</router-link>
-                <router-link :to="{name:'themes_list'}" class="item">{{ t('Themes') }}</router-link>
-                <router-link :to="{name:'chords_list'}" class="item">{{ t('Chords') }}</router-link>
+                <template v-if="has_jwt_token()">
+                    <router-link :to="{name:'root'}" class="item">{{ t('Songs') }}</router-link>
+                    <router-link :to="{name:'authors_list'}" class="item">{{ t('Authors') }}</router-link>
+                    <router-link :to="{name:'editors_list'}" class="item">{{ t('Editors') }}</router-link>
+                    <router-link :to="{name:'themes_list'}" class="item">{{ t('Themes') }}</router-link>
+                    <router-link :to="{name:'chords_list'}" class="item">{{ t('Chords') }}</router-link>
+                    <router-link :to="{name:'logout'}" class="item">{{ t('Logout') }}</router-link>
+                </template>
+                <template v-else>
+                    <router-link :to="{name:'login'}" class="item">{{ t('Login') }}</router-link>
+                </template>
                 <a class="item" :href="print_root_url() + 'admin'">{{ t('Admin') }}</a>>
             </div>
         </div>
@@ -21,6 +27,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import {root_url} from '@/common/index.js'
 
     export default {
@@ -29,6 +36,9 @@
             this.$translate.setLang('fr_FR');
         },
         methods: {
+            ...mapGetters([
+                'has_jwt_token'
+            ]),
             print_root_url(){
                 return root_url
             }
