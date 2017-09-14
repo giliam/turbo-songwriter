@@ -56,7 +56,6 @@
             }
         },
         created(){
-            console.log(this.$route.name)
             if( this.has_jwt_token() && this.$route.name == "logout" ) {
                 this.log_out()
             } else if( this.has_jwt_token() ){

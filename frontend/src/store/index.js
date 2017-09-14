@@ -24,6 +24,16 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        check_session(context, userdata) {
+            let data = {
+                username: userdata.username,
+                token: userdata.token
+            }
+            // TODO: check token validity
+            context.commit("set_jwt_token", userdata.token);
+            context.commit("set_authorized", true);
+            axios.defaults.headers.common['Authorization'] = "JWT " + userdata.token;
+        },
         async log_in(context, user) {
             let data = {
                 username: user.username,
@@ -34,7 +44,10 @@ export default new Vuex.Store({
                     context.commit("set_jwt_token", response.data.token);
                     context.commit("set_authorized", true);
                     axios.defaults.headers.common['Authorization'] = "JWT " + response.data.token;
-                },  (error) => { 
+                    this._vm.$session.start()
+                    this._vm.$session.set('token', response.data.token)
+                    this._vm.$session.set('username', data.username)
+                },  (error) => {
                     console.log(error)
              });
             return context.getters.has_jwt_token
@@ -42,6 +55,7 @@ export default new Vuex.Store({
         log_out(context) {
             context.commit("set_jwt_token", null)
             context.commit("set_authorized", false);
+            this._vm.$session.destroy()
             axios.defaults.headers.common['Authorization'] = "";
         }
     }

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import {root_url} from '@/common/index.js'
 
     export default {
@@ -35,9 +35,25 @@
         mounted(){
             this.$translate.setLang('fr_FR');
         },
+        created(){
+            if( this.$session.exists() ){
+                console.log(this.$session.getAll())
+                let userdata = {
+                    username: this.$session.get('username'),
+                    token: this.$session.get('token'),
+                }
+                this.check_session(userdata)
+            }else{
+                this.$session.start()
+                console.log(this.$session.getAll())
+            }
+        },
         methods: {
             ...mapGetters([
                 'has_jwt_token'
+            ]),
+            ...mapActions([
+                'check_session'
             ]),
             print_root_url(){
                 return root_url
