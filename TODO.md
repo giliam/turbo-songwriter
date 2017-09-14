@@ -28,6 +28,6 @@
     * possibility to add harmonization on sillabus ?
 * Lists (editors, authors, ...):
     * delete ?
-~~* Translation:
-    * frontend:
-        * https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~
+* ~~Translation:~~
+    * ~~frontend:~~
+        * ~~https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~
