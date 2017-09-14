@@ -6,19 +6,17 @@
                     <img class="logo" src="./assets/logo.png">
                     Turbo songwriter!
                 </router-link>
-                <router-link :to="{name:'root'}" class="item">Songs</router-link>
-                <router-link :to="{name:'authors_list'}" class="item">Authors</router-link>
-                <router-link :to="{name:'editors_list'}" class="item">Editors</router-link>
-                <router-link :to="{name:'themes_list'}" class="item">Themes</router-link>
-                <router-link :to="{name:'chords_list'}" class="item">Chords</router-link>
-                <a class="item" :href="print_root_url() + 'admin'">Admin</a>>
+                <router-link :to="{name:'root'}" class="item">{{ t('Songs') }}</router-link>
+                <router-link :to="{name:'authors_list'}" class="item">{{ t('Authors') }}</router-link>
+                <router-link :to="{name:'editors_list'}" class="item">{{ t('Editors') }}</router-link>
+                <router-link :to="{name:'themes_list'}" class="item">{{ t('Themes') }}</router-link>
+                <router-link :to="{name:'chords_list'}" class="item">{{ t('Chords') }}</router-link>
+                <a class="item" :href="print_root_url() + 'admin'">{{ t('Admin') }}</a>>
             </div>
         </div>
         <div class="ui main text container">
             <div id="song_container">
-                <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song">
-                    <a @click.prevent="show_list">Retour à la liste</a>
-                </songform>
+                <songform v-if="is_form_edition_shown" @song_saved="show_list()" titleform="Edit a song" :song="current_song"></songform>
                 <songtexform :song="current_song" :force_conversion="force_latex_conversion" v-if="is_tex_shown" @song_saved="show_list()" ></songtexform>
             </div>
             <router-view></router-view>
@@ -59,6 +57,9 @@
                 is_tex_shown: false,
                 is_form_edition_shown: false
             }
+        },
+        mounted(){
+            this.$translate.setLang('fr_FR');
         },
         methods: {
             show_song(song_id){

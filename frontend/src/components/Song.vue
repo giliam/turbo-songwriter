@@ -5,37 +5,37 @@
           <div class="ui labeled icon vertical menu">
             <form class="ui form">
                 <div v-if="result.latex_code == null">
-                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">Convert to LaTeX</router-link></p>
+                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">{{ t('Convert to LaTeX') }}</router-link></p>
                 </div>
                 <div v-else>
-                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">Edit LaTeX code</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">Force conversion to LaTeX</router-link></p>
+                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link></p>
                 </div>
                 <div>
                     <p class="field">
-                        <label for="enable_harmonization">Enable harmonization:</label> <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
+                        <label for="enable_harmonization">{{ t('Enable harmonization:') }}</label> <input type="checkbox" name="enable_harmonization" v-model="enable_harmonization">
                     </p>
                 </div>
             </form>
-            <router-link :to="{name: 'song_edit', params:{'item_id': result.id}}">Edit song caracteristics</router-link>        
+            <router-link :to="{name: 'song_edit', params:{'item_id': result.id}}">{{ t('Edit song caracteristics') }}</router-link>        
           </div>
         </div>
-        <router-link :to="{name:'root'}">Retour à la liste</router-link>
+        <router-link :to="{name:'root'}">{{ t('Back to the list') }}</router-link>
         <h1>{{ result.title }}</h1>
-        <h3>Old page number: {{ result.old_page_number }} - Page number: {{ result.page_number }}</h3>
+        <h3>{{ t('Old page number:') }} {{ result.old_page_number }} - {{ t('Page number:') }} {{ result.page_number }}</h3>
         <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
-        <h4>Themes: <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
+        <h4>{{ t('Themes:') }} <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
         <div v-if="!enable_harmonization">
             <div v-for="(paragraph, index) in result.paragraphs">
                 <songparagraph :paragraph="paragraph">
-                    <p><button class="ui red button" @click="deleteParagraph(paragraph, index)">Delete the paragraph</button></p>
+                    <p><button class="ui red button" @click="deleteParagraph(paragraph, index)">{{ t('Delete the paragraph') }}</button></p>
                     <p v-if="paragraph.id">
-                        <button class="ui button" @click="sendUp(paragraph, index)" v-if="paragraph.order>0">Up</button>
-                        <button class="ui button" @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">Down</button>
+                        <button class="ui button" @click="sendUp(paragraph, index)" v-if="paragraph.order>0">{{ t('Up') }}</button>
+                        <button class="ui button" @click="sendDown(paragraph, index)" v-if="result.paragraphs.length-1>paragraph.order">{{ t('Down') }}</button>
                     </p>
                 </songparagraph>
                 <br>
             </div>
-            <p><a @click.prevent="addParagraph()">Add a paragraph</a></p>
+            <p><a @click.prevent="addParagraph()">{{ t('Add a paragraph') }}</a></p>
         </div>
         <div v-else>
             <songharmonization :song="result">

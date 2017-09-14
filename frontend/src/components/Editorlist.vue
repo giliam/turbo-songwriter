@@ -1,19 +1,19 @@
 <template>
     <div>
         <div id="listeditors">
-            <h2>List of editors</h2>
-            <p @click="synchronize()">Update the list</p>
+            <h2>{{ t('List of editors') }}</h2>
+            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
                 <form v-if="is_editing" class="ui form">
                     <fieldset>
-                        <legend>Edit an editor</legend>
+                        <legend>{{ t('Edit an editor') }}</legend>
                         <p class="field">
-                            <label for="name">Name: </label>
+                            <label for="name">{{ t('Name:') }} </label>
                             <input type="text" name="name" v-model="name">
                         </p>
                         <p class="field">
-                            <button class="ui button primary" @click.prevent="saveEditor(true)">Save</button>
-                            <button class="ui button" @click.prevent="hideEditorForm()">Cancel</button>
+                            <button class="ui button primary" @click.prevent="saveEditor(true)">{{ t('Save') }}</button>
+                            <button class="ui button" @click.prevent="hideEditorForm()">{{ t('Cancel') }}</button>
                         </p>
                     </fieldset>
                 </form>
@@ -23,17 +23,17 @@
                     </li>
                 </ul>
                 <div>
-                    <p><a @click.prevent="addEditor()">Add an editor</a></p>
+                    <p><a @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
-                            <legend>Add an editor</legend>
+                            <legend>{{ t('Add an editor') }}</legend>
                             <p class="field">
-                                <label for="name">Name: </label>
+                                <label for="name">{{ t('Name:') }} </label>
                                 <input type="text" name="name" v-model="name">
                             </p>
                             <p class="field">
-                                <button class="ui button primary" @click.prevent="saveEditor(false)">Save</button>
-                                <button class="ui button" @click.prevent="hideEditorForm()">Cancel</button>
+                                <button class="ui button primary" @click.prevent="saveEditor(false)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideEditorForm()">{{ t('Cancel') }}</button>
                             </p>
                         </fieldset>
                     </form>

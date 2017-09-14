@@ -1,20 +1,20 @@
 <template>
     <form id="songform" class="ui form">
         <fieldset v-if="loaded">
-            <legend class="ui dividing header">{{ titleform }}</legend>
+            <legend class="ui dividing header">{{ printTitle() }}</legend>
             <p class="field">
-                <label for="title">Title:</label>
+                <label for="title">{{ t('Title') }}:</label>
                 <input type="text" name="title" v-model="title">
             </p>
             <p class="field">
-                <label for="author">Author:</label>
+                <label for="author">{{ t('Author') }}:</label>
                 <select name="author" v-model="author">
                     <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}
                     </option>
                 </select>
             </p>
             <p class="field">
-                <label for="editor">Editor:</label>
+                <label for="editor">{{ t('Editor') }}:</label>
                 <select name="editor" v-model="editor">
                     <option :value="seditor.id" v-for="seditor in editors">
                         {{ seditor.name }}
@@ -22,7 +22,7 @@
                 </select>
             </p>
             <p class="field">
-                <label for="theme">Theme:</label>
+                <label for="theme">{{ t('Theme') }}:</label>
                 <select name="theme" v-model="theme" multiple="multiple" @click="print()">
                     <option :value="stheme.id" v-for="stheme in themes">
                         {{ stheme.name }}
@@ -30,26 +30,26 @@
                 </select>
             </p>
             <p class="field">
-                <label for="secli_number">SECLI Number :</label>
+                <label for="secli_number">{{ t('SECLI Number ') }}:</label>
                 <input type="text" name="secli_number" v-model="secli_number">
             </p>
             <p class="field">
-                <label for="old_page_number">V1 page number :</label>
+                <label for="old_page_number">{{ t('V1 page number ') }}:</label>
                 <input type="text" name="old_page_number" v-model="old_page_number">
             </p>
             <p class="field">
-                <label for="page_number">V2 page number :</label>
+                <label for="page_number">{{ t('V2 page number ') }}:</label>
                 <input type="text" name="page_number" v-model="page_number">
             </p>
             <p class="field">
-            <label for="comments">Comments:</label>
+            <label for="comments">{{ t('Comments') }}:</label>
             <textarea name="comments" v-model="comments"></textarea>
             </p>
 
-            <p class="field"><button @click.prevent="save()" class="ui primary button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
+            <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
         </fieldset>
         <p v-else>
-           Loading...  
+           {{ t('Loading...') }}  
         </p>
     </form>
 </template>
@@ -79,10 +79,7 @@
             }
         },
         props: {
-            titleform: {
-                type: String,
-                default: "Add a song"
-            },
+            titleform: String,
             song: Number
         },
         created() {
@@ -122,6 +119,12 @@
             }
         },
         methods: {
+            printTitle(){
+                if( !this.titleform ){
+                    return this.t("Add a song")
+                }
+                return this.titleform
+            },
             print(){
                 console.log(this.$data.theme)
             },

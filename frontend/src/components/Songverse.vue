@@ -10,7 +10,7 @@
                         {{ verse.content }}
                     </span>
                 </span>
-                - <a @click.prevent="launchEdition()">Edit verse</a><slot></slot>
+                - <a @click.prevent="launchEdition()">{{ t('Edit verse') }}</a><slot></slot>
             </div>
             <div v-if="is_editing">
                 <form class="ui form">
@@ -19,8 +19,8 @@
                             <input type="text" name="verse" v-model="verse.content" @keyup.enter="saveEdition()"/>
                         </p>
                         <p>
-                            <button @click.prevent="saveEdition()" class="ui button primary">Save</button>
-                            <button @click.prevent="cancelEdition()" class="ui button">Cancel</button>
+                            <button @click.prevent="saveEdition()" class="ui button primary">{{ t('Save') }}</button>
+                            <button @click.prevent="cancelEdition()" class="ui button">{{ t('Cancel') }}</button>
                         </p>
                     </fieldset>
                 </form>

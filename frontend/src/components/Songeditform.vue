@@ -1,5 +1,5 @@
 <template>
-    <songform titleform="Edit a song">
+    <songform :titleform="t('Edit a song')">
     </songform>
 </template>
 

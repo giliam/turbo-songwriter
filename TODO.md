@@ -23,11 +23,11 @@
     * frontend:
         * https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e
 * Harmonization:
-	* delete chord
-	* delete harmonization on verse
-	* possibility to add harmonization on sillabus ?
+    * delete chord
+    * delete harmonization on verse
+    * possibility to add harmonization on sillabus ?
 * Lists (editors, authors, ...):
-	* delete ?
-* Translation:
-	* frontend:
-		* https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate
+    * delete ?
+~~* Translation:
+    * frontend:
+        * https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~

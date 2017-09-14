@@ -7,7 +7,7 @@
                         <select v-model="harmonization">
                             <option v-for="chord in chords" :value="chord.id">{{ chord.note }}</option>
                         </select>
-                        <button class="ui primary button" @click.prevent="save()">Save</button><button class="ui button" @click.prevent="cancel()">Cancel</button>
+                        <button class="ui primary button" @click.prevent="save()">{{ t('Save') }}</button><button class="ui button" @click.prevent="cancel()">{{ t('Cancel') }}</button>
                     </form>
                 </p>
                 <p v-if="isHarmonized(verse.id)">

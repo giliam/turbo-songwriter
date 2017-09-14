@@ -1,23 +1,23 @@
 <template>
     <div>
         <div id="listauthors">
-            <h2>List of authors</h2>
-            <p @click="synchronize()">Update the list</p>
+            <h2>{{ t('List of authors') }}</h2>
+            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
                 <form v-if="is_editing" class="ui form">
                     <fieldset>
-                        <legend>Edit an author</legend>
+                        <legend>{{ t('Edit an author') }}</legend>
                         <p class="field">
-                            <label for="firstname">Firstname: </label>
+                            <label for="firstname">{{ t('Firstname:') }}</label>
                             <input type="text" name="firstname" v-model="firstname">
                         </p>
                         <p class="field">
-                            <label for="lastname">Lastname: </label>
+                            <label for="lastname">{{ t('Lastname:') }}</label>
                             <input type="text" name="lastname" v-model="lastname">
                         </p>
                         <p class="field">
-                            <button class="ui button primary" @click.prevent="saveAuthor(true)">Save</button>
-                            <button class="ui button" @click.prevent="hideAuthorForm()">Cancel</button>
+                            <button class="ui button primary" @click.prevent="saveAuthor(true)">{{ t('Save') }}</button>
+                            <button class="ui button" @click.prevent="hideAuthorForm()">{{ t('Cancel') }}</button>
                         </p>
                     </fieldset>
                 </form>
@@ -27,28 +27,28 @@
                     </li>
                 </ul>
                 <div>
-                    <p><a @click.prevent="addAuthor()">Add an author</a></p>
+                    <p><a @click.prevent="addAuthor()">{{ t('Add an author') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
-                            <legend>Add an author</legend>
+                            <legend>{{ t('Add an author') }}</legend>
                             <p class="field">
-                                <label for="firstname">Firstname: </label>
+                                <label for="firstname">{{ t('Firstname:') }}</label>
                                 <input type="text" name="firstname" v-model="firstname">
                             </p>
                             <p class="field">
-                                <label for="lastname">Lastname: </label>
+                                <label for="lastname">{{ t('Lastname:') }}</label>
                                 <input type="text" name="lastname" v-model="lastname">
                             </p>
                             <p class="field">
-                                <button class="ui button primary" @click.prevent="saveAuthor(false)">Save</button>
-                                <button class="ui button" @click.prevent="hideAuthorForm()">Cancel</button>
+                                <button class="ui button primary" @click.prevent="saveAuthor(false)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideAuthorForm()">{{ t('Cancel') }}</button>
                             </p>
                         </fieldset>
                     </form>
                 </div>
             </div>
             <div v-else>
-                Updating...
+                {{ t('Updating...') }}
             </div>
         </div>
     </div>

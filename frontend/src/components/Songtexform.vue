@@ -3,12 +3,12 @@
         <h1>{{ title }}</h1>
         <form id="songtexform" class="ui form">
             <fieldset>
-                <legend>Tex form for song</legend>
+                <legend>{{ t('Tex form for song') }}</legend>
                 <p class="field">
                     <label for="content">Content:</label>
                     <textarea name="content" v-model="code"></textarea>
                 </p>
-                <p class="field"><button @click.prevent="save()" class="ui primary button">Save</button><button @click.prevent="cancel()" class="ui button">Cancel</button></p>
+                <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
             </fieldset>
         </form>
     </div>

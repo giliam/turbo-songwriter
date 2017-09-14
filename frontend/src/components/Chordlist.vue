@@ -1,19 +1,19 @@
 <template>
     <div>
         <div id="listchords">
-            <h2>List of chords</h2>
-            <p @click="synchronize()">Update the list</p>
+            <h2>{{ t('List of chords') }}</h2>
+            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
                 <form v-if="is_editing" class="ui form">
                     <fieldset>
-                        <legend>Edit an chord</legend>
+                        <legend>{{ t('Edit an chord') }}</legend>
                         <p class="field">
-                            <label for="note">Name: </label>
+                            <label for="note">{{ t('Name:') }} </label>
                             <input type="text" name="note" v-model="note">
                         </p>
                         <p class="field">
-                            <button class="ui button primary" @click.prevent="saveChord(true)">Save</button>
-                            <button class="ui button" @click.prevent="hideChordForm()">Cancel</button>
+                            <button class="ui button primary" @click.prevent="saveChord(true)">{{ t('Save') }}</button>
+                            <button class="ui button" @click.prevent="hideChordForm()">{{ t('Cancel') }}</button>
                         </p>
                     </fieldset>
                 </form>
@@ -23,17 +23,17 @@
                     </li>
                 </ul>
                 <div>
-                    <p><a @click.prevent="addChord()">Add an chord</a></p>
+                    <p><a @click.prevent="addChord()">{{ t('Add an chord') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
-                            <legend>Add an chord</legend>
+                            <legend>{{ t('Add an chord') }}</legend>
                             <p class="field">
-                                <label for="note">Name: </label>
+                                <label for="note">{{ t('Name:') }} </label>
                                 <input type="text" name="note" v-model="note">
                             </p>
                             <p class="field">
-                                <button class="ui button primary" @click.prevent="saveChord(false)">Save</button>
-                                <button class="ui button" @click.prevent="hideChordForm()">Cancel</button>
+                                <button class="ui button primary" @click.prevent="saveChord(false)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideChordForm()">{{ t('Cancel') }}</button>
                             </p>
                         </fieldset>
                     </form>

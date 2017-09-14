@@ -4,13 +4,13 @@
             <p>
                 <form class="ui form">
                     <span class="field">
-                        <label for="content">Is refrain?</label>
+                        <label for="content">{{ t('Is refrain?') }}</label>
                         <input type="checkbox" v-model="paragraph.is_refrain" @click.prevent="sendIsRefrain()">
                     </span>
                 </form>
             </p>
             <p>
-                <button class="ui button" @click.prevent="addVerse">Add a verse</button>
+                <button class="ui button" @click.prevent="addVerse">{{ t('Add a verse') }}</button>
             </p>
             <slot></slot>
         </div>
@@ -18,9 +18,9 @@
             <div v-for="(verse,index) in paragraph.verses">
                 <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
                     <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
-                    <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">Up</a>
+                    <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">{{ t('Up') }}</a>
                     <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
-                    <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">Down</a>
+                    <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">{{ t('Down') }}</a>
                 </songverse>
             </div>
             <form v-if="display_form_add" class="ui form">
@@ -29,8 +29,8 @@
                     <input type="text" v-model="new_verse_content">
                 </p>
 
-                <button class="ui button" type="submit" @click.prevent="sendNewVerse()">Send</button>
-                <button class="ui button" @click.prevent="cancelNewVerse()">Cancel</button>
+                <button class="ui button" type="submit" @click.prevent="sendNewVerse()">{{ t('Send') }}</button>
+                <button class="ui button" @click.prevent="cancelNewVerse()">{{ t('Cancel') }}</button>
             </form>
         </div>
     </div>

@@ -1,19 +1,19 @@
 <template>
     <div>
         <div id="listthemes">
-            <h2>List of themes</h2>
-            <p @click="synchronize()">Update the list</p>
+            <h2>{{ t('List of themes') }}</h2>
+            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
                 <form v-if="is_editing" class="ui form">
                     <fieldset>
-                        <legend>Edit an theme</legend>
+                        <legend>{{ t('Edit an theme') }}</legend>
                         <p class="field">
-                            <label for="name">Name: </label>
+                            <label for="name">{{ t('Name:') }} </label>
                             <input type="text" name="name" v-model="name">
                         </p>
                         <p class="field">
-                            <button class="ui primary button" @click.prevent="saveTheme(true)">Save</button>
-                            <button class="ui button" @click.prevent="hideThemeForm()">Cancel</button>
+                            <button class="ui primary button" @click.prevent="saveTheme(true)">{{ t('Save') }}</button>
+                            <button class="ui button" @click.prevent="hideThemeForm()">{{ t('Cancel') }}</button>
                         </p>
                     </fieldset>
                 </form>
@@ -23,17 +23,17 @@
                     </li>
                 </ul>
                 <div>
-                    <p><a @click.prevent="addTheme()">Add an theme</a></p>
+                    <p><a @click.prevent="addTheme()">{{ t('Add an theme') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
-                            <legend>Add an theme</legend>
+                            <legend>{{ t('Add an theme') }}</legend>
                             <p class="field">
-                                <label for="name">Name: </label>
+                                <label for="name">{{ t('Name:') }} </label>
                                 <input type="text" name="name" v-model="name">
                             </p>
                             <p class="field">
-                                <button class="ui primary button" @click.prevent="saveTheme(false)">Save</button>
-                                <button class="ui button" @click.prevent="hideThemeForm()">Cancel</button>
+                                <button class="ui primary button" @click.prevent="saveTheme(false)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideThemeForm()">{{ t('Cancel') }}</button>
                             </p>
                         </fieldset>
                     </form>

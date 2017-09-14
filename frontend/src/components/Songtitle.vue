@@ -1,9 +1,9 @@
 <template>
     <div class="ui grid">
-        <div class="ten wide column">{{item.title}}</div>
+        <router-link :to="{name: 'song_detail', params:{item_id: item.id}}" tag="div" class="ten wide column">{{item.title}}</router-link>
         <div class="six wide column">
-            <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">Show</router-link> - 
-            <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">Edit</router-link>
+            <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">{{ t('Show') }}</router-link> - 
+            <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">{{ t('Edit') }}</router-link>
         </div>
     </div>
 </template>

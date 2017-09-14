@@ -1,13 +1,13 @@
 <template>
     <div>
         <div id="listsongs">
-            <h2>List of songs</h2>
+            <h2>{{ t('List of songs') }}</h2>
             <div v-for="item in results">
                 <songtitle :item="item"></songtitle>
             </div>
         </div>
         <div>
-            <p><router-link :to="{name: 'song_new'}">Add a song</router-link></p>
+            <p><router-link :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
         </div>
     </div>
 </template>
