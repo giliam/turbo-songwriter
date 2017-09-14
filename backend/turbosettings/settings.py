@@ -27,7 +27,9 @@ FORCE_SCRIPT_NAME = ""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret_key_from_file('secret_key')
-
+JWT_AUTH = {
+    'JWT_SECRET_KEY': secret_key_from_file('secret_key_jwt'),
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -159,5 +161,14 @@ FIXTURE_DIRS = (
 
 MEDIA_URL = '/'
 MEDIA_ROOT = BASE_DIR + '/media/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
 
 from turbosettings.settings_local import *
