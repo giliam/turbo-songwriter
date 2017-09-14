@@ -20,8 +20,8 @@ from django.contrib import admin
 from rest_framework_jwt import views as jwt_views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('songwriter.urls')),
-    url(r'^account/', include('djoser.urls')),
-    url(r'^auth/login/', jwt_views.obtain_jwt_token, name='auth'),
+    url(r'^api/admin/', admin.site.urls),
+    url(r'^api/', include('songwriter.urls')),
+    url(r'^api/account/', include('djoser.urls')),
+    url(r'^api/auth/login/', jwt_views.obtain_jwt_token, name='auth'),
 ]
