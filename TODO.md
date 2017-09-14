@@ -16,15 +16,16 @@
         * ~~http://www.django-rest-framework.org/tutorial/7-schemas-and-client-libraries/~~
     * frontend:
         * implement the use of the endpoints
-* Secure connection:
-    * backend:
+* ~~Secure connection:~~
+    * ~~backend:~~
         * ~~https://github.com/GetBlimp/django-rest-framework-jwt~~
-        * http://jpadilla.com/post/73791304724/auth-with-json-web-tokens
+        * ~~http://jpadilla.com/post/73791304724/auth-with-json-web-tokens~~
         * ~~!!! https://stackoverflow.com/a/36166142~~
         * ~~(https://github.com/sunscrapers/djoser)~~
-    * frontend:
-        * https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e
-        * add cookies to save authentication
+    * ~~frontend:~~
+        * ~~https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e~~
+        * ~~add cookies to save authentication (https://www.npmjs.com/package/vue-cookie74)~~
+        * ~~uses localstorage (https://www.npmjs.com/package/vue-localstorage)~~
 * Harmonization:
     * delete chord
     * delete harmonization on verse

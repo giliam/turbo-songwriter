@@ -7,32 +7,23 @@ import {root_url} from '@/common/index.js'
 
 export default new Vuex.Store({
     state: {
-      jwt_token: null,
       authorized: false
     },
     mutations: {
-        set_jwt_token(state, value) {
-            state.jwt_token = value
-        },
         set_authorized(state, value) {
             state.authorized = value
         }
     },
     getters: {
         has_jwt_token: state => {
-            return !!state.jwt_token
+            return state.authorized
         }
     },
     actions: {
-        check_cookie(context, userdata) {
-            let data = {
-                username: userdata.username,
-                token: userdata.token
-            }
+        check_localstorage(context) {
             // TODO: check token validity
-            context.commit("set_jwt_token", userdata.token);
             context.commit("set_authorized", true);
-            axios.defaults.headers.common['Authorization'] = "JWT " + userdata.token;
+            axios.defaults.headers.common['Authorization'] = "JWT " + this._vm.$localstorage.get('token');
         },
         async log_in(context, user) {
             let data = {
@@ -41,21 +32,19 @@ export default new Vuex.Store({
             }
             await axios.post(root_url + "auth/login/", data)
                 .then(response => {
-                    context.commit("set_jwt_token", response.data.token);
                     context.commit("set_authorized", true);
                     axios.defaults.headers.common['Authorization'] = "JWT " + response.data.token;
-                    this._vm.$cookie.set('token', response.data.token, {expires:1})
-                    this._vm.$cookie.set('username', data.username, {expires:1})
+                    this._vm.$localstorage.set('token', response.data.token)
+                    this._vm.$localstorage.set('username', data.username)
                 },  (error) => {
                     console.log(error)
              });
             return context.getters.has_jwt_token
         },
         log_out(context) {
-            context.commit("set_jwt_token", null)
             context.commit("set_authorized", false);
-            this._vm.$cookie.delete('token')
-            this._vm.$cookie.delete('username')
+            this._vm.$localstorage.remove('token')
+            this._vm.$localstorage.remove('username')
             axios.defaults.headers.common['Authorization'] = "";
         }
     }

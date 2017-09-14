@@ -36,12 +36,8 @@
             this.$translate.setLang('fr_FR');
         },
         created(){
-            if( this.$cookie.get('token') && this.$cookie.get('username') ){
-                let userdata = {
-                    username: this.$cookie.get('username'),
-                    token: this.$cookie.get('token'),
-                }
-                this.check_cookie(userdata)
+            if( this.$localstorage.get('token') && this.$localstorage.get('username') ){
+                this.check_localstorage()
             }else{
             }
         },
@@ -50,7 +46,7 @@
                 'has_jwt_token'
             ]),
             ...mapActions([
-                'check_cookie'
+                'check_localstorage'
             ]),
             print_root_url(){
                 return root_url

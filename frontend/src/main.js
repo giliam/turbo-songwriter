@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueTranslate from 'vue-translate-plugin';
-import VueCookie from 'vue-cookie'
+import VueLocalStorage from 'vue-localstorage'
 
 import App from './App'
 import {locales} from './common/locales.js'
 
 Vue.use(Vuex);
 Vue.use(VueTranslate);
-Vue.use(VueCookie)
+Vue.use(VueLocalStorage, {name: 'localstorage'})
 
 Vue.locales(locales);
 
