@@ -11,6 +11,7 @@
                 <router-link :to="{name:'editors_list'}" class="item">Editors</router-link>
                 <router-link :to="{name:'themes_list'}" class="item">Themes</router-link>
                 <router-link :to="{name:'chords_list'}" class="item">Chords</router-link>
+                <a class="item" :href="print_root_url() + 'admin'">Admin</a>>
             </div>
         </div>
         <div class="ui main text container">
@@ -34,6 +35,7 @@
     import Editorlist from '@/components/Editorlist.vue'
     import Themelist from '@/components/Themelist.vue'
     import Chordlist from '@/components/Chordlist.vue'
+    import {root_url} from '@/common/index.js'
 
     export default {
         name: 'app',
@@ -87,6 +89,9 @@
                 this.$data.is_song_shown = false
                 this.$data.is_list_shown = false
                 this.$data.is_form_edition_shown = false
+            },
+            print_root_url(){
+                return root_url
             }
         },
     }

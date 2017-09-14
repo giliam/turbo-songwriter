@@ -12,8 +12,8 @@
                             <input type="text" name="name" v-model="name">
                         </p>
                         <p class="field">
-                            <button @click.prevent="saveEditor(true)">Save</button>
-                            <button @click.prevent="hideEditorForm()">Cancel</button>
+                            <button class="ui button primary" @click.prevent="saveEditor(true)">Save</button>
+                            <button class="ui button" @click.prevent="hideEditorForm()">Cancel</button>
                         </p>
                     </fieldset>
                 </form>
@@ -32,8 +32,8 @@
                                 <input type="text" name="name" v-model="name">
                             </p>
                             <p class="field">
-                                <button @click.prevent="saveEditor(false)">Save</button>
-                                <button @click.prevent="hideEditorForm()">Cancel</button>
+                                <button class="ui button primary" @click.prevent="saveEditor(false)">Save</button>
+                                <button class="ui button" @click.prevent="hideEditorForm()">Cancel</button>
                             </p>
                         </fieldset>
                     </form>

@@ -12,8 +12,8 @@
                             <input type="text" name="note" v-model="note">
                         </p>
                         <p class="field">
-                            <button @click.prevent="saveChord(true)">Save</button>
-                            <button @click.prevent="hideChordForm()">Cancel</button>
+                            <button class="ui button primary" @click.prevent="saveChord(true)">Save</button>
+                            <button class="ui button" @click.prevent="hideChordForm()">Cancel</button>
                         </p>
                     </fieldset>
                 </form>
@@ -32,8 +32,8 @@
                                 <input type="text" name="note" v-model="note">
                             </p>
                             <p class="field">
-                                <button @click.prevent="saveChord(false)">Save</button>
-                                <button @click.prevent="hideChordForm()">Cancel</button>
+                                <button class="ui button primary" @click.prevent="saveChord(false)">Save</button>
+                                <button class="ui button" @click.prevent="hideChordForm()">Cancel</button>
                             </p>
                         </fieldset>
                     </form>
