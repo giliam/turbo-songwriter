@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^api/', include('songwriter.urls')),
     url(r'^api/account/', include('djoser.urls')),
     url(r'^api/auth/login/', jwt_views.obtain_jwt_token, name='auth'),
+    url(r'^api/token-verify/', jwt_views.verify_jwt_token),
+    url(r'^api/token-refresh/', jwt_views.refresh_jwt_token),
 ]

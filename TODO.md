@@ -22,11 +22,11 @@
         * ~~http://jpadilla.com/post/73791304724/auth-with-json-web-tokens~~
         * ~~!!! https://stackoverflow.com/a/36166142~~
         * ~~(https://github.com/sunscrapers/djoser)~~
-    * frontend:
+    * ~~frontend:~~
         * ~~https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e~~
         * ~~add cookies to save authentication (https://www.npmjs.com/package/vue-cookie74)~~
         * ~~uses localstorage (https://www.npmjs.com/package/vue-localstorage)~~
-        * change JWT config (expires too fast)
+        * ~~change JWT config (expires too fast)~~
 * Harmonization:
     * delete chord
     * delete harmonization on verse

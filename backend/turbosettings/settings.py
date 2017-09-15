@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import datetime
 import os
 import turbosettings.parameters as parameters
 from turbosettings.generate_secret_key import secret_key_from_file
@@ -27,9 +28,6 @@ FORCE_SCRIPT_NAME = ""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret_key_from_file('secret_key')
-JWT_AUTH = {
-    'JWT_SECRET_KEY': secret_key_from_file('secret_key_jwt'),
-}
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -169,6 +167,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': secret_key_from_file('secret_key_jwt'),
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
 }
 
 from turbosettings.settings_local import *
