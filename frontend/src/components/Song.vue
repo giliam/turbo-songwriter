@@ -22,7 +22,7 @@
         <router-link :to="{name:'root'}">{{ t('Back to the list') }}</router-link>
         <h1>{{ result.title }}</h1>
         <h3>{{ t('Old page number:') }} {{ result.old_page_number }} - {{ t('Page number:') }} {{ result.page_number }}</h3>
-        <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - {{ result.editor.name }}</h4>
+        <h4 v-if="result.author">{{ result.author.firstname }} {{ result.author.lastname}} - <template v-if="result.editor">{{ result.editor.name }}</template></h4>
         <h4>{{ t('Themes:') }} <span v-for="(theme, id) in result.theme"><span v-if="id > 0">, </span>{{ theme.name }}</span></h4>
         <div v-if="!enable_harmonization">
             <div v-for="(paragraph, index) in result.paragraphs">

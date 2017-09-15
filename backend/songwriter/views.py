@@ -189,13 +189,13 @@ def edit_tex(request, song_id, force=False):
         tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
 
         for paragraph in song.paragraphs.all():
+            tex_output += "\\paragraph{}\n"
             for verse in paragraph.verses.all():
                 if paragraph.is_refrain:
                     tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
                 else:
                     tex_output += verse.content + "\n"
                 tex_output += "\\newline\n"
-            tex_output += "\\newline\n"
         latex_code.code = tex_output
         latex_code.save()
 
