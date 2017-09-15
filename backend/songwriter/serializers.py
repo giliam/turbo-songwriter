@@ -201,3 +201,15 @@ class SongReadSerializer(serializers.ModelSerializer):
             'added_date',
             'updated_date'
         )
+
+
+class SongListSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
+
+    class Meta:
+        model = Song
+        fields = (
+            'id',
+            'url',
+            'title'
+        )

@@ -35,4 +35,4 @@
 * ~~Translation:~~
     * ~~frontend:~~
         * ~~https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~
-* Lighten the songs list data given by API.
+* ~~Lighten the songs list data given by API.~~

@@ -54,7 +54,7 @@ class SongList(generics.ListCreateAPIView):
         if self.request.method in ('GET',):
             # Since the ReadSerializer does nested lookups
             # in multiple tables, only use it when necessary
-            return serializers.SongReadSerializer
+            return serializers.SongListSerializer
         return serializers.SongSerializer
 
 
