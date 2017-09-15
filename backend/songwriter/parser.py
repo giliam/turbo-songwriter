@@ -93,10 +93,10 @@ class Song(object):
 
         return still_empty
 
-    def save_song(self):
+    def save_song(self, db_data):
         empty_song = self.clean_song()
         if empty_song:
-            return False
+            return db_data
 
         print("Saves", self.title)
 
@@ -109,23 +109,36 @@ class Song(object):
                 copyrights = self.author.split("-")
 
             # print("Author", copyrights[0].strip())
-            author = models.Author()
-            author.firstname = copyrights[0].strip()
-            author.save()
-            song.author = author
-            
+            author_name = copyrights[0].strip()
+            if not author_name in db_data["authors"].keys():
+                author = models.Author()
+                author.firstname = author_name
+                author.save()
+                song.author = author
+                db_data["authors"][author_name] = author
+            else:
+                song.author = db_data["authors"][author_name]
+
             # print("Editor", copyrights[1].strip())
-            editor = models.Editor()
-            editor.name = copyrights[1].strip()
-            editor.save()
-            song.editor = editor
+            editor_name = copyrights[1].strip()
+            if not editor_name in db_data["editors"].keys():
+                editor = models.Editor()
+                editor.name = editor_name
+                editor.save()
+                song.editor = editor
+                db_data["editors"][editor_name] = editor
+            else:
+                song.editor = db_data["editors"][editor_name]
 
         elif self.author:
-            author = models.Author()
-            author.firstname = self.author
-            author.save()
-            song.author = author
-
+            if not self.author in db_data["authors"].keys():
+                author = models.Author()
+                author.firstname = self.author
+                author.save()
+                song.author = author
+                db_data["authors"][self.author] = author
+            else:
+                song.author = db_data["authors"][self.author]
 
         song.save()
 
@@ -160,6 +173,7 @@ class Song(object):
                 order_verse += 1
                 db_lyric.save()
 
+        return db_data
 
 
 
@@ -181,7 +195,7 @@ class Parser(object):
         output = ""
         for content_node in content_nodes:
             output += content_node.childNodes[0].nodeValue.replace("\n", "").replace("\t", "")
-        return output.strip()
+        return output.strip().replace("’", "'")
 
 
     def parse(self):
@@ -265,8 +279,12 @@ class Parser(object):
             f.write(self.output)
 
     def save_songs(self):
+        db_data = {
+            "authors":{},
+            "editors":{},
+        }
         for song in self.all_songs:
-            song.save_song()
+            db_data = song.save_song(db_data)
 
 
 if __name__ == "__main__":
