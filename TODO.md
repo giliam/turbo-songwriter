@@ -2,7 +2,10 @@
     * backend: 
         * https://stackoverflow.com/questions/19683123/compile-latex-from-python#19683545
         * https://stackoverflow.com/questions/8085520/generating-pdf-latex-with-python-script
-    * frontend: https://github.com/FranckFreiburger/vue-pdf
+    * frontend: 
+        * https://github.com/FranckFreiburger/vue-pdf
+        * https://github.com/mozilla/pdf.js/
+        * https://www.npmjs.com/package/vue-instant-pdf-viewer
 * ~~Authentication:~~
     * ~~backend:~~
         * ~~http://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/~~
@@ -32,7 +35,7 @@
     * delete harmonization on verse
     * possibility to add harmonization on syllable ?
 * Lists (editors, authors, ...):
-    * show songs linked to these editors/themes/authors (filter song list)
+    * ~~show songs linked to these editors/themes/authors (filter song list)~~
     * delete ?
 * ~~Translation:~~
     * ~~frontend:~~
