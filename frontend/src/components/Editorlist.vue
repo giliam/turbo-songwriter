@@ -1,27 +1,37 @@
 <template>
     <div>
         <div id="listeditors">
-            <h2>{{ t('List of editors') }}</h2>
-            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
-                <form v-if="is_editing" class="ui form">
-                    <fieldset>
-                        <legend>{{ t('Edit an editor') }}</legend>
-                        <p class="field">
-                            <label for="name">{{ t('Name:') }} </label>
-                            <input type="text" name="name" v-model="name">
-                        </p>
-                        <p class="field">
-                            <button class="ui button primary" @click.prevent="saveEditor(true)">{{ t('Save') }}</button>
-                            <button class="ui button" @click.prevent="hideEditorForm()">{{ t('Cancel') }}</button>
-                        </p>
-                    </fieldset>
-                </form>
-                <ul v-if="!is_editing">
-                    <li v-for="item in editors">
-                        <p @click="editEditor(item)">{{ item.name }}</p>
-                    </li>
-                </ul>
+                <template v-if="is_editing">
+                    <form class="ui form">
+                        <fieldset>
+                            <legend>{{ t('Edit an editor') }}</legend>
+                            <p class="field">
+                                <label for="name">{{ t('Name:') }} </label>
+                                <input type="text" name="name" v-model="name">
+                            </p>
+                            <p class="field">
+                                <button class="ui button primary" @click.prevent="saveEditor(true)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideEditorForm()">{{ t('Cancel') }}</button>
+                            </p>
+                        </fieldset>
+                    </form>
+                    <h3>{{ t('List of linked songs') }}</h3>
+                    <ul>
+                        <li v-for="item in songs">
+                            <router-link :to="{name:'song_detail', params:{item_id:item.id}}">{{ item.title }}</router-link> - <router-link :to="{name:'song_edit', params:{item_id:item.id}}">{{ t('Edit') }}</router-link>
+                        </li>
+                    </ul>
+                </template>
+                <template v-else>
+        		    <h2>{{ t('List of editors') }}</h2>
+        		    <p @click="synchronize()">{{ t('Update the list') }}</p>
+    	            <ul>
+            			<li v-for="item in editors">
+                            <p @click="editEditor(item)">{{ item.name }}</p>
+                        </li>
+                    </ul>
+                </template>
                 <div>
                     <p><a @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
                     <form v-if="is_adding" class="ui form">
@@ -40,7 +50,7 @@
                 </div>
             </div>
             <div v-else>
-                Updating...
+                {{ t('Updating...') }}
             </div>
         </div>
     </div>
@@ -55,6 +65,7 @@
         data() {
             return {
                 editors: Array,
+                songs: Array,
                 editor_id: -1,
                 is_adding: false,
                 is_updating: false,
@@ -71,13 +82,6 @@
                 },  (error) => { console.log(error) });
         },
         methods:{
-            // TODO: Use VueX to prevent passing this signal all the way up
-            launch_show_editor(item_id) {
-                this.$emit("show_editor", item_id)
-            },
-            launch_edit_editor(item_id) {
-                this.$emit("edit_editor", item_id)
-            },
             addEditor() {
                 this.$data.is_adding = !this.$data.is_adding
                 this.$data.name = ""
@@ -127,6 +131,10 @@
                 this.$data.editor_id = -1
             },
             editEditor(editor){
+                axios.get(root_url + "editor/list/songs/" + editor.id +"/")
+                    .then(response => {
+                        this.$data.songs = response.data;
+                    },  (error) => { console.log(error) });
                 this.$data.name = editor.name
                 this.$data.editor_id = editor.id
                 this.$data.is_editing = true

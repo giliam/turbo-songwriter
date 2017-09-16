@@ -1,27 +1,37 @@
 <template>
     <div>
         <div id="listthemes">
-            <h2>{{ t('List of themes') }}</h2>
-            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
-                <form v-if="is_editing" class="ui form">
-                    <fieldset>
-                        <legend>{{ t('Edit an theme') }}</legend>
-                        <p class="field">
-                            <label for="name">{{ t('Name:') }} </label>
-                            <input type="text" name="name" v-model="name">
-                        </p>
-                        <p class="field">
-                            <button class="ui primary button" @click.prevent="saveTheme(true)">{{ t('Save') }}</button>
-                            <button class="ui button" @click.prevent="hideThemeForm()">{{ t('Cancel') }}</button>
-                        </p>
-                    </fieldset>
-                </form>
-                <ul v-if="!is_editing">
-                    <li v-for="item in themes">
-                        <p @click="editTheme(item)">{{ item.name }}</p>
-                    </li>
-                </ul>
+                <template v-if="is_editing">
+                    <form class="ui form">
+                        <fieldset>
+                            <legend>{{ t('Edit an theme') }}</legend>
+                            <p class="field">
+                                <label for="name">{{ t('Name:') }} </label>
+                                <input type="text" name="name" v-model="name">
+                            </p>
+                            <p class="field">
+                                <button class="ui primary button" @click.prevent="saveTheme(true)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideThemeForm()">{{ t('Cancel') }}</button>
+                            </p>
+                        </fieldset>
+                    </form>
+                    <h3>{{ t('List of linked songs') }}</h3>
+                    <ul>
+                        <li v-for="item in songs">
+                            <router-link :to="{name:'song_detail', params:{item_id:item.id}}">{{ item.title }}</router-link> - <router-link :to="{name:'song_edit', params:{item_id:item.id}}">{{ t('Edit') }}</router-link>
+                        </li>
+                    </ul>
+                </template>
+                <template v-else>
+                    <h2>{{ t('List of themes') }}</h2>
+                    <p @click="synchronize()">{{ t('Update the list') }}</p>
+                    <ul>
+                        <li v-for="item in themes">
+                            <p @click="editTheme(item)">{{ item.name }}</p>
+                        </li>
+                    </ul>
+                </template>
                 <div>
                     <p><a @click.prevent="addTheme()">{{ t('Add an theme') }}</a></p>
                     <form v-if="is_adding" class="ui form">
@@ -55,6 +65,7 @@
         data() {
             return {
                 themes: Array,
+                songs: Array,
                 theme_id: -1,
                 is_adding: false,
                 is_updating: false,
@@ -71,13 +82,6 @@
                 },  (error) => { console.log(error) });
         },
         methods:{
-            // TODO: Use VueX to prevent passing this signal all the way up
-            launch_show_theme(item_id) {
-                this.$emit("show_theme", item_id)
-            },
-            launch_edit_theme(item_id) {
-                this.$emit("edit_theme", item_id)
-            },
             addTheme() {
                 this.$data.is_adding = !this.$data.is_adding
                 this.$data.name = ""
@@ -127,6 +131,10 @@
                 this.$data.theme_id = -1
             },
             editTheme(theme){
+                axios.get(root_url + "theme/list/songs/" + theme.id +"/")
+                    .then(response => {
+                        this.$data.songs = response.data;
+                    },  (error) => { console.log(error) });
                 this.$data.name = theme.name
                 this.$data.theme_id = theme.id
                 this.$data.is_editing = true

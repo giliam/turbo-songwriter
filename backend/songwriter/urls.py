@@ -53,6 +53,13 @@ urlpatterns = [
         name="get_song_harmonizations"),
     url(r'^harmonization/(?P<pk>[0-9]+)/$', views.HarmonizationDetail.as_view(), 
         name="harmonization_detail"),
+
+    url(r'^author/list/songs/(?P<author_id>[0-9]+)/$', views.get_author_songs, 
+        name="get_author_songs"),
+    url(r'^editor/list/songs/(?P<editor_id>[0-9]+)/$', views.get_editor_songs, 
+        name="get_editor_songs"),
+    url(r'^theme/list/songs/(?P<theme_id>[0-9]+)/$', views.get_theme_songs, 
+        name="get_theme_songs"),
     
     url(r'^chords/list/$', views.ChordList.as_view(), 
         name="chords_list"),

@@ -1,31 +1,41 @@
 <template>
     <div>
         <div id="listauthors">
-            <h2>{{ t('List of authors') }}</h2>
-            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
-                <form v-if="is_editing" class="ui form">
-                    <fieldset>
-                        <legend>{{ t('Edit an author') }}</legend>
-                        <p class="field">
-                            <label for="firstname">{{ t('Firstname:') }}</label>
-                            <input type="text" name="firstname" v-model="firstname">
-                        </p>
-                        <p class="field">
-                            <label for="lastname">{{ t('Lastname:') }}</label>
-                            <input type="text" name="lastname" v-model="lastname">
-                        </p>
-                        <p class="field">
-                            <button class="ui button primary" @click.prevent="saveAuthor(true)">{{ t('Save') }}</button>
-                            <button class="ui button" @click.prevent="hideAuthorForm()">{{ t('Cancel') }}</button>
-                        </p>
-                    </fieldset>
-                </form>
-                <ul v-if="!is_editing">
-                    <li v-for="item in authors">
-                        <p @click="editAuthor(item)">{{ item.firstname }} {{ item.lastname }}</p>
-                    </li>
-                </ul>
+                <template v-if="is_editing">
+                    <form class="ui form">
+                        <fieldset>
+                            <legend>{{ t('Edit an author') }}</legend>
+                            <p class="field">
+                                <label for="firstname">{{ t('Firstname:') }}</label>
+                                <input type="text" name="firstname" v-model="firstname">
+                            </p>
+                            <p class="field">
+                                <label for="lastname">{{ t('Lastname:') }}</label>
+                                <input type="text" name="lastname" v-model="lastname">
+                            </p>
+                            <p class="field">
+                                <button class="ui button primary" @click.prevent="saveAuthor(true)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideAuthorForm()">{{ t('Cancel') }}</button>
+                            </p>
+                        </fieldset>
+                    </form>
+                    <h3>{{ t('List of linked songs') }}</h3>
+                    <ul>
+                        <li v-for="item in songs">
+                            <router-link :to="{name:'song_detail', params:{item_id:item.id}}">{{ item.title }}</router-link> - <router-link :to="{name:'song_edit', params:{item_id:item.id}}">{{ t('Edit') }}</router-link>
+                        </li>
+                    </ul>
+                </template>
+                <template v-else>
+                    <h2>{{ t('List of authors') }}</h2>
+                    <p @click="synchronize()">{{ t('Update the list') }}</p>
+                    <ul>
+                        <li v-for="item in authors">
+                            <p @click="editAuthor(item)">{{ item.firstname }} {{ item.lastname }}</p>
+                        </li>
+                    </ul>
+                </template>
                 <div>
                     <p><a @click.prevent="addAuthor()">{{ t('Add an author') }}</a></p>
                     <form v-if="is_adding" class="ui form">
@@ -63,6 +73,7 @@
         data() {
             return {
                 authors: Array,
+                songs: Array,
                 author_id: -1,
                 is_adding: false,
                 is_updating: false,
@@ -80,13 +91,6 @@
                 },  (error) => { console.log(error) });
         },
         methods:{
-            // TODO: Use VueX to prevent passing this signal all the way up
-            launch_show_author(item_id) {
-                this.$emit("show_author", item_id)
-            },
-            launch_edit_author(item_id) {
-                this.$emit("edit_author", item_id)
-            },
             addAuthor() {
                 this.$data.is_adding = !this.$data.is_adding
                 this.$data.firstname = ""
@@ -138,6 +142,10 @@
                 this.$data.author_id = -1
             },
             editAuthor(author){
+                axios.get(root_url + "author/list/songs/" + author.id +"/")
+                    .then(response => {
+                        this.$data.songs = response.data;
+                    },  (error) => { console.log(error) });
                 this.$data.firstname = author.firstname
                 this.$data.lastname = author.lastname
                 this.$data.author_id = author.id

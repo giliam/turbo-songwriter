@@ -242,3 +242,27 @@ def get_song_harmonizations(request, song_id):
     harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id)
     serializer = serializers.HarmonizationReadSerializer(harmonizations, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_author_songs(request, author_id):
+    songs = models.Song.objects.filter(author__id=author_id)
+    serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_editor_songs(request, editor_id):
+    songs = models.Song.objects.filter(editor__id=editor_id)
+    serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_theme_songs(request, theme_id):
+    songs = models.Song.objects.filter(theme__id=theme_id)
+    serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
+    return JsonResponse(serializer.data, safe=False)

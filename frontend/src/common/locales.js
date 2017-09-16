@@ -57,6 +57,7 @@ export const locales = {
         'Is refrain?': "Refrain ?",
         'Lastname:': "Nom",
         'Login': 'Se connecter',
-        'Logout': 'Se déconnecter'
+        'Logout': 'Se déconnecter',
+        'List of linked songs': 'Chansons liées',
     }
 }
