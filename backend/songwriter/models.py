@@ -210,7 +210,8 @@ class Harmonization(models.Model):
     verse = models.ForeignKey(Verse)
     chord = models.ForeignKey(Chord)
 
-    spot_in_verse = models.PositiveIntegerField()
+    start_spot_in_verse = models.PositiveIntegerField()
+    end_spot_in_verse = models.PositiveIntegerField()
 
     added_date = models.DateTimeField(
         _('date added to the database'),
@@ -223,7 +224,7 @@ class Harmonization(models.Model):
     )
 
     class Meta:
-        ordering = ['verse', 'spot_in_verse']
+        ordering = ['verse', 'start_spot_in_verse']
 
     def __str__(self):
         return u"Harmonization"

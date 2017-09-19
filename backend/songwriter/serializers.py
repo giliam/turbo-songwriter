@@ -110,7 +110,8 @@ class HarmonizationReadSerializer(serializers.ModelSerializer):
             'id',
             'chord',
             'verse',
-            'spot_in_verse',
+            'start_spot_in_verse',
+            'end_spot_in_verse',
             'added_date',
             'updated_date'
         )
@@ -123,7 +124,8 @@ class HarmonizationSerializer(serializers.ModelSerializer):
             'id',
             'chord',
             'verse',
-            'spot_in_verse',
+            'start_spot_in_verse',
+            'end_spot_in_verse',
             'added_date',
             'updated_date'
         )

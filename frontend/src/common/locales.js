@@ -59,5 +59,6 @@ export const locales = {
         'Login': 'Se connecter',
         'Logout': 'Se déconnecter',
         'List of linked songs': 'Chansons liées',
+        'Update the page': 'Mettre la page à jour',
     }
 }

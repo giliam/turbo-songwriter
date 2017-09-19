@@ -240,7 +240,7 @@ def invert_paragraphs(request, paragraph_id_top, paragraph_id_bottom):
 @api_view(['GET'])
 def get_song_harmonizations(request, song_id):
     harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id)
-    serializer = serializers.HarmonizationReadSerializer(harmonizations, many=True)
+    serializer = serializers.HarmonizationReadSerializer(harmonizations, context={'request': request}, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
