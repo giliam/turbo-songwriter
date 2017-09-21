@@ -15,3 +15,5 @@ static/*
 *.mo
 assets/ckeditor/
 .well-known/
+
+*.pdf

@@ -8,7 +8,7 @@
                     <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">{{ t('Convert to LaTeX') }}</router-link></p>
                 </div>
                 <div v-else>
-                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link></p>
+                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link><button class="ui form button submit" @click.prevent="compileTex(result.id)">{{ t('Compile tex code') }}</button></p>
                 </div>
                 <div>
                     <p class="field">
@@ -139,7 +139,13 @@
                     this.$data.result.paragraphs[other_index] = paragraph
                     this.invertParagraph(index, other_index)
                 }
-            }
+            },
+            compileTex(song_id) {
+                axios.get(root_url + "song/compile/tex/" + this.$route.params.item_id + "/")
+                    .then(response => {
+                        console.log("Received", response.data)
+                    })
+            },
         },
         mounted() {
             if( this.$route.params.item_id ){

@@ -1,5 +1,10 @@
 # coding:utf-8
 
+import os
+import shutil
+import subprocess
+import tempfile
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -197,6 +202,7 @@ def edit_tex(request, song_id, force=False):
                     tex_output += verse.content + "\n"
                 tex_output += "\\newline\n"
         latex_code.code = tex_output
+        latex_code.is_compiled = False
         latex_code.save()
 
     if request.method == "GET" or force:
@@ -266,3 +272,43 @@ def get_theme_songs(request, theme_id):
     songs = models.Song.objects.filter(theme__id=theme_id)
     serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+@csrf_exempt
+@api_view(['GET'])
+def compile_tex(request, song_id):
+    """
+    Generates the pdf from string
+    """
+    song = get_object_or_404(models.Song, pk=song_id)
+
+    current = os.getcwd()
+    temp = tempfile.mkdtemp()
+    os.chdir(temp)
+
+    tex_code = """
+    \\documentclass[preprint,11pt]{book}
+    \\usepackage[utf8]{inputenc}
+    \\usepackage[francais]{babel}
+    \\setcounter{secnumdepth}{0}
+    \\setcounter{tocdepth}{1}
+    \\begin{document}
+
+    """
+
+    tex_code += song.latex_code.code
+
+    tex_code += u"\\tableofcontents"
+    tex_code += u"\\end{document}"
+
+    f = open('out.tex','w')
+    f.write(tex_code)
+    f.close()
+
+    proc=subprocess.Popen(['pdflatex','out.tex'])
+    proc.communicate()
+
+    os.rename('out.pdf',"song_" + str(song.id) + ".pdf")
+    shutil.copy("song_" + str(song.id) + ".pdf", current + "/assets/pdf/")
+    shutil.rmtree(temp)
+
+    return JsonResponse({"url":"assets/pdf/song_" + str(song.id) + ".pdf"}, safe=False)

@@ -240,6 +240,10 @@ class SongLaTeXCode(models.Model):
         blank=True,
         verbose_name=_("LaTeX code of a song").capitalize()
     )
+    is_compiled = models.BooleanField(
+        default=False,
+        verbose_name=_("is compiled?").capitalize()
+    )
 
     added_date = models.DateTimeField(
         _('date added to the database'),

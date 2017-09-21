@@ -1,7 +1,11 @@
 #-*- coding: utf-8 -*-
 
-import re
 import codecs
+import os
+import re
+import shutil
+import subprocess
+import tempfile
 
 from xml.dom import minidom
 
@@ -188,6 +192,13 @@ class Parser(object):
         self.output = ""
         self.all_songs = []
 
+        self.tokens_to_replace = [
+            {
+                "from": "´",
+                "to": "'",
+            },
+        ]
+
         self.special_nodes = "w:br"
 
     def get_text_of_node_p(self, node):
@@ -275,6 +286,9 @@ class Parser(object):
         self.output += u"\\tableofcontents"
         self.output += u"\\end{document}"
 
+        for replace_token in self.tokens_to_replace:
+            self.output = self.output.replace(replace_token["from"], replace_token["to"])
+
         with codecs.open("out.tex", "w", encoding="utf-8") as f:
             f.write(self.output)
 
@@ -283,8 +297,28 @@ class Parser(object):
             "authors":{},
             "editors":{},
         }
-        for song in self.all_songs:
-            db_data = song.save_song(db_data)
+        # for song in self.all_songs:
+        #     db_data = song.save_song(db_data)
+
+    def compile(self):
+        """
+        Generates the pdf from string
+        """
+
+        current = os.getcwd()
+        temp = tempfile.mkdtemp()
+        os.chdir(temp)
+
+        f = open('out.tex','w')
+        f.write(self.output)
+        f.close()
+
+        proc=subprocess.Popen(['pdflatex','out.tex'])
+        # subprocess.Popen(['pdflatex',tex])
+        proc.communicate()
+
+        shutil.copy("out.pdf",current)
+        shutil.rmtree(temp)
 
 
 if __name__ == "__main__":

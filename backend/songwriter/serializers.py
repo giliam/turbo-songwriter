@@ -172,7 +172,7 @@ class SongSerializer(serializers.ModelSerializer):
 class SongLaTeXCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SongLaTeXCode
-        fields = ('id', 'code')
+        fields = ('id', 'code', 'is_compiled')
 
 
 class SongReadSerializer(serializers.ModelSerializer):
