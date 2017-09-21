@@ -308,10 +308,10 @@ def compile_tex(request, song_id):
     proc.communicate()
 
     os.rename('out.pdf',"song_" + str(song.id) + ".pdf")
-    shutil.copy("song_" + str(song.id) + ".pdf", current + "/assets/pdf/")
+    shutil.copy("song_" + str(song.id) + ".pdf", current + "/media/pdf/")
     shutil.rmtree(temp)
 
     song.latex_code.is_compiled = True
     song.latex_code.save()
 
-    return JsonResponse({"url":"assets/pdf/song_" + str(song.id) + ".pdf", "is_compiled": True}, safe=False)
+    return JsonResponse({"url":"media/pdf/song_" + str(song.id) + ".pdf", "is_compiled": True}, safe=False)

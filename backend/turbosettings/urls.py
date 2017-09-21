@@ -14,7 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
 
 from rest_framework_jwt import views as jwt_views
@@ -26,4 +28,4 @@ urlpatterns = [
     url(r'^api/auth/login/', jwt_views.obtain_jwt_token, name='auth'),
     url(r'^api/token-verify/', jwt_views.verify_jwt_token),
     url(r'^api/token-refresh/', jwt_views.refresh_jwt_token),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
