@@ -32,8 +32,8 @@
         * ~~change JWT config (expires too fast)~~
 * Harmonization:
     * delete chord
-    * delete harmonization on verse
-    * possibility to add harmonization on syllable ?
+    * ~~delete harmonization on verse~~
+    * ~~possibility to add harmonization on syllable ?~~
 * Lists (editors, authors, ...):
     * ~~show songs linked to these editors/themes/authors (filter song list)~~
     * delete ?

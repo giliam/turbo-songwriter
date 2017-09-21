@@ -15,7 +15,7 @@
                     <p v-html="printHarmonization(index, vindex, verse.id)"></p>
                 </template>
                 <p :id="'verse_' + verse.id" @mouseup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)" @keyup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)">
-                    <span v-for="(l, i) in verse.content" @click.prevent="addHarmonization(paragraph.id, verse.id, i, i)"><b v-if="isEnabled(paragraph.id, verse.id, i) || isHarmonizedLetter(verse.id, i) !== false">{{ l }}</b><span v-else>{{ l }}</span></span>
+                    <span v-for="(l, i) in verse.content" @click.prevent="addHarmonization(paragraph.id, verse.id, i, i)" :class="isEnabled(paragraph.id, verse.id, i) || isHarmonizedLetter(verse.id, i) !== false ? 'underlined' : ''">{{ l }}</span>
                 </p>
             </div>
             <p>~~~</p>
@@ -95,24 +95,30 @@
                         if (range.commonAncestorContainer == div) {
                             // Create a range that spans the content from the start of the div
                             // to the start of the selection
-
-                            // TODO: debug this !
                             var precedingRange = document.createRange();
-                            precedingRange.setStartBefore(div);
+                            precedingRange.setStartBefore(div.firstChild);
                             precedingRange.setEnd(range.startContainer, range.startOffset);
 
                             // Get the text preceding the selection and do a crude estimate
                             // of the number of words by splitting on white space
                             var textPrecedingSelection = precedingRange.toString();
-                            this.addHarmonization(p_id, v_id, range.startContainer.length + range.startOffset, textPrecedingSelection.length+sel.toString().length)
+                            let cut_text = div.textContent.substring(textPrecedingSelection.length)
+                            let selection = sel.toString()
+                            
+                            let starting_point = textPrecedingSelection.length
+                            for (var i = 0; i < cut_text.length; i++) {
+                                if( cut_text[i] == selection[0] ) {
+                                    cut_text = cut_text.substring(i, i+selection.length)
+                                    starting_point += i
+                                    break
+                                }
+                            }
+
+                            this.addHarmonization(p_id, v_id, starting_point, starting_point+selection.length-1)
                         }
                     }
                 } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
                     text = document.selection.createRange().text;
-                }
-                if (text) {
-                    console.log("Selected", text)
-
                 }
             },
             isEnabledVerse(p_id, v_id){
@@ -258,7 +264,7 @@
 </script>
 
 <style>
-    .underlined {
-        color:red;
+    .underlined{
+        text-decoration: underline;
     }
 </style>
