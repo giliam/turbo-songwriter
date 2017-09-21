@@ -12,7 +12,7 @@
                     </form>
                 </p>
                 <template v-if="isHarmonized(verse.id)">
-                    <p v-html="printHarmonization(index, vindex, verse.id)"></p>
+                    <p class="harmonization" v-html="printHarmonization(index, vindex, verse.id)"></p>
                 </template>
                 <p :id="'verse_' + verse.id" @mouseup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)" @keyup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)">
                     <span v-for="(l, i) in verse.content" @click.prevent="addHarmonization(paragraph.id, verse.id, i, i)" :class="isEnabled(paragraph.id, verse.id, i) || isHarmonizedLetter(verse.id, i) !== false ? 'underlined' : ''">{{ l }}</span>
@@ -266,5 +266,8 @@
 <style>
     .underlined{
         text-decoration: underline;
+    }
+    .harmonization {
+        font-size: 0.95em;
     }
 </style>
