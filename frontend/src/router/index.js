@@ -17,6 +17,11 @@ var router = new Router({
         name: 'song_detail',
         auth: true
     },{
+        path: '/song/compiled/pdf/:item_id(\\d+)',
+        component: require('@/components/Songpdf.vue').default,
+        name: 'song_pdf',
+        auth: true
+    },{
         path: '/song/add/',
         component: require('@/components/Songform.vue').default,
         name: 'song_new',

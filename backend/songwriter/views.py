@@ -311,4 +311,7 @@ def compile_tex(request, song_id):
     shutil.copy("song_" + str(song.id) + ".pdf", current + "/assets/pdf/")
     shutil.rmtree(temp)
 
-    return JsonResponse({"url":"assets/pdf/song_" + str(song.id) + ".pdf"}, safe=False)
+    song.latex_code.is_compiled = True
+    song.latex_code.save()
+
+    return JsonResponse({"url":"assets/pdf/song_" + str(song.id) + ".pdf", "is_compiled": True}, safe=False)

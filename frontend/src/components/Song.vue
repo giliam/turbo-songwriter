@@ -8,7 +8,12 @@
                     <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion'}">{{ t('Convert to LaTeX') }}</router-link></p>
                 </div>
                 <div v-else>
-                    <p><router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link><button class="ui form button submit" @click.prevent="compileTex(result.id)">{{ t('Compile tex code') }}</button></p>
+                    <p>
+                        <router-link tag="button" class="ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link><button class="ui form button submit" @click.prevent="compileTex(result.id)">{{ t('Compile tex code') }}</button>
+                        <template v-if="result.latex_code.is_compiled">
+                            <router-link tag="button" class="ui form button submit" :to="{name: 'song_pdf', params:{'item_id': result.id}}">{{ t('Display pdf') }}</router-link>
+                        </template>
+                    </p>
                 </div>
                 <div>
                     <p class="field">
@@ -89,7 +94,6 @@
             sync(){
                 axios.get(root_url + "songs/" + this.$route.params.item_id + ".json")
                     .then(response => {
-                        console.log("Received", response.data)
                         this.$data.result = response.data;
                     })
             },
@@ -143,7 +147,7 @@
             compileTex(song_id) {
                 axios.get(root_url + "song/compile/tex/" + this.$route.params.item_id + "/")
                     .then(response => {
-                        console.log("Received", response.data)
+                        this.$data.result.latex_code.is_compiled = true
                     })
             },
         },
