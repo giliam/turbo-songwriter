@@ -1,20 +1,20 @@
 * ~~Compile LaTeX:~~
-    * ~~backend: ~~
+    * ~~backend:~~
         * ~~https://stackoverflow.com/questions/19683123/compile-latex-from-python#19683545~~
         * ~~https://stackoverflow.com/questions/8085520/generating-pdf-latex-with-python-script~~
-    * ~~frontend: ~~
+    * ~~frontend:~~
         * ~~https://github.com/FranckFreiburger/vue-pdf~~
         * ~~https://github.com/mozilla/pdf.js/~~
         * ~~https://www.npmjs.com/package/vue-instant-pdf-viewer~~
 * ~~Authentication:~~
     * ~~backend:~~
         * ~~http://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/~~
-    * ~~frontend: ~~
+    * ~~frontend:~~
         * ~~vuex for the store (cf. https://medium.com/front-end-hacking/persisting-user-authentication-with-vuex-in-vue-b1514d5d3278)~~
         * ~~https://medium.com/codeartisan/users-authentication-with-vue-js-lumen-5e58ec9e6f7e~~
         * ~~? https://github.com/dgrubelic/vue-authenticate~~
 * Endpoint and schemas:
-    * ~~backend: ~~
+    * ~~backend:~~
         * ~~http://www.django-rest-framework.org/tutorial/5-relationships-and-hyperlinked-apis/~~
         * ~~http://www.django-rest-framework.org/tutorial/7-schemas-and-client-libraries/~~
     * frontend:
@@ -30,10 +30,10 @@
         * ~~add cookies to save authentication (https://www.npmjs.com/package/vue-cookie74)~~
         * ~~uses localstorage (https://www.npmjs.com/package/vue-localstorage)~~
         * ~~change JWT config (expires too fast)~~
-* Harmonization:
+* ~~Harmonization:~~
     * ~~delete harmonization on verse~~
     * ~~possibility to add harmonization on syllable ?~~
-* Lists (editors, authors, ...):
+* ~~Lists (editors, authors, ...):~~
     * ~~show songs linked to these editors/themes/authors (filter song list)~~
 * ~~Translation:~~
     * ~~frontend:~~
