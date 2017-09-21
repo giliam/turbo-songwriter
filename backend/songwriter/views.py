@@ -297,8 +297,8 @@ def compile_tex(request, song_id):
 
     tex_code += song.latex_code.code
 
-    tex_code += u"\\tableofcontents"
-    tex_code += u"\\end{document}"
+    tex_code += u"\n\\tableofcontents\n"
+    tex_code += u"\\end{document}\n"
 
     f = open('out.tex','w')
     f.write(tex_code)
