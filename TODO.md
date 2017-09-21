@@ -1,11 +1,11 @@
-* Compile LaTeX:
-    * backend: 
-        * https://stackoverflow.com/questions/19683123/compile-latex-from-python#19683545
-        * https://stackoverflow.com/questions/8085520/generating-pdf-latex-with-python-script
-    * frontend: 
-        * https://github.com/FranckFreiburger/vue-pdf
-        * https://github.com/mozilla/pdf.js/
-        * https://www.npmjs.com/package/vue-instant-pdf-viewer
+* ~~Compile LaTeX:~~
+    * ~~backend: ~~
+        * ~~https://stackoverflow.com/questions/19683123/compile-latex-from-python#19683545~~
+        * ~~https://stackoverflow.com/questions/8085520/generating-pdf-latex-with-python-script~~
+    * ~~frontend: ~~
+        * ~~https://github.com/FranckFreiburger/vue-pdf~~
+        * ~~https://github.com/mozilla/pdf.js/~~
+        * ~~https://www.npmjs.com/package/vue-instant-pdf-viewer~~
 * ~~Authentication:~~
     * ~~backend:~~
         * ~~http://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/~~
@@ -40,3 +40,7 @@
         * ~~https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~
 * ~~Lighten the songs list data given by API.~~
 * ~~Import data from v1.~~
+* Personnalize LaTeX code:
+    * add header and footer:
+        * frontend
+        * backend
