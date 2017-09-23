@@ -60,6 +60,10 @@ export const locales = {
         'Logout': 'Se déconnecter',
         'List of linked songs': 'Chansons liées',
         'Update the page': 'Mettre la page à jour',
-        'Compile tex code': 'Compiler le LaTeX'
+        'Compile tex code': 'Compiler le LaTeX',
+        'Song': 'Chanson',
+        'Harmonization': 'Harmonisation',
+        'Latex': 'LaTeX',
+        'Display pdf': 'Afficher le pdf'
     }
 }

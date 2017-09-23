@@ -10,7 +10,7 @@
                 </form>
             </p>
             <p>
-                <button class="ui button" @click.prevent="addVerse">{{ t('Add a verse') }}</button>
+                <button class="ui button green" @click.prevent="addVerse">{{ t('Add a verse') }}</button>
             </p>
             <slot></slot>
         </div>
@@ -18,9 +18,9 @@
             <div v-for="(verse,index) in paragraph.verses">
                 <songverse :verse="verse" :is_refrain="paragraph.is_refrain">
                     <span v-if="verse.order>0 || paragraph.verses.length-1>verse.order"> - </span>
-                    <a @click.prevent="sendUp(verse, index)" v-if="verse.order>0">{{ t('Up') }}</a>
+                    <i class="arrow up icon" @click.prevent="sendUp(verse, index)" v-if="verse.order>0"></i>
                     <span v-if="verse.order>0 && paragraph.verses.length-1>verse.order"> - </span>
-                    <a @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order">{{ t('Down') }}</a>
+                    <i class="arrow down icon" @click.prevent="sendDown(verse, index)" v-if="paragraph.verses.length-1>verse.order"></i>
                 </songverse>
             </div>
             <form v-if="display_form_add" class="ui form">

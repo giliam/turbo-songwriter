@@ -1,7 +1,8 @@
 <template>
     <div>
+        <button class="green ui button" @click="synchronize()">{{ t('Update the page') }}</button>
+        
         <div v-if="loaded" v-for="(paragraph, index) in song.paragraphs">
-            <button class="green ui button" @click="synchronize()">{{ t('Update the page') }}</button>
             <div v-for="(verse, vindex) in paragraph.verses">
                 <p>
                     <form v-if="isEnabledVerse(paragraph.id, verse.id)">
@@ -20,8 +21,9 @@
             </div>
             <p>~~~</p>
         </div>
-        <div v-else>
-            Loading...
+
+        <div v-if="!loaded">
+            <p style="margin:25px"><i class="spinner loading icon"></i></p>
         </div>
     </div>
 </template>

@@ -78,9 +78,9 @@ var router = new Router({
 
 
 router.beforeEach(function (to, from, next) {
+    window.scrollTo(0, 0)
     if (!store.getters.has_jwt_token && to.name != "login") {
         // if route requires auth and user isn't authenticated
-        console.log("MUST BE AUTHENTICATED")
         next('/login')
     } else {
         next()
