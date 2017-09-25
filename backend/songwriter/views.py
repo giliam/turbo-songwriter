@@ -315,3 +315,13 @@ def compile_tex(request, song_id):
     song.latex_code.save()
 
     return JsonResponse({"url":"media/pdf/song_" + str(song.id) + ".pdf", "is_compiled": True}, safe=False)
+
+
+class AdditionalLaTeXContentList(generics.ListCreateAPIView):
+    queryset = models.AdditionalLaTeXContent.objects.all()
+    serializer_class = serializers.AdditionalLaTeXContentSerializer
+
+
+class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.AdditionalLaTeXContent.objects.all()
+    serializer_class = serializers.AdditionalLaTeXContentSerializer

@@ -64,6 +64,11 @@ export const locales = {
         'Song': 'Chanson',
         'Harmonization': 'Harmonisation',
         'Latex': 'LaTeX',
-        'Display pdf': 'Afficher le pdf'
+        'Display pdf': 'Afficher le pdf',
+        'Name:': 'Identifiant :',
+        'Code:': 'Code :',
+        'Edit an additional LaTeX code': 'Modifier un code LaTeX additionnel',
+        'Add an additional LaTeX code': 'Ajouter un code LaTeX additionnel',
+        'List of additional LaTeX codes': 'Liste des codes LaTeX additionnels',
     }
 }

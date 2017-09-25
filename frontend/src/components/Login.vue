@@ -17,7 +17,7 @@
                     <label for="password">{{ t('Password') }}:</label>
                     <input type="password" name="password" v-model="password">
                 </p>
-                <p class="field"><button @click.prevent="log_in()" class="ui primary button">{{ t('Save') }}</button></p>
+                <p class="field"><button @click.prevent="log_in()" class="ui primary button">{{ t('Login') }}</button></p>
             </fieldset>
         </form>
     </div>

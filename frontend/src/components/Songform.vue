@@ -42,8 +42,8 @@
                 <input type="text" name="page_number" v-model="page_number">
             </p>
             <p class="field">
-            <label for="comments">{{ t('Comments') }}:</label>
-            <textarea name="comments" v-model="comments"></textarea>
+                <label for="comments">{{ t('Comments') }}:</label>
+                <textarea name="comments" v-model="comments"></textarea>
             </p>
 
             <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>

@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
-from songwriter.models import (Author, Harmonization,
-    Editor, Theme, Chord, Song, Paragraph, Verse, SongLaTeXCode)
+from songwriter import models
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,7 +17,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='authors_detail', format='json')
 
     class Meta:
-        model = Author
+        model = models.Author
         fields = (
             'id',
             'url',
@@ -33,7 +32,7 @@ class EditorSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='editors_detail', format='json')
 
     class Meta:
-        model = Editor
+        model = models.Editor
         fields = (
             'id',
             'url',
@@ -47,7 +46,7 @@ class ThemeSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='themes_detail', format='json')
 
     class Meta:
-        model = Theme
+        model = models.Theme
         fields = (
             'id',
             'url',
@@ -61,7 +60,7 @@ class ChordSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='chords_detail', format='json')
 
     class Meta:
-        model = Chord
+        model = models.Chord
         fields = (
             'id',
             'url',
@@ -74,7 +73,7 @@ class VerseReadSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='verses_detail', format='json')
 
     class Meta:
-        model = Verse
+        model = models.Verse
         fields = (
             'id',
             'url',
@@ -89,7 +88,7 @@ class VerseReadSerializer(serializers.ModelSerializer):
 
 class VerseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Verse
+        model = models.Verse
         fields = (
             'id',
             'order',
@@ -105,7 +104,7 @@ class HarmonizationReadSerializer(serializers.ModelSerializer):
     chord = ChordSerializer()
 
     class Meta:
-        model = Harmonization
+        model = models.Harmonization
         fields = (
             'id',
             'chord',
@@ -119,7 +118,7 @@ class HarmonizationReadSerializer(serializers.ModelSerializer):
 
 class HarmonizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Harmonization
+        model = models.Harmonization
         fields = (
             'id',
             'chord',
@@ -136,7 +135,7 @@ class ParagraphSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='paragraphs_detail', format='json')
 
     class Meta:
-        model = Paragraph
+        model = models.Paragraph
         fields = (
             'id',
             'url',
@@ -151,7 +150,7 @@ class ParagraphSerializer(serializers.ModelSerializer):
 
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Song
+        model = models.Song
         fields = (
             'id',
             'title',
@@ -171,7 +170,7 @@ class SongSerializer(serializers.ModelSerializer):
 
 class SongLaTeXCodeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SongLaTeXCode
+        model = models.SongLaTeXCode
         fields = ('id', 'code', 'is_compiled')
 
 
@@ -184,7 +183,7 @@ class SongReadSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
 
     class Meta:
-        model = Song
+        model = models.Song
         fields = (
             'id',
             'url',
@@ -209,9 +208,22 @@ class SongListSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
 
     class Meta:
-        model = Song
+        model = models.Song
         fields = (
             'id',
             'url',
             'title'
+        )
+
+
+class AdditionalLaTeXContentSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='additional_latexcode_detail', format='json')
+
+    class Meta:
+        model = models.AdditionalLaTeXContent
+        fields = (
+            'id',
+            'url',
+            'name',
+            'code',
         )

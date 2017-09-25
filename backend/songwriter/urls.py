@@ -72,6 +72,11 @@ urlpatterns = [
         name="latexcode_list"),
     url(r'^latexcode/(?P<pk>[0-9]+)/$', views.SongLaTeXCodeDetail.as_view(),
         name="latexcode_detail"),
+
+    url(r'^additional/latexcode/list/$', views.AdditionalLaTeXContentList.as_view(),
+        name="additional_latexcode_list"),
+    url(r'^additional/latexcode/(?P<pk>[0-9]+)/$', views.AdditionalLaTeXContentDetail.as_view(),
+        name="additional_latexcode_detail"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

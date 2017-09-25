@@ -257,3 +257,19 @@ class SongLaTeXCode(models.Model):
 
     def __str__(self):
         return u"LaTeX code of song {}".format(self.song)
+
+
+class AdditionalLaTeXContent(models.Model):
+    name = models.CharField(
+        max_length=150,
+        default="",
+        blank=False
+    )
+
+    code = models.TextField(
+        blank=True,
+        verbose_name=_("LaTeX code").capitalize()
+    )
+
+    def __str__(self):
+        return u"Additional LaTeX code {}".format(self.name)
