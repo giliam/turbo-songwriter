@@ -285,20 +285,32 @@ def compile_tex(request, song_id):
     temp = tempfile.mkdtemp()
     os.chdir(temp)
 
-    tex_code = """
-    \\documentclass[preprint,11pt]{book}
-    \\usepackage[utf8]{inputenc}
-    \\usepackage[francais]{babel}
-    \\setcounter{secnumdepth}{0}
-    \\setcounter{tocdepth}{1}
-    \\begin{document}
+    additional_latex_content = models.AdditionalLaTeXContent.objects.all()
 
+    if additional_latex_content.filter(name="header").exists():
+        header = additional_latex_content.get(name="header").code
+    else:
+        header = """
+\\documentclass[preprint,11pt]{book}
+\\usepackage[utf8]{inputenc}
+\\usepackage[francais]{babel}
+\\setcounter{secnumdepth}{0}
+\\setcounter{tocdepth}{1}
+\\begin{document}
     """
+
+    if additional_latex_content.filter(name="footer").exists():
+        footer = additional_latex_content.get(name="footer").code
+    else:
+        footer = """
+\\tableofcontents
+\\end{document}
+"""
+    tex_code = header
 
     tex_code += song.latex_code.code
 
-    tex_code += u"\n\\tableofcontents\n"
-    tex_code += u"\\end{document}\n"
+    tex_code += footer
 
     f = open('out.tex','w')
     f.write(tex_code)
