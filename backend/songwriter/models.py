@@ -133,6 +133,11 @@ class Song(models.Model):
         blank=True
     )
 
+    selected = models.BooleanField(
+        default=True,
+        blank=False
+    )
+
     comments = models.TextField(
         blank=True,
         verbose_name=_("comments").capitalize()

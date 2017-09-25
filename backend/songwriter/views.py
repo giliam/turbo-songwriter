@@ -321,6 +321,7 @@ def compile_tex(request, song_id):
 
     os.rename('out.pdf',"song_" + str(song.id) + ".pdf")
     shutil.copy("song_" + str(song.id) + ".pdf", current + "/media/pdf/")
+    os.chdir(current)
     shutil.rmtree(temp)
 
     song.latex_code.is_compiled = True
@@ -328,6 +329,57 @@ def compile_tex(request, song_id):
 
     return JsonResponse({"url":"media/pdf/song_" + str(song.id) + ".pdf", "is_compiled": True}, safe=False)
 
+
+@csrf_exempt
+@api_view(['GET'])
+def get_whole_tex_code(request):
+    """
+    Generates the whole latex code
+    """
+    current = os.getcwd()
+    temp = tempfile.mkdtemp()
+    os.chdir(temp)
+
+    additional_latex_content = models.AdditionalLaTeXContent.objects.all()
+
+    if additional_latex_content.filter(name="header").exists():
+        header = additional_latex_content.get(name="header").code
+    else:
+        header = """
+\\documentclass[preprint,11pt]{book}
+\\usepackage[utf8]{inputenc}
+\\usepackage[francais]{babel}
+\\setcounter{secnumdepth}{0}
+\\setcounter{tocdepth}{1}
+\\begin{document}
+    """
+
+    if additional_latex_content.filter(name="footer").exists():
+        footer = additional_latex_content.get(name="footer").code
+    else:
+        footer = """
+\\tableofcontents
+\\end{document}
+"""
+    tex_code = header
+
+    songs = models.Song.objects.filter(selected=True)
+
+    for song in songs.all():
+        tex_code += song.latex_code.code
+
+    tex_code += footer
+
+    f = open('out.tex','w')
+    f.write(tex_code)
+    f.close()
+
+    os.rename('out.tex',"full.tex")
+    shutil.copy("full.tex", current + "/media/tex/")
+    os.chdir(current)
+    shutil.rmtree(temp)
+
+    return JsonResponse({"url":"media/tex/full.tex"}, safe=False)
 
 class AdditionalLaTeXContentList(generics.ListCreateAPIView):
     queryset = models.AdditionalLaTeXContent.objects.all()

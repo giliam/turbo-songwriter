@@ -33,7 +33,7 @@
                     </ul>
                 </template>
                 <div>
-                    <p><a @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
+                    <p><a class="ui button green" @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
                             <legend>{{ t('Add an editor') }}</legend>

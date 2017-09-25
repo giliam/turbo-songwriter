@@ -18,13 +18,13 @@
                             </form>
                             <h4>{{ t('Latex') }}</h4>
                             <div v-if="result.latex_code == null">
-                                <p><router-link tag="button" class="vertical_item ui form button submit" :to="{name: 'song_force_conversion'}">{{ t('Convert to LaTeX') }}</router-link></p>
+                                <p><router-link tag="button" class="vertical_item ui form button purple" :to="{name: 'song_force_conversion'}">{{ t('Convert to LaTeX') }}</router-link></p>
                             </div>
                             <div v-else>
                                 <p>
-                                    <router-link tag="button" class="vertical_item ui form button submit" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="vertical_item ui form button submit" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link><button class="vertical_item ui form button submit" @click.prevent="compileTex(result.id)">{{ t('Compile tex code') }}</button>
+                                    <router-link tag="button" class="vertical_item ui form button primary" :to="{name: 'song_edit_latex', params:{'item_id': result.id}}">{{ t('Edit LaTeX code') }}</router-link><router-link tag="button" class="vertical_item ui form button purple" :to="{name: 'song_force_conversion', params:{'item_id': result.id}}">{{ t('Force conversion to LaTeX') }}</router-link><button class="vertical_item ui form button purple" @click.prevent="compileTex(result.id)">{{ t('Compile tex code') }}</button>
                                     <template v-if="result.latex_code.is_compiled">
-                                        <router-link tag="button" class="vertical_item ui form button submit" :to="{name: 'song_pdf', params:{'item_id': result.id}}">{{ t('Display pdf') }}</router-link>
+                                        <router-link tag="button" class="vertical_item ui form button purple" :to="{name: 'song_pdf', params:{'item_id': result.id}}">{{ t('Display pdf') }}</router-link>
                                     </template>
                                 </p>
                             </div>
@@ -50,7 +50,7 @@
                         </songparagraph>
                         <br>
                     </div>
-                    <p><button class="ui button primary" @click.prevent="addParagraph()">{{ t('Add a paragraph') }}</button></p>
+                    <p><button class="ui button green" @click.prevent="addParagraph()">{{ t('Add a paragraph') }}</button></p>
                 </div>
                 <div v-else>
                     <songharmonization :song="result">

@@ -29,27 +29,35 @@
                             <p @click="editAdditionalLaTeXCode(item)">{{ item.name }}</p>
                         </li>
                     </ul>
+                    <div>
+                        <p><button class="ui button green" @click.prevent="addAdditionalCode()">{{ t('Add an additional LaTeX code') }}</button></p>
+                        <form v-if="is_adding" class="ui form">
+                            <fieldset>
+                                <legend>{{ t('Add an additional LaTeX code') }}</legend>
+                                <p class="field">
+                                    <label for="name">{{ t('Name:') }} </label>
+                                    <input type="text" name="name" v-model="name">
+                                </p>
+                                <p class="field">
+                                    <label for="code">{{ t('Code:') }} </label>
+                                    <textarea name="code" v-model="code"></textarea>
+                                </p>
+                                <p class="field">
+                                    <button class="ui button primary" @click.prevent="saveAdditionalLaTeXCode(false)">{{ t('Save') }}</button>
+                                    <button class="ui button" @click.prevent="hideAdditionalCodeForm()">{{ t('Cancel') }}</button>
+                                </p>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <p>
+                        <div class="ui vertical buttons" v-if="!is_adding">
+                            <button class="ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
+                            <template v-if="url_whole_code">
+                                <a class="ui button black" :href="url_whole_code" target="_blank">{{ t('Link to pdf') }}</a>
+                            </template>
+                        </div>
+                    </p>
                 </template>
-                <div>
-                    <p><a @click.prevent="addAdditionalCode()">{{ t('Add an additional LaTeX code') }}</a></p>
-                    <form v-if="is_adding" class="ui form">
-                        <fieldset>
-                            <legend>{{ t('Add an additional LaTeX code') }}</legend>
-                            <p class="field">
-                                <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
-                            </p>
-                            <p class="field">
-                                <label for="code">{{ t('Code:') }} </label>
-                                <textarea name="code" v-model="code"></textarea>
-                            </p>
-                            <p class="field">
-                                <button class="ui button primary" @click.prevent="saveAdditionalLaTeXCode(false)">{{ t('Save') }}</button>
-                                <button class="ui button" @click.prevent="hideAdditionalCodeForm()">{{ t('Cancel') }}</button>
-                            </p>
-                        </fieldset>
-                    </form>
-                </div>
             </div>
             <div v-else>
                 {{ t('Updating...') }}
@@ -70,6 +78,7 @@
                 is_adding: false,
                 is_updating: false,
                 is_editing: false,
+                url_whole_code: null,
                 name: "",
                 code: "",
             }
@@ -139,6 +148,13 @@
                 this.$data.code = additional_code.code
                 this.$data.additional_code_id = additional_code.id
                 this.$data.is_editing = true
+            },
+
+            getWholeTexCode(){
+                axios.get(root_url + "get/whole/tex/")
+                    .then(response => {
+                        this.$data.url_whole_code = root_url + response.data.url
+                    },  (error) => { console.log(error) });
             }
         }
     }

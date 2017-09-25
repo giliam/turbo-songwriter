@@ -70,5 +70,6 @@ export const locales = {
         'Edit an additional LaTeX code': 'Modifier un code LaTeX additionnel',
         'Add an additional LaTeX code': 'Ajouter un code LaTeX additionnel',
         'List of additional LaTeX codes': 'Liste des codes LaTeX additionnels',
+        'Get whole LaTeX code': 'Récupérer le code LaTeX complet',
     }
 }

@@ -68,6 +68,9 @@ urlpatterns = [
     url(r'^chords/(?P<pk>[0-9]+)/$', views.ChordDetail.as_view(),
         name="chords_detail"),
 
+    url(r'^get/whole/tex/$', views.get_whole_tex_code,
+        name="compile_latexcode"),
+
     url(r'^latexcode/list/$', views.SongLaTeXCodeList.as_view(),
         name="latexcode_list"),
     url(r'^latexcode/(?P<pk>[0-9]+)/$', views.SongLaTeXCodeDetail.as_view(),

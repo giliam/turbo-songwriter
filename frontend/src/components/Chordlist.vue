@@ -23,7 +23,7 @@
                     </li>
                 </ul>
                 <div>
-                    <p><a @click.prevent="addChord()">{{ t('Add an chord') }}</a></p>
+                    <p><a class="ui button green" @click.prevent="addChord()">{{ t('Add an chord') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
                             <legend>{{ t('Add an chord') }}</legend>

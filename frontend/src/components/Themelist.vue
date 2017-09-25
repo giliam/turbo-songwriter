@@ -33,7 +33,7 @@
                     </ul>
                 </template>
                 <div>
-                    <p><a @click.prevent="addTheme()">{{ t('Add an theme') }}</a></p>
+                    <p><a class="ui button green" @click.prevent="addTheme()">{{ t('Add an theme') }}</a></p>
                     <form v-if="is_adding" class="ui form">
                         <fieldset>
                             <legend>{{ t('Add an theme') }}</legend>
