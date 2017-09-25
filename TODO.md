@@ -40,7 +40,8 @@
         * ~~https://www.npmjs.com/package/vue-translate-plugin or https://github.com/javisperez/vuetranslate~~
 * ~~Lighten the songs list data given by API.~~
 * ~~Import data from v1.~~
-* Personnalize LaTeX code:
-    * add header and footer:
-        * frontend
-        * backend
+* ~~Personnalize LaTeX code:~~
+    * ~~add header and footer:~~
+        * ~~frontend~~
+        * ~~backend~~
+* Change songs selection and pages number
