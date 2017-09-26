@@ -1,9 +1,12 @@
 <template>
-    <div class="ui grid">
-        <router-link :to="{name: 'song_detail', params:{item_id: item.id}}" tag="div" class="ten wide column">{{item.title}}</router-link>
-        <div class="six wide column">
+    <div class="item">
+        <div class="right floated content">
             <router-link :to="{name: 'song_detail', params:{item_id: item.id}}">{{ t('Show') }}</router-link> - 
             <router-link :to="{name: 'song_edit', params:{item_id: item.id}}">{{ t('Edit') }}</router-link>
+        </div>
+        <i class="music icon"></i>
+        <div class="content">
+            <router-link :to="{name: 'song_detail', params:{item_id: item.id}}" tag="a" class="header">{{item.title}}</router-link>
         </div>
     </div>
 </template>

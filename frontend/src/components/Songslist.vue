@@ -2,11 +2,13 @@
     <div>
         <div id="listsongs">
             <h2>{{ t('List of songs') }}</h2>
-            <div v-for="item in results">
-                <songtitle :item="item"></songtitle>
+            <div class="ui list aligned large">
+                <template v-for="item in results">
+                    <songtitle :item="item"></songtitle>
+                </template>
             </div>
         </div>
-        <p><router-link tag="a" class="ui button green" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
+        <p style="margin-top:30px;"><router-link tag="a" class="ui button green" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
     </div>
 </template>
 

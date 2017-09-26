@@ -21,7 +21,7 @@
                 <a class="item" :href="print_root_url() + 'admin'">{{ t('Admin') }}</a>>
             </div>
         </div>
-        <div class="ui main text container">
+        <div class="ui main text container" style="margin-left:auto; margin-right:auto;">
             <router-view></router-view>
         </div>
     </div>
