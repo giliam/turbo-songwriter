@@ -25,12 +25,13 @@
                 </template>
                 <template v-else>
                     <h2>{{ t('List of themes') }}</h2>
-                    <p @click="synchronize()">{{ t('Update the list') }}</p>
-                    <ul>
-                        <li v-for="item in themes">
-                            <p @click="editTheme(item)">{{ item.name }}</p>
-                        </li>
-                    </ul>
+                    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
+                    <div class="ui list large">
+                        <div v-for="item in themes" class="item" @click="editTheme(item)">
+                            <i class="icon theme"></i>
+                            {{ item.name }}
+                        </div>
+                    </div>
                 </template>
                 <div>
                     <p><a class="ui button green" @click.prevent="addTheme()">{{ t('Add an theme') }}</a></p>
@@ -84,6 +85,7 @@
         methods:{
             addTheme() {
                 this.$data.is_adding = !this.$data.is_adding
+                this.$data.is_editing = false
                 this.$data.name = ""
             },
             hideThemeForm() {
@@ -138,6 +140,7 @@
                 this.$data.name = theme.name
                 this.$data.theme_id = theme.id
                 this.$data.is_editing = true
+                this.$data.is_adding = false
             }
         }
     }

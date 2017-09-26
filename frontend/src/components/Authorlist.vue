@@ -29,12 +29,13 @@
                 </template>
                 <template v-else>
                     <h2>{{ t('List of authors') }}</h2>
-                    <p @click="synchronize()">{{ t('Update the list') }}</p>
-                    <ul>
-                        <li v-for="item in authors">
-                            <p @click="editAuthor(item)">{{ item.firstname }} {{ item.lastname }}</p>
-                        </li>
-                    </ul>
+                    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
+                    <div class="ui list large">
+                        <div v-for="item in authors" class="item" @click="editAuthor(item)">
+                            <i class="icon user"></i>
+                            {{ item.firstname }} {{ item.lastname }}
+                        </div>
+                    </div>
                 </template>
                 <div>
                     <p><a class="ui button green" @click.prevent="addAuthor()">{{ t('Add an author') }}</a></p>
@@ -93,6 +94,7 @@
         methods:{
             addAuthor() {
                 this.$data.is_adding = !this.$data.is_adding
+                this.$data.is_editing = false
                 this.$data.firstname = ""
                 this.$data.lastname = ""
             },
@@ -150,6 +152,7 @@
                 this.$data.lastname = author.lastname
                 this.$data.author_id = author.id
                 this.$data.is_editing = true
+                this.$data.is_adding = false
             }
         }
     }

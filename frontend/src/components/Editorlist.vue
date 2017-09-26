@@ -25,12 +25,13 @@
                 </template>
                 <template v-else>
         		    <h2>{{ t('List of editors') }}</h2>
-        		    <p @click="synchronize()">{{ t('Update the list') }}</p>
-    	            <ul>
-            			<li v-for="item in editors">
-                            <p @click="editEditor(item)">{{ item.name }}</p>
-                        </li>
-                    </ul>
+        		    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
+                    <div class="ui list large">
+                        <div v-for="item in editors" class="item" @click="editEditor(item)">
+                            <i class="icon book"></i>
+                            {{ item.name }}
+                        </div>
+                    </div>
                 </template>
                 <div>
                     <p><a class="ui button green" @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
@@ -84,6 +85,7 @@
         methods:{
             addEditor() {
                 this.$data.is_adding = !this.$data.is_adding
+                this.$data.is_editing = false
                 this.$data.name = ""
             },
             hideEditorForm() {
@@ -138,6 +140,7 @@
                 this.$data.name = editor.name
                 this.$data.editor_id = editor.id
                 this.$data.is_editing = true
+                this.$data.is_adding = false
             }
         }
     }

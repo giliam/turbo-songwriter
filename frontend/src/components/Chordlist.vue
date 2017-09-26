@@ -1,27 +1,32 @@
 <template>
     <div>
         <div id="listchords">
-            <h2>{{ t('List of chords') }}</h2>
-            <p @click="synchronize()">{{ t('Update the list') }}</p>
             <div v-if="!is_updating">
-                <form v-if="is_editing" class="ui form">
-                    <fieldset>
-                        <legend>{{ t('Edit an chord') }}</legend>
-                        <p class="field">
-                            <label for="note">{{ t('Name:') }} </label>
-                            <input type="text" name="note" v-model="note">
-                        </p>
-                        <p class="field">
-                            <button class="ui button primary" @click.prevent="saveChord(true)">{{ t('Save') }}</button>
-                            <button class="ui button" @click.prevent="hideChordForm()">{{ t('Cancel') }}</button>
-                        </p>
-                    </fieldset>
-                </form>
-                <ul v-if="!is_editing">
-                    <li v-for="item in chords">
-                        <p @click="editChord(item)">{{ item.note }}</p>
-                    </li>
-                </ul>
+                <template v-if="is_editing">
+                    <form class="ui form">
+                        <fieldset>
+                            <legend>{{ t('Edit an chord') }}</legend>
+                            <p class="field">
+                                <label for="note">{{ t('Name:') }} </label>
+                                <input type="text" name="note" v-model="note">
+                            </p>
+                            <p class="field">
+                                <button class="ui button primary" @click.prevent="saveChord(true)">{{ t('Save') }}</button>
+                                <button class="ui button" @click.prevent="hideChordForm()">{{ t('Cancel') }}</button>
+                            </p>
+                        </fieldset>
+                    </form>
+                </template>
+                <template v-else>
+                    <h2>{{ t('List of chords') }}</h2>
+                    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
+                    <div class="ui list large">
+                        <div v-for="item in chords" class="item" @click="editChord(item)">
+                            <i class="icon music"></i>
+                            {{ item.note }}
+                        </div>
+                    </div>
+                </template>
                 <div>
                     <p><a class="ui button green" @click.prevent="addChord()">{{ t('Add an chord') }}</a></p>
                     <form v-if="is_adding" class="ui form">
@@ -79,6 +84,7 @@
             },
             addChord() {
                 this.$data.is_adding = !this.$data.is_adding
+                this.$data.is_editing = false
                 this.$data.note = ""
             },
             hideChordForm() {
@@ -129,6 +135,7 @@
                 this.$data.note = chord.note
                 this.$data.chord_id = chord.id
                 this.$data.is_editing = true
+                this.$data.is_adding = false
             }
         }
     }

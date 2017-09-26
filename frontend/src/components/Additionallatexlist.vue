@@ -23,7 +23,7 @@
                 </template>
                 <template v-else>
         		    <h2>{{ t('List of additional LaTeX codes') }}</h2>
-        		    <p @click="synchronize()">{{ t('Update the list') }}</p>
+        		    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
     	            <ul>
             			<li v-for="item in additional_latexcodes">
                             <p @click="editAdditionalLaTeXCode(item)">{{ item.name }}</p>
@@ -94,6 +94,7 @@
         methods:{
             addAdditionalCode() {
                 this.$data.is_adding = !this.$data.is_adding
+                this.$data.is_editing = false
                 this.$data.name = ""
                 this.$data.code = ""
             },
@@ -148,6 +149,7 @@
                 this.$data.code = additional_code.code
                 this.$data.additional_code_id = additional_code.id
                 this.$data.is_editing = true
+                this.$data.is_adding = false
             },
 
             getWholeTexCode(){

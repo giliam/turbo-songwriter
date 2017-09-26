@@ -82,4 +82,9 @@
     /*a {*/
         /*color: #42b983;*/
     /*}*/
+
+    fieldset{
+        margin-top:1em;
+        margin-bottom:1em;
+    }
 </style>
