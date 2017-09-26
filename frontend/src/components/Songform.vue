@@ -101,12 +101,14 @@
                     .then(response => {
                         console.log("Received", response.data)
                         this.$data.title = response.data.title
-                        this.$data.author = response.data.author.id
+                        if( response.data.author )
+                            this.$data.author = response.data.author.id
                         this.$data.theme = new Array()
                         for (var i = 0; i < response.data.theme.length; i++) {
                             this.$data.theme.push(response.data.theme[i].id)
                         }
-                        this.$data.editor = response.data.editor.id
+                        if( response.data.editor )
+                            this.$data.editor = response.data.editor.id
                         this.$data.secli_number = response.data.secli_number
                         this.$data.page_number = response.data.page_number
                         this.$data.old_page_number = response.data.old_page_number
