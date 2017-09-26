@@ -11,7 +11,7 @@
             <fieldset>
                 <p class="field">
                     <label for="username">{{ t('Username') }}:</label>
-                    <input type="text" name="username" v-model="username">
+                    <input type="text" name="username" v-model="username" v-focus>
                 </p>
                 <p class="field">
                     <label for="password">{{ t('Password') }}:</label>

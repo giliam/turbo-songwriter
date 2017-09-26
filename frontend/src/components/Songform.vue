@@ -4,7 +4,7 @@
             <legend class="ui dividing header">{{ printTitle() }}</legend>
             <p class="field">
                 <label for="title">{{ t('Title') }}:</label>
-                <input type="text" name="title" v-model="title">
+                <input type="text" name="title" v-model="title" v-focus>
             </p>
             <p class="field">
                 <label for="author">{{ t('Author') }}:</label>

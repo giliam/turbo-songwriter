@@ -8,7 +8,7 @@
                             <legend>{{ t('Edit an theme') }}</legend>
                             <p class="field">
                                 <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
+                                <input type="text" name="name" v-model="name" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui primary button" @click.prevent="saveTheme(true)">{{ t('Save') }}</button>
@@ -40,7 +40,7 @@
                             <legend>{{ t('Add an theme') }}</legend>
                             <p class="field">
                                 <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
+                                <input type="text" name="name" v-model="name" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui primary button" @click.prevent="saveTheme(false)">{{ t('Save') }}</button>

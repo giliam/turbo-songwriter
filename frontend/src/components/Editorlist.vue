@@ -8,7 +8,7 @@
                             <legend>{{ t('Edit an editor') }}</legend>
                             <p class="field">
                                 <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
+                                <input type="text" name="name" v-model="name" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui button primary" @click.prevent="saveEditor(true)">{{ t('Save') }}</button>
@@ -40,7 +40,7 @@
                             <legend>{{ t('Add an editor') }}</legend>
                             <p class="field">
                                 <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
+                                <input type="text" name="name" v-model="name" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui button primary" @click.prevent="saveEditor(false)">{{ t('Save') }}</button>

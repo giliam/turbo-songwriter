@@ -16,7 +16,7 @@
                 <form class="ui form">
                     <fieldset>
                         <p class="field">
-                            <input type="text" name="verse" v-model="verse.content" @keyup.enter="saveEdition()"/>
+                            <input type="text" name="verse" v-model="verse.content" @keyup.enter="saveEdition()" v-focus/>
                         </p>
                         <p>
                             <button @click.prevent="saveEdition()" class="ui button primary">{{ t('Save') }}</button>

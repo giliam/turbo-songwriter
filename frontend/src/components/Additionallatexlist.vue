@@ -7,8 +7,8 @@
                         <fieldset>
                             <legend>{{ t('Edit an additional LaTeX code') }}</legend>
                             <p class="field">
-                                <label for="name">{{ t('Name:') }} </label>
-                                <input type="text" name="name" v-model="name">
+                                <label for="name">{{ t('Identifier:') }} </label>
+                                <input type="text" name="name" v-model="name" v-focus>
                             </p>
                             <p class="field">
                                 <label for="code">{{ t('Code:') }} </label>
@@ -24,19 +24,20 @@
                 <template v-else>
         		    <h2>{{ t('List of additional LaTeX codes') }}</h2>
         		    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
-    	            <ul>
-            			<li v-for="item in additional_latexcodes">
-                            <p @click="editAdditionalLaTeXCode(item)">{{ item.name }}</p>
-                        </li>
-                    </ul>
+    	            <div class="ui list large">
+                        <div v-for="item in additional_latexcodes" class="item" @click="editAdditionalLaTeXCode(item)">
+                            <i class="icon code"></i>
+                            {{ item.name }}
+                        </div>
+                    </div>
                     <div>
                         <p><button class="ui button green" @click.prevent="addAdditionalCode()">{{ t('Add an additional LaTeX code') }}</button></p>
                         <form v-if="is_adding" class="ui form">
                             <fieldset>
                                 <legend>{{ t('Add an additional LaTeX code') }}</legend>
                                 <p class="field">
-                                    <label for="name">{{ t('Name:') }} </label>
-                                    <input type="text" name="name" v-model="name">
+                                    <label for="name">{{ t('Identifier:') }} </label>
+                                    <input type="text" name="name" v-model="name" v-focus>
                                 </p>
                                 <p class="field">
                                     <label for="code">{{ t('Code:') }} </label>

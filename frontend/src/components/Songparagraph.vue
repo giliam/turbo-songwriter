@@ -26,7 +26,7 @@
             <form v-if="display_form_add" class="ui form">
                 <p class="field">
                     <label for="content">Content:</label>
-                    <input type="text" v-model="new_verse_content">
+                    <input type="text" v-model="new_verse_content" v-focus>
                 </p>
 
                 <button class="ui button" type="submit" @click.prevent="sendNewVerse()">{{ t('Send') }}</button>

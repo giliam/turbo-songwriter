@@ -65,7 +65,7 @@ export const locales = {
         'Harmonization': 'Harmonisation',
         'Latex': 'LaTeX',
         'Display pdf': 'Afficher le pdf',
-        'Name:': 'Identifiant :',
+        'Identifier:': 'Identifiant :',
         'Code:': 'Code :',
         'Edit an additional LaTeX code': 'Modifier un code LaTeX additionnel',
         'Add an additional LaTeX code': 'Ajouter un code LaTeX additionnel',

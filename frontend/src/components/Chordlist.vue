@@ -7,8 +7,8 @@
                         <fieldset>
                             <legend>{{ t('Edit an chord') }}</legend>
                             <p class="field">
-                                <label for="note">{{ t('Name:') }} </label>
-                                <input type="text" name="note" v-model="note">
+                                <label for="note">{{ t('Note:') }} </label>
+                                <input type="text" name="note" v-model="note" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui button primary" @click.prevent="saveChord(true)">{{ t('Save') }}</button>
@@ -33,8 +33,8 @@
                         <fieldset>
                             <legend>{{ t('Add an chord') }}</legend>
                             <p class="field">
-                                <label for="note">{{ t('Name:') }} </label>
-                                <input type="text" name="note" v-model="note">
+                                <label for="note">{{ t('Note:') }} </label>
+                                <input type="text" name="note" v-model="note" v-focus>
                             </p>
                             <p class="field">
                                 <button class="ui button primary" @click.prevent="saveChord(false)">{{ t('Save') }}</button>

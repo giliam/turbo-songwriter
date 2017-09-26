@@ -8,7 +8,7 @@
                             <legend>{{ t('Edit an author') }}</legend>
                             <p class="field">
                                 <label for="firstname">{{ t('Firstname:') }}</label>
-                                <input type="text" name="firstname" v-model="firstname">
+                                <input type="text" name="firstname" v-model="firstname" v-focus>
                             </p>
                             <p class="field">
                                 <label for="lastname">{{ t('Lastname:') }}</label>
@@ -44,7 +44,7 @@
                             <legend>{{ t('Add an author') }}</legend>
                             <p class="field">
                                 <label for="firstname">{{ t('Firstname:') }}</label>
-                                <input type="text" name="firstname" v-model="firstname">
+                                <input type="text" name="firstname" v-model="firstname" v-focus>
                             </p>
                             <p class="field">
                                 <label for="lastname">{{ t('Lastname:') }}</label>
