@@ -1,6 +1,8 @@
 # coding:utf-8
 
+import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -174,6 +176,21 @@ def convert_to_tex(request, song_id):
     return edit_tex(request, song_id, True)
 
 
+def _convert_song_to_tex(song):
+    tex_output = "\\section{%s}" % (song.title,) + "\n"
+    tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
+
+    for paragraph in song.paragraphs.all():
+        tex_output += "\\paragraph{}\n"
+        for verse in paragraph.verses.all():
+            if paragraph.is_refrain:
+                tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
+            else:
+                tex_output += verse.content + "\n"
+            tex_output += "\\newline\n"
+    return tex_output
+
+
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def edit_tex(request, song_id, force=False):
@@ -190,18 +207,7 @@ def edit_tex(request, song_id, force=False):
         force = True
     
     if force:
-        tex_output = "\\section{%s}" % (song.title,) + "\n"
-        tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
-
-        for paragraph in song.paragraphs.all():
-            tex_output += "\\paragraph{}\n"
-            for verse in paragraph.verses.all():
-                if paragraph.is_refrain:
-                    tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
-                else:
-                    tex_output += verse.content + "\n"
-                tex_output += "\\newline\n"
-        latex_code.code = tex_output
+        latex_code.code = _convert_song_to_tex(song)
         latex_code.is_compiled = False
         latex_code.save()
 
@@ -393,12 +399,71 @@ class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def edit_multiple_songs_tex(request, songs_ids, force=False):
     songs_ids = songs_ids.split("/")
     songs = {}
     for song_id in songs_ids:
         song = get_object_or_404(models.Song, pk=song_id)
-        song[song_id] = song
+        songs[song_id] = song
 
-    return JsonResponse(songs)
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        songs_latex_codes = json_data["code"].split("% /!\ Do not delete these commented lines /!\ %")
+        id_song_reg = re.compile(r'% /!\\ song #([0-9]+) /!\\ %')
+        for song_code in songs_latex_codes[1:-1]:
+            song_lines_lists = song_code.strip().split("\n")
+            song_id_latex = id_song_reg.search(song_lines_lists[0])
+            if song_id_latex:
+                song_id_latex = song_id_latex.group(1)
+            else:
+                return JsonResponse({})
+            song_code = "\n".join(song_lines_lists[1:])
+            if songs[song_id_latex].latex_code:
+                songs[song_id_latex].latex_code.code = song_code.strip()
+                songs[song_id_latex].latex_code.save()
+            else:
+                latex_code = models.SongLaTeXCode()
+                latex_code.song = songs[song_id_latex]
+                latex_code.code = song_code.strip()
+                latex_code.is_compiled = False
+                latex_code.save()
+        return JsonResponse({})
+
+    else:
+        latex_code = models.AdditionalLaTeXContent()
+
+        additional_latex_content = models.AdditionalLaTeXContent.objects.all()
+
+        if additional_latex_content.filter(name="header").exists():
+            latex_code.code = additional_latex_content.get(name="header").code
+        else:
+            latex_code.code = """
+    \\documentclass[preprint,11pt]{book}
+    \\usepackage[utf8]{inputenc}
+    \\usepackage[francais]{babel}
+    \\setcounter{secnumdepth}{0}
+    \\setcounter{tocdepth}{1}
+    \\begin{document}
+        """
+
+
+        for song in songs.values():
+            latex_code.code += "\n% /!\ Do not delete these commented lines /!\ %\n"
+            latex_code.code += "% /!\ song #" + str(song.id) + " /!\ %\n\n"
+            if song.latex_code:
+                latex_code.code += song.latex_code.code + "\n"
+            else:
+                latex_code.code += _convert_song_to_tex(song) + "\n"
+
+        latex_code.code += "% /!\ Do not delete these commented lines /!\ %\n"
+        if additional_latex_content.filter(name="footer").exists():
+            latex_code.code += additional_latex_content.get(name="footer").code
+        else:
+            latex_code.code += """
+    \\tableofcontents
+    \\end{document}
+    """
+
+        serializer = serializers.AdditionalLaTeXContentSerializer(latex_code, context={"request":request})
+        return JsonResponse(serializer.data)
