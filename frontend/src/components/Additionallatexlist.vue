@@ -1,5 +1,6 @@
 <template>
     <div>
+        <p><router-link tag="button" class="black ui button" :to="{name:'latex_homepage'}">{{ t('Back to the list') }}</router-link></p>
         <div id="listadditionallatexcode">
             <div v-if="!is_updating">
                 <template v-if="is_editing">

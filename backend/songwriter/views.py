@@ -381,6 +381,7 @@ def get_whole_tex_code(request):
 
     return JsonResponse({"url":"media/tex/full.tex"}, safe=False)
 
+
 class AdditionalLaTeXContentList(generics.ListCreateAPIView):
     queryset = models.AdditionalLaTeXContent.objects.all()
     serializer_class = serializers.AdditionalLaTeXContentSerializer
@@ -389,3 +390,15 @@ class AdditionalLaTeXContentList(generics.ListCreateAPIView):
 class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.AdditionalLaTeXContent.objects.all()
     serializer_class = serializers.AdditionalLaTeXContentSerializer
+
+
+@csrf_exempt
+@api_view(['GET'])
+def edit_multiple_songs_tex(request, songs_ids, force=False):
+    songs_ids = songs_ids.split("/")
+    songs = {}
+    for song_id in songs_ids:
+        song = get_object_or_404(models.Song, pk=song_id)
+        song[song_id] = song
+
+    return JsonResponse(songs)

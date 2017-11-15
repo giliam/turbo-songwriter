@@ -49,6 +49,11 @@ var router = new Router({
         name: 'authors_list',
         auth: true
     },{
+        path: '/latex/homepage/',
+        component: require('@/components/Latexhomepage.vue').default,
+        name: 'latex_homepage',
+        auth: true
+    },{
         path: '/additional/latexcodes/',
         component: require('@/components/Additionallatexlist.vue').default,
         name: 'additional_latexcode_list',

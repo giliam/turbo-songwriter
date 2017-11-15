@@ -12,7 +12,7 @@
                     <router-link :to="{name:'editors_list'}" class="item">{{ t('Editors') }}</router-link>
                     <router-link :to="{name:'themes_list'}" class="item">{{ t('Themes') }}</router-link>
                     <router-link :to="{name:'chords_list'}" class="item">{{ t('Chords') }}</router-link>
-                    <router-link :to="{name:'additional_latexcode_list'}" class="item">{{ t('LaTeX') }}</router-link>
+                    <router-link :to="{name:'latex_homepage'}" class="item">{{ t('LaTeX') }}</router-link>
                     <router-link :to="{name:'logout'}" class="item">{{ t('Logout') }}</router-link>
                 </template>
                 <template v-else>
