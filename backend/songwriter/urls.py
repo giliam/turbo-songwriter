@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^song/compile/tex/(?P<song_id>[0-9]+)/$', views.compile_tex,
         name="song_compile_tex"),
 
+    url(r'^copyrights/extract/(?P<songs_ids>[\/0-9]+|all)/$', views.edit_multiple_songs_tex,
+        name="song_edit_multiple_songs_tex"),
+
     url(r'^authors/list/$', views.AuthorList.as_view(),
         name="authors_list"),
     url(r'^authors/(?P<pk>[0-9]+)/$', views.AuthorDetail.as_view(),

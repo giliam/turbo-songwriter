@@ -1,6 +1,7 @@
 # coding:utf-8
 
 import json
+import difflib
 import os
 import re
 import shutil
@@ -467,3 +468,42 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
 
         serializer = serializers.AdditionalLaTeXContentSerializer(latex_code, context={"request":request})
         return JsonResponse(serializer.data)
+
+
+def test_if_element_close(song_element, data, structure):
+    if type(structure) == list:
+
+    else:
+        if data[structure].upper() == song_element.upper():
+
+
+
+@csrf_exempt
+@api_view(['GET'])
+def find_copyrights_data(request, songs_ids):
+    songs_ids = songs_ids.split("/")
+    songs = {}
+    for song_id in songs_ids:
+        song = get_object_or_404(models.Song, pk=song_id)
+        songs[song_id] = song
+    if not os.path.isfile('../data/copyrights_data.csv'):
+        return JsonResponse({})
+    else:
+        copyrights_structure = {}
+        titles = {}
+
+        with open('../data/copyrights_data_structure.json', 'r') as f:
+            copyrights_structure = json.loads(f.read())
+        with open('../data/copyrights_data.csv', 'r') as f:
+            copyrights_data = f.read()
+            titles = {
+                data[copyrights_structure["title"]].upper(): {
+                    data
+                } for data in copyrights_data
+            }
+
+        for song in songs.values():
+            closest_titles = difflib.get_close_matches(song.title.upper(), titles.keys())
+            print(closest_titles)
+        
+        return JsonResponse({})
