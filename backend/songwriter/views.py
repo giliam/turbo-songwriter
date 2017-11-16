@@ -1,5 +1,6 @@
 # coding:utf-8
 
+import csv
 import json
 import difflib
 import os
@@ -466,26 +467,52 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
     \\end{document}
     """
 
-        serializer = serializers.AdditionalLaTeXContentSerializer(latex_code, context={"request":request})
+        serializer = serializers.AdditionalLaTeXContentSerializer(
+            latex_code, 
+            context={"request":request}
+        )
         return JsonResponse(serializer.data)
 
 
-def test_if_element_close(song_element, data, structure):
-    if type(structure) == list:
+def get_closest_songs(song_title, titles_list):
+    number_min_elements = 3
+    min_score = [
+        # Stores (score, id_element)
+        (0,0) for i in range(number_min_elements)
+    ]
 
-    else:
-        if data[structure].upper() == song_element.upper():
+    for k, title in enumerate(titles_list):
+        score = difflib.SequenceMatcher(None, song_title.strip(), title.strip()).ratio()
+        # if the score is better than the worse 
+        if score > min_score[0][0]:
+            min_score[0] = (score, k)
+            # then, sorts the dictionaries by value
+            min_score.sort(key=lambda t: t[0])
 
+    return min_score[-1][0], [k for (score, k) in min_score]
+
+
+def get_code_song(data, code_columns_id):
+    out = ""
+    for code_column in code_columns_id:
+        if not data[code_column].strip() == "":
+            out = data[code_column]
+    return out
 
 
 @csrf_exempt
 @api_view(['GET'])
 def find_copyrights_data(request, songs_ids):
-    songs_ids = songs_ids.split("/")
-    songs = {}
-    for song_id in songs_ids:
-        song = get_object_or_404(models.Song, pk=song_id)
-        songs[song_id] = song
+    if songs_ids == "all":
+        songs = {
+            song.id: song for song in models.Song.objects.all()
+        }
+    else:
+        songs_ids = songs_ids.split("/")
+        songs = {}
+        for song_id in songs_ids:
+            song = get_object_or_404(models.Song, pk=song_id)
+            songs[song_id] = song
     if not os.path.isfile('../data/copyrights_data.csv'):
         return JsonResponse({})
     else:
@@ -494,16 +521,85 @@ def find_copyrights_data(request, songs_ids):
 
         with open('../data/copyrights_data_structure.json', 'r') as f:
             copyrights_structure = json.loads(f.read())
-        with open('../data/copyrights_data.csv', 'r') as f:
-            copyrights_data = f.read()
-            titles = {
-                data[copyrights_structure["title"]].upper(): {
-                    data
-                } for data in copyrights_data
-            }
+        with open('../data/copyrights_data.csv', 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
+            titles = []
+            rows = []
+            for row in spamreader:
+                titles.append(row[copyrights_structure["title"]].upper())
+                rows.append(row)
+        
+        output = {
+            song.id: {} for song in songs.values()
+        }
 
         for song in songs.values():
-            closest_titles = difflib.get_close_matches(song.title.upper(), titles.keys())
-            print(closest_titles)
-        
-        return JsonResponse({})
+            best_ratio, closest_titles = get_closest_songs(song.title.upper(), titles)
+            
+            # if the best ratio is not even bigger than #arbitrary threshold, 
+            # there is no use to look for author
+            if best_ratio > 0.8:
+                best_ratio = 0
+                best_song_id = 0
+                for title_id in closest_titles:
+                    if type(copyrights_structure["author"]) == list:
+                        for author_id_column in copyrights_structure["author"]:
+                            score = difflib.SequenceMatcher(
+                                None, 
+                                song.author.get_comparable(), 
+                                rows[title_id][author_id_column]
+                            ).ratio()
+                            
+                            if score > best_ratio:
+                                best_ratio = score
+                                best_song_id = title_id
+                    else:
+                        score = difflib.SequenceMatcher(
+                            None, 
+                            song.author.get_comparable(), 
+                            rows[title_id][copyrights_structure["author"]]
+                        ).ratio()
+                        
+                        if score > best_ratio:
+                            best_ratio = score
+                            best_song_id = title_id
+            
+                # adds arbitrary threshold for unique song choice
+                if best_ratio > 0.8:
+                    best_song = rows[best_song_id]
+                    output[song.id] = {
+                        "code": get_code_song(
+                            best_song, 
+                            copyrights_structure["number"]
+                        ),
+                        "title": best_song[copyrights_structure["title"]],
+                    }
+                    if type(copyrights_structure["author"]) == list:
+                        output[song.id]["author"] = []
+                        for author_id_column in copyrights_structure["author"]:
+                            output[song.id]["author"].append(best_song[author_id_column])
+                    else:
+                        output[song.id]["author"] = best_song[copyrights_structure["author"]]
+
+            # if the best fit has not been found,
+            # returns the whole choices given by titles comparisons
+            if output[song.id] == {}:
+                output[song.id] = []
+                for title_id in closest_titles:
+                    close_song = rows[title_id]
+                    dic_song = {
+                        "code": get_code_song(
+                            close_song, 
+                            copyrights_structure["number"]
+                        ),
+                        "title": close_song[copyrights_structure["title"]],
+                    }
+                    if type(copyrights_structure["author"]) == list:
+                        dic_song["author"] = []
+                        for author_id_column in copyrights_structure["author"]:
+                            dic_song["author"].append(close_song[author_id_column])
+                    else:
+                        dic_song["author"] = close_song[copyrights_structure["author"]]
+                    output[song.id].append(dic_song)
+
+        return JsonResponse(output)
