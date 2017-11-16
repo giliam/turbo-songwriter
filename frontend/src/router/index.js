@@ -54,6 +54,11 @@ var router = new Router({
         name: 'latex_homepage',
         auth: true
     },{
+        path: '/secli/homepage/',
+        component: require('@/components/Seclihomepage.vue').default,
+        name: 'secli_homepage',
+        auth: true
+    },{
         path: '/additional/latexcodes/',
         component: require('@/components/Additionallatexlist.vue').default,
         name: 'additional_latexcode_list',
