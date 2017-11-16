@@ -573,6 +573,7 @@ def find_copyrights_data(request, songs_ids):
                             copyrights_structure["number"]
                         ),
                         "title": best_song[copyrights_structure["title"]],
+                        "selected": True,
                     }
                     if type(copyrights_structure["author"]) == list:
                         output[song.id]["author"] = []
@@ -593,6 +594,7 @@ def find_copyrights_data(request, songs_ids):
                             copyrights_structure["number"]
                         ),
                         "title": close_song[copyrights_structure["title"]],
+                        "selected": False,
                     }
                     if type(copyrights_structure["author"]) == list:
                         dic_song["author"] = []

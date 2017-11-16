@@ -73,6 +73,14 @@ export const locales = {
         'Get whole LaTeX code': 'Récupérer le code LaTeX complet',
         'Select the songs to edit': 'Sélectionner les chansons à modifier',
         'Edit those songs': 'Modifier le code de ces chansons',
-        'Edit additional latex code': 'Modifier les codes LaTeX additionnels'
+        'Edit additional latex code': 'Modifier les codes LaTeX additionnels',
+        'Composer: ': 'Compositeur :',
+        'Author: ': 'Auteur :',
+        'Song:': 'Chanson :',
+        'Written by:': 'Ecrit par :',
+        'SECLI codes form for songs selected': 'Formulaire pour choisir les chansons pour deviner les codes SECLI',
+        'Autofind those songs codes': 'Trouver les codes de ces chansons',
+        'Select all:': 'Sélectionner toutes les chansons :',
+        'Select this code: ': 'Sélectionner ce code',
     }
 }

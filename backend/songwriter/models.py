@@ -156,6 +156,9 @@ class Song(models.Model):
         auto_now=True
     )
 
+    def get_printable_author(self):
+        return self.author.get_comparable()
+
     class Meta:
         ordering = ['title']
 

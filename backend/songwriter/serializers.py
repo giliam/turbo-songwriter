@@ -212,7 +212,8 @@ class SongListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'url',
-            'title'
+            'title',
+            'get_printable_author',
         )
 
 

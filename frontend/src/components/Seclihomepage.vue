@@ -16,18 +16,57 @@
                 </div>
             </div>
             <div class="twelve wide stretched column">
-                <template v-if="secliNumbers === true">
-                    Loading...
+                <template v-if="secliGuessedNumbers === true">
+                    {{ t('Loading...') }}
                 </template>
-                <template v-else-if="secliNumbers">
+                <template v-else-if="secliGuessedNumbers">
                     <form id="songtexform" class="ui form">
                         <fieldset>
                             <legend>{{ t('SECLI codes form for songs selected') }}</legend>
                             <template v-for="(item, n) in results">
-                                <p class="field">
-                                    <label :for="'content_' + item.id">Song {{item.title}}</label>
-                                    <!-- <input type="text" :name="'content_' + item.id" v-model="secliNumbers[n]" /> -->
-                                </p>
+                                <div class="ui grid sixteen columns">
+                                    <div class="four wide column center">
+                                        <h3>{{ t('Song:') }} {{item.title}}</h3>
+                                        <h4>{{ t('Written by:') }} {{item.get_printable_author}}</h4>
+                                    </div>
+                                    <div class="twelve wide column">
+                                        <template v-if="secliGuessedNumbers[item.id].code">
+                                            <p>
+                                            <strong>{{ secliGuessedNumbers[item.id].title }}</strong>
+                                            </p>
+                                            <p>
+                                            <em>{{ t('Author: ') }} {{ secliGuessedNumbers[item.id].author[0] }} - {{ t('Composer: ') }} {{ secliGuessedNumbers[item.id].author[1] }}</em>
+                                            </p>
+                                            <p>
+                                            <input type="text" :name="'content_' + item.id" size="width:150px" v-model="secliGuessedNumbers[item.id].code" />
+                                            </p>
+                                        </template>
+                                        <template v-else>
+                                            <div class="ui grid sixteen columns">
+                                                <template v-for="(song_proposal, l) in secliGuessedNumbers[item.id]">
+                                                    <div class="six wide column">
+                                                        <p class="field">
+                                                            <label :for="'selection_propositions_' + item.id + '_' + l">{{ t('Select this code: ') }}</label>
+                                                            <input type="radio" :id="'selection_propositions_' + item.id + '_' + l" :name="'selection_propositions_' + item.id" v-model="song_proposal.selected" />
+                                                        </p>
+                                                    </div>
+                                                    <div class="ten wide column">
+                                                        <p>
+                                                        <strong>{{ song_proposal.title }}</strong>
+                                                        </p>
+                                                        <p>
+                                                        <em>{{ t('Author: ') }} {{ song_proposal.author[0] }} - {{ t('Composer: ') }} {{ song_proposal.author[1] }}</em>
+                                                        </p>
+                                                        <p class="field">
+                                                            <input type="text" :name="'content_' + item.id" v-model="song_proposal.code" style="width:150px" />
+                                                        </p>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="ui section divider"></div>
                             </template>
                             <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
@@ -40,7 +79,7 @@
                             <fieldset>
                                 <legend>{{ t('Select the songs to edit') }}</legend>
                                 <p>
-                                    <label for="select_all">{{ t('Select all') }}:</label>
+                                    <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
                                     <input type="checkbox" id="select_all" v-model="allSelected" @change="select_all()"/>
                                 </p>
                                 <template v-for="(item, n) in results">
@@ -68,7 +107,7 @@
             return {
                 results: Array,
                 checkedNames: Array,
-                secliNumbers: false,
+                secliGuessedNumbers: false,
                 allSelected: false,
                 listIds: "",
             }
@@ -95,11 +134,16 @@
                 }
                 if( listIds.length > 0 )
                 {
-                    this.$data.secliNumbers = true;
+                    this.$data.secliGuessedNumbers = true;
                     axios.get(root_url + "copyrights/extract/" + listIds)
                     .then(response => {
                         this.$data.listIds = listIds;
-                        this.$data.secliNumbers = response.data.code;
+                        this.$data.secliGuessedNumbers = response.data;
+                        for (var i = 0; i < this.$data.checkedNames.length; i++) {
+                            if( this.$data.checkedNames[i] ){
+                                // console.log(response.data[this.$data.results[i].id]);
+                            }
+                        }
                     },  (error) => { console.log(error) });
                 }
             },
@@ -107,7 +151,7 @@
 
             },
             cancel() {
-                this.$data.secliNumbers = false
+                this.$data.secliGuessedNumbers = false
                 // this.$data.checkedNames = new Array()
             },
             select_all() {
