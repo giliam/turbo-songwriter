@@ -27,9 +27,9 @@ var router = new Router({
         name: 'song_new',
         auth: true
     },{
-        path: '/pages/manage/',
-        component: require('@/components/Pagesmanagement.vue').default,
-        name: 'pages_management',
+        path: '/song/list/manage/',
+        component: require('@/components/Songsmanagement.vue').default,
+        name: 'songs_management',
         auth: true
     },{
         path: '/song/edit/:item_id(\\d+)',
@@ -52,16 +52,6 @@ var router = new Router({
         path: '/authors/',
         component: require('@/components/Authorlist.vue').default,
         name: 'authors_list',
-        auth: true
-    },{
-        path: '/latex/homepage/',
-        component: require('@/components/Latexhomepage.vue').default,
-        name: 'latex_homepage',
-        auth: true
-    },{
-        path: '/secli/homepage/',
-        component: require('@/components/Seclihomepage.vue').default,
-        name: 'secli_homepage',
         auth: true
     },{
         path: '/additional/latexcodes/',
