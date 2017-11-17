@@ -403,11 +403,17 @@ class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def edit_multiple_songs_tex(request, songs_ids, force=False):
-    songs_ids = songs_ids.split("/")
-    songs = {}
-    for song_id in songs_ids:
-        song = get_object_or_404(models.Song, pk=song_id)
-        songs[song_id] = song
+    print(songs_ids)
+    if songs_ids == "all":
+        songs = {
+            song.id: song for song in models.Song.objects.all()
+        }
+    else:
+        songs_ids = songs_ids.split("/")
+        songs = {}
+        for song_id in songs_ids:
+            song = get_object_or_404(models.Song, pk=song_id)
+            songs[song_id] = song
 
     if request.method == "POST":
         json_data = json.loads(request.body.decode('utf-8'))
@@ -417,7 +423,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
             song_lines_lists = song_code.strip().split("\n")
             song_id_latex = id_song_reg.search(song_lines_lists[0])
             if song_id_latex:
-                song_id_latex = song_id_latex.group(1)
+                song_id_latex = int(song_id_latex.group(1))
             else:
                 return JsonResponse({})
             song_code = "\n".join(song_lines_lists[1:])
@@ -452,7 +458,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
 
         for song in songs.values():
             latex_code.code += "\n% /!\ Do not delete these commented lines /!\ %\n"
-            latex_code.code += "% /!\ song #" + str(song.id) + " /!\ %\n\n"
+            latex_code.code += "% /!\ song #" + str(song.id) + " /!\ %\n"
             if song.latex_code:
                 latex_code.code += song.latex_code.code + "\n"
             else:
@@ -512,6 +518,7 @@ def find_copyrights_data(request, songs_ids):
         for song_id in songs_ids:
             song = get_object_or_404(models.Song, pk=song_id)
             songs[song_id] = song
+
     if not os.path.isfile('../data/copyrights_data.csv'):
         return JsonResponse({})
     else:
@@ -648,6 +655,6 @@ def guess_pages_numbers(request, songs_ids):
             )
 
             if best_ratio > 0.8:
-                output[song.id] = pages_data[closest_titles[0]]
+                output[song.id] = (pages_data[closest_titles[0]], titles[closest_titles[0]])
 
         return JsonResponse(output)

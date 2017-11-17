@@ -6,33 +6,36 @@
                     <div class="overlay" style="position: fixed; top: auto; left: auto; z-index: 10;">
                         <div class="ui labeled icon vertical menu">
                             <p>
-                                <button @click.prevent="edit()" class="vertical_item ui button primary">{{ t('Edit those songs') }}</button>
+                                <button @click.prevent="guessPages()" class="vertical_item ui button primary">{{ t('Guess the pages of those songs') }}</button>
                             </p>
                             <p>
                                 <button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button>
-                            </p>
-                            <p>
-                                <router-link tag="button" class="vertical_item ui button purple" :to="{name:'additional_latexcode_list'}">{{ t('Edit additional latex code') }}</router-link>
-                            </p>
-                            <p>
-                                <router-link tag="button" class="vertical_item ui button purple" :to="{name:'pages_management'}">{{ t('Manage pages') }}</router-link>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="twelve wide stretched column">
-                <template v-if="latexCode === true">
+                <template v-if="pagesGuessed === true">
                     Loading...
                 </template>
-                <template v-else-if="latexCode">
+                <template v-else-if="pagesGuessed">
                     <form id="songtexform" class="ui form">
                         <fieldset>
                             <legend>{{ t('Tex form for songs selected') }}</legend>
-                            <p class="field">
-                                <label for="content">Content:</label>
-                                <textarea name="content" v-model="latexCode" v-focus></textarea>
-                            </p>
+                            <template v-for="(item, n) in dataSongs">
+                                <p class="field">
+                                    <h3>{{item.title.toUpperCase()}}</h3>
+                                    <template v-if="pagesGuessed[item.id]">
+                                        <label :for="'content_'+n">{{ t('Guessed value: ') }}{{pagesGuessed[item.id][0]}} (<strong>{{ t('Title: ') }}{{pagesGuessed[item.id][1]}}</strong>)</label>
+                                        <input type="text" :id="'content_'+n" v-model="pagesChosen[item.id]" />
+                                    </template>
+                                    <template v-else>
+                                        <label :for="'content_'+n">{{ t('No guess: ') }}</label>
+                                        <input type="text" :id="'content_'+n" v-model="pagesChosen[item.id]" />
+                                    </template>
+                                </p>
+                            </template>
                             <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
                     </form>
@@ -47,7 +50,7 @@
                                     <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
                                     <input type="checkbox" id="select_all" v-model="allSelected" @change="select_all()"/>
                                 </p>
-                                <template v-for="(item, n) in results">
+                                <template v-for="(item, n) in dataSongs">
                                     <p>
                                         <label :for="'selectionner_' + item.id">{{item.title}}:</label>
                                         <input type="checkbox" v-model="checkedNames[n]" :value="item.id" :id="'selectionner_' + item.id" />
@@ -70,9 +73,10 @@
         name: "latex_homepage",
         data() {
             return {
-                results: Array,
+                dataSongs: Array,
                 checkedNames: Array,
-                latexCode: false,
+                pagesGuessed: false,
+                pagesChosen: false,
                 allSelected: false,
                 listIds: "",
             }
@@ -80,48 +84,67 @@
         created() {
             axios.get(root_url + "songs/list.json")
                 .then(response => {
-                    this.results = response.data;
-                    this.checkedNames = new Array(this.results.length)
+                    // this.$data.dataSongs = response.data
+
+                    this.$data.dataSongs = new Array()
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.$data.dataSongs[i] = response.data[i];
+                    }
+
+                    this.$data.checkedNames = new Array(this.$data.dataSongs.length)
+
                 },  (error) => { console.log(error) });
         },
         methods: {
-            edit() {
+            guessPages() {
                 // prepares the URL
                 let listIds = ""
                 let numberSelectedSongs = 0;
                 for (var i = 0; i < this.$data.checkedNames.length; i++) {
                     if( this.$data.checkedNames[i] ){
                         numberSelectedSongs++;
-                        listIds += "" + this.$data.results[i].id + "/";
+                        listIds += "" + this.$data.dataSongs[i].id + "/";
                     }
                 }
                 // if all songs have been selected, changes the url
                 if( numberSelectedSongs == this.$data.checkedNames.length ){
                     listIds = "all/"
                 }
-
+                
+                // if there is more then one 
                 if( listIds.length > 0 )
                 {
-                    this.$data.latexCode = true;
-                    axios.get(root_url + "song/edit/multiple/tex/" + listIds)
+                    this.$data.pagesGuessed = true;
+                    axios.get(root_url + "songs/guess/pages/" + listIds)
                     .then(response => {
+                        // pagesGuessed = data from API or null for songs that didn't match any song in the external database
+                        this.$data.pagesGuessed = new Array();
+                        // pagesChosen = data to save (data in the forms)
+                        this.$data.pagesChosen = new Array();
                         this.$data.listIds = listIds;
-                        this.$data.latexCode = response.data.code;
+
+                        this.$data.pagesGuessed = response.data;
+
+                        for (var i = 0; i < this.$data.dataSongs.length; i++) {
+                            // if this title has been associated to a song in the external database
+                            if( this.$data.pagesGuessed[this.$data.dataSongs[i].id] ){
+                                this.$data.pagesChosen[this.$data.dataSongs[i].id] = response.data[this.$data.dataSongs[i].id][0];
+                            } else {
+                                this.$data.pagesChosen[this.$data.dataSongs[i].id] = "";
+                            }
+                        }
                     },  (error) => { console.log(error) });
                 }
             },
             save() {
-                let data_code = {
-                    code: this.$data.latexCode
-                }
-                axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, data_code)
-                    .then(response => {
-                        console.log("Saved!")
-                    },  (error) => { console.log(error) })
+                // axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, data_code)
+                //     .then(response => {
+                //         console.log("Saved!")
+                //     },  (error) => { console.log(error) })
                 // this.$router.push({name:'latex_homepage'})
             },
             cancel() {
-                this.$data.latexCode = false
+                this.$data.pagesGuessed = false
                 // this.$data.checkedNames = new Array()
             },
             select_all() {

@@ -17,11 +17,11 @@ urlpatterns = [
         name="song_convert_to_tex"),
     url(r'^song/edit/tex/(?P<song_id>[0-9]+)/$', views.edit_tex,
         name="song_convert_to_tex"),
-    url(r'^song/edit/multiple/tex/(?P<songs_ids>[/0-9]+)/$', views.edit_multiple_songs_tex,
+    url(r'^song/edit/multiple/tex/(?P<songs_ids>[\/0-9]+|all)/$', views.edit_multiple_songs_tex,
         name="song_edit_multiple_songs_tex"),
     url(r'^song/compile/tex/(?P<song_id>[0-9]+)/$', views.compile_tex,
         name="song_compile_tex"),
-    url(r'^songs/guess/pages/(?P<songs_ids>[/0-9]+)/$', views.guess_pages_numbers,
+    url(r'^songs/guess/pages/(?P<songs_ids>[\/0-9]+|all)/$', views.guess_pages_numbers,
         name="songs_guess_pages_numbers"),
 
     url(r'^copyrights/extract/(?P<songs_ids>[\/0-9]+|all)/$', views.find_copyrights_data,

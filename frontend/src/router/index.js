@@ -27,6 +27,11 @@ var router = new Router({
         name: 'song_new',
         auth: true
     },{
+        path: '/pages/manage/',
+        component: require('@/components/Pagesmanagement.vue').default,
+        name: 'pages_management',
+        auth: true
+    },{
         path: '/song/edit/:item_id(\\d+)',
         component: require('@/components/Songeditform.vue').default,
         name: 'song_edit',

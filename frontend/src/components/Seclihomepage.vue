@@ -121,6 +121,7 @@
         },
         methods: {
             autofinder() {
+                // prepares the URL
                 let listIds = ""
                 let numberSelectedSongs = 0;
                 for (var i = 0; i < this.$data.checkedNames.length; i++) {
@@ -129,9 +130,12 @@
                         listIds += "" + this.$data.results[i].id + "/";
                     }
                 }
+
+                // if all songs have been selected, changes the url
                 if( numberSelectedSongs == this.$data.checkedNames.length ){
                     listIds = "all/"
                 }
+                
                 if( listIds.length > 0 )
                 {
                     this.$data.secliGuessedNumbers = true;
