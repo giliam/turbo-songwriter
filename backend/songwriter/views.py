@@ -474,8 +474,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
         return JsonResponse(serializer.data)
 
 
-def get_closest_songs(song_title, titles_list):
-    number_min_elements = 3
+def get_closest_songs(song_title, titles_list, number_min_elements=3):
     min_score = [
         # Stores (score, id_element)
         (0,0) for i in range(number_min_elements)
@@ -603,5 +602,52 @@ def find_copyrights_data(request, songs_ids):
                     else:
                         dic_song["author"] = close_song[copyrights_structure["author"]]
                     output[song.id].append(dic_song)
+
+        return JsonResponse(output)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def guess_pages_numbers(request, songs_ids):
+    if songs_ids == "all":
+        songs = {
+            song.id: song for song in models.Song.objects.all()
+        }
+    else:
+        songs_ids = songs_ids.split("/")
+        songs = {}
+        for song_id in songs_ids:
+            song = get_object_or_404(models.Song, pk=song_id)
+            songs[song_id] = song
+
+    if not os.path.isfile('../data/pages_data.csv'):
+        return JsonResponse({})
+    else:
+        pages_structure = {}
+        titles = {}
+
+        with open('../data/pages_data_structure.json', 'r') as f:
+            pages_structure = json.loads(f.read())
+        with open('../data/pages_data.csv', 'r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
+            pages_data = []
+            titles = []
+            for row in spamreader:
+                titles.append(row[pages_structure["title"]].upper())
+                pages_data.append(row[pages_structure["page"]])
+        
+        output = {
+            song.id: None for song in songs.values()
+        }
+
+        for song in songs.values():
+            best_ratio, closest_titles = get_closest_songs(
+                song.title.upper(), 
+                titles, 
+                number_min_elements=1
+            )
+
+            if best_ratio > 0.8:
+                output[song.id] = pages_data[closest_titles[0]]
 
         return JsonResponse(output)
