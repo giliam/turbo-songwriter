@@ -230,3 +230,39 @@ class AdditionalLaTeXContentSerializer(serializers.ModelSerializer):
             'name',
             'code',
         )
+
+
+class GroupListSerializer(serializers.ModelSerializer):
+    songs = SongListSerializer(many=True, read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
+
+    class Meta:
+        model = models.SongsGroup
+        fields = ('id', 'name', 'songs', 'url',)
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SongsGroup
+        fields = ('id', 'name', 'songs',)
+
+
+class GroupCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SongsGroup
+        fields = ('id', 'name', 'songs',)
+
+    def create(self, validated_data):
+        name = validated_data.get('name')
+        # Get the songs ids
+        songs = validated_data.pop('songs')
+
+        # Create our group
+        song_group = models.SongsGroup.objects.create(**validated_data)
+        # Process the songs.
+        for song in songs:
+            song_group.songs.add(song.id)
+
+        song_group.save()
+
+        return song_group

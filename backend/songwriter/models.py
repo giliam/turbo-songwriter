@@ -166,6 +166,31 @@ class Song(models.Model):
         return u"Song: {0}".format(self.title)
 
 
+class SongsGroup(models.Model):
+    name = models.CharField(
+        max_length=150,
+        default="",
+        blank=False
+    )
+    songs = models.ManyToManyField(Song, related_name='groups')
+
+    added_date = models.DateTimeField(
+        _('date added to the database'),
+        auto_now_add=True,
+        blank=True
+    )
+    updated_date = models.DateTimeField(
+        _('date updated to the database'),
+        auto_now=True
+    )
+
+    class Meta:
+        ordering = ['name',]
+
+    def __str__(self):
+        return u"SongsGroup {0}".format(self.name)
+
+
 class Paragraph(models.Model):
     order = models.PositiveIntegerField()
     song = models.ForeignKey(Song, related_name='paragraphs')

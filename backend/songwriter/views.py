@@ -172,6 +172,20 @@ class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.SongLaTeXCodeSerializer
 
 
+class SongsGroupList(generics.ListCreateAPIView):
+    queryset = models.SongsGroup.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ('GET',):
+            return serializers.GroupListSerializer
+        return serializers.GroupCreateSerializer
+
+
+class SongsGroupDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.SongsGroup.objects.all()
+    serializer_class = serializers.GroupSerializer
+
+
 @csrf_exempt
 @api_view(['GET', 'PUT'])
 def convert_to_tex(request, song_id):

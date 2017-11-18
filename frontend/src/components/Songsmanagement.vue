@@ -6,26 +6,35 @@
                     <div class="overlay" style="position: fixed; top: auto; left: auto; z-index: 10;">
                         <div class="ui labeled icon vertical menu">
                             <p>
+                                <button @click.prevent="cancel()" class="vertical_item ui button">{{ t('Cancel') }}</button>
+                            </p>
+                            <div class="header ui vertical_item">{{ t('Metadata') }}</div>
+                            <p>
                                 <button @click.prevent="guessPages()" class="vertical_item ui button orange">{{ t('Guess the pages of those songs') }}</button>
                             </p>
                             <p>
                                 <button @click.prevent="autofinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
                             </p>
+                            <div class="header ui vertical_item">{{ t('Latex management') }}</div>
                             <p>
                                 <button @click.prevent="editLatex()" class="vertical_item ui button purple">{{ t('Edit the latex of those songs') }}</button>
-                            </p>
-                            <p>
-                                <button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button>
                             </p>
                             <p>
                                 <router-link tag="button" class="vertical_item ui button purple" :to="{name:'additional_latexcode_list'}">{{ t('Edit additional latex code') }}</router-link>
                             </p>
                             <p>
-                                <button class="ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
+                                <button class="vertical_item ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
                             </p>
                             <template v-if="urlWholeCode">
                                 <p><a class="ui button black" :href="urlWholeCode" target="_blank">{{ t('Link to full tex') }}</a></p>
                             </template>
+                            <div class="header ui vertical_item">{{ t('Groups management') }}</div>
+                            <p>
+                                <button @click.prevent="createGroup()" class="vertical_item ui button green">{{ t('Create a group from those songs') }}</button>
+                            </p>
+                            <p>
+                                <router-link tag="button" class="vertical_item ui button olive" :to="{name:'groups_management'}">{{ t('Manage groups') }}</router-link>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -136,6 +145,7 @@
                 <template v-else>
                     <h2>{{ t('List of songs') }}</h2>
                     <div class="ui list aligned large">
+                        <groupsmanagement :selectedSongs="checkedNames" :songsData="dataSongs" :actionSent="actionGroupManagement" v-if="showGroupManagement"></groupsmanagement>
                         <form id="latex_songs_selection" class="ui form">
                             <p>
                                 <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
@@ -175,14 +185,22 @@
     import axios from 'axios'
     import {root_url} from '@/common/index.js'
 
+    import Groupsmanagement from '@/components/Groupsmanagement.vue'
+
     export default {
         name: "songs_management",
+        components: {
+            Groupsmanagement,
+        },
         data() {
             return {
                 dataSongs: Array,
                 checkedNames: Array,
                 allSelected: false,
                 listIds: "",
+
+                actionGroupManagement: false,
+                showGroupManagement: false,
                 
                 secliGuessedNumbers: false,
                 secliSelectedChoices: Array,
@@ -400,6 +418,17 @@
                     .then(response => {
                         this.$data.urlWholeCode = root_url + response.data.url
                     },  (error) => { console.log(error) });
+            },
+
+            createGroup() {
+                console.log("YOOO3")
+                this.computeListIds()
+                console.log("YOOO1")
+
+                this.$data.actionGroupManagement = "create"
+                console.log("YOOO2")
+                this.$data.showGroupManagement = true
+                console.log("YOOO4")
             }
         }
     }
