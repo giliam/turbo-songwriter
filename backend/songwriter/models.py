@@ -157,7 +157,10 @@ class Song(models.Model):
     )
 
     def get_printable_author(self):
-        return self.author.get_comparable()
+        if self.author:
+            return self.author.get_comparable()
+        else:
+            return "Unknown"
 
     class Meta:
         ordering = ['title']
