@@ -55,7 +55,7 @@
                         <div class="ui vertical buttons" v-if="!is_adding">
                             <button class="ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
                             <template v-if="url_whole_code">
-                                <a class="ui button black" :href="url_whole_code" target="_blank">{{ t('Link to pdf') }}</a>
+                                <a class="ui button black" :href="url_whole_code" target="_blank">{{ t('Link to full tex') }}</a>
                             </template>
                         </div>
                     </p>

@@ -20,6 +20,12 @@
                             <p>
                                 <router-link tag="button" class="vertical_item ui button purple" :to="{name:'additional_latexcode_list'}">{{ t('Edit additional latex code') }}</router-link>
                             </p>
+                            <p>
+                                <button class="ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
+                            </p>
+                            <template v-if="urlWholeCode">
+                                <p><a class="ui button black" :href="urlWholeCode" target="_blank">{{ t('Link to full tex') }}</a></p>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -187,6 +193,8 @@
                 latexCode: false,
                 
                 errorMessage: false,
+
+                urlWholeCode: null,
             }
         },
         created() {
@@ -384,6 +392,14 @@
                 for (var i = 0; i < this.$data.checkedNames.length; i++) {
                     this.$data.checkedNames[i] = this.$data.allSelected;
                 }
+            },
+
+
+            getWholeTexCode(){
+                axios.get(root_url + "get/whole/tex/")
+                    .then(response => {
+                        this.$data.urlWholeCode = root_url + response.data.url
+                    },  (error) => { console.log(error) });
             }
         }
     }

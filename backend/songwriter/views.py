@@ -374,7 +374,14 @@ def get_whole_tex_code(request):
     songs = models.Song.objects.filter(selected=True)
 
     for song in songs.all():
-        tex_code += song.latex_code.code
+        if hasattr(song, 'latex_code'):
+            tex_code += song.latex_code.code
+        else:
+            latex_code = models.SongLaTeXCode()
+            latex_code.song = song
+            latex_code.code = _convert_song_to_tex(song)
+            latex_code.save()
+            tex_code += latex_code.code
 
     tex_code += footer
 

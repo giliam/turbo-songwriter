@@ -91,5 +91,6 @@ export const locales = {
         'Pages choices for selected songs': 'Choix des numéros de pages pour les chansons sélectionnées',
         'Error': 'Erreur',
         "You forgot to select the best matching element for at least one song. Don't forget you still can edit the code in the input in the right column.": "Vous avez oublié de sélectionner le meilleur élément pour au moins une chanson. N'oubliez pas que vous pouvez toujours modifier le code de copyright dans le champ dans la colonne de droite.",
+        'Link to full tex': "Lien vers le tex complet",
     }
 }
