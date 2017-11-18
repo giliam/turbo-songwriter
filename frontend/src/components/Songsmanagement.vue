@@ -6,13 +6,13 @@
                     <div class="overlay" style="position: fixed; top: auto; left: auto; z-index: 10;">
                         <div class="ui labeled icon vertical menu">
                             <p>
-                                <button @click.prevent="guessPages()" class="vertical_item ui button primary">{{ t('Guess the pages of those songs') }}</button>
+                                <button @click.prevent="guessPages()" class="vertical_item ui button orange">{{ t('Guess the pages of those songs') }}</button>
                             </p>
                             <p>
-                                <button @click.prevent="autofinder()" class="vertical_item ui button primary">{{ t('Autofind those songs codes') }}</button>
+                                <button @click.prevent="autofinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
                             </p>
                             <p>
-                                <button @click.prevent="editLatex()" class="vertical_item ui button primary">{{ t('Edit the latex of those songs') }}</button>
+                                <button @click.prevent="editLatex()" class="vertical_item ui button purple">{{ t('Edit the latex of those songs') }}</button>
                             </p>
                             <p>
                                 <button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button>
@@ -25,25 +25,36 @@
                 </div>
             </div>
             <div class="twelve wide stretched column">
+                <div class="ui negative message" v-if="errorMessage">
+                    <i class="close icon" @click="errorMessage = false"></i>
+                    <div class="header">
+                        {{ t('Error') }}
+                    </div>
+                    <p>
+                        {{errorMessage}}
+                    </p>
+                </div>
                 <template v-if="pagesGuessed === true || secliGuessedNumbers === true || latexCode === true">
                     Loading...
                 </template>
                 <template v-else-if="pagesGuessed">
                     <form id="songtexform" class="ui form">
                         <fieldset>
-                            <legend>{{ t('Tex form for songs selected') }}</legend>
-                            <template v-for="(item, n) in dataSongs">
-                                <p class="field">
-                                    <h3>{{item.title.toUpperCase()}}</h3>
-                                    <template v-if="pagesGuessed[item.id]">
-                                        <label :for="'content_'+n">{{ t('Guessed value: ') }}{{pagesGuessed[item.id][0]}} (<strong>{{ t('Title: ') }}{{pagesGuessed[item.id][1]}}</strong>)</label>
-                                        <input type="text" :id="'content_'+n" v-model="pagesChosen[item.id]" />
-                                    </template>
-                                    <template v-else>
-                                        <label :for="'content_'+n">{{ t('No guess: ') }}</label>
-                                        <input type="text" :id="'content_'+n" v-model="pagesChosen[item.id]" />
-                                    </template>
-                                </p>
+                            <legend>{{ t('Pages choices for selected songs') }}</legend>
+                            <template v-for="(item, n) in checkedNames">
+                                <template v-if="item">
+                                    <p class="field">
+                                        <h3>{{dataSongs[n].title.toUpperCase()}}</h3>
+                                        <template v-if="pagesGuessed[dataSongs[n].id]">
+                                            <label :for="'content_'+n">{{ t('Guessed value: ') }}{{pagesGuessed[dataSongs[n].id][0]}} (<strong>{{ t('Title: ') }}{{pagesGuessed[dataSongs[n].id][1]}}</strong>)</label>
+                                            <input type="text" :id="'content_'+n" v-model="pagesChosen[dataSongs[n].id]" />
+                                        </template>
+                                        <template v-else>
+                                            <label :for="'content_'+n">{{ t('No guess: ') }}</label>
+                                            <input type="text" :id="'content_'+n" v-model="pagesChosen[dataSongs[n].id]" />
+                                        </template>
+                                    </p>
+                                </template>
                             </template>
                             <p class="field"><button @click.prevent="savePages()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
@@ -52,7 +63,7 @@
                 <template v-else-if="latexCode">
                     <form id="songtexform" class="ui form">
                         <fieldset>
-                            <legend>{{ t('Tex form for songs selected') }}</legend>
+                            <legend>{{ t('Tex form for selected songs') }}</legend>
                             <p class="field">
                                 <label for="content">Content:</label>
                                 <textarea name="content" v-model="latexCode" v-focus></textarea>
@@ -65,50 +76,52 @@
                     <form id="songtexform" class="ui form">
                         <fieldset>
                             <legend>{{ t('SECLI codes form for songs selected') }}</legend>
-                            <template v-for="(item, n) in dataSongs">
-                                <div class="ui grid sixteen columns">
-                                    <div class="four wide column center">
-                                        <h3>{{ t('Song:') }} {{item.title}}</h3>
-                                        <h4>{{ t('Written by:') }} {{item.get_printable_author}}</h4>
+                            <template v-for="(item, n) in checkedNames">
+                                <template v-if="item">
+                                    <div class="ui grid sixteen columns">
+                                        <div class="four wide column center">
+                                            <h3>{{ t('Song:') }} {{dataSongs[n].title}}</h3>
+                                            <h4>{{ t('Written by:') }} {{dataSongs[n].get_printable_author}}</h4>
+                                        </div>
+                                        <div class="twelve wide column">
+                                            <template v-if="secliGuessedNumbers[dataSongs[n].id].code">
+                                                <p>
+                                                <strong>{{ secliGuessedNumbers[dataSongs[n].id].title }}</strong>
+                                                </p>
+                                                <p>
+                                                <em>{{ t('Author: ') }} {{ secliGuessedNumbers[dataSongs[n].id].author[0] }} - {{ t('Composer: ') }} {{ secliGuessedNumbers[dataSongs[n].id].author[1] }}</em>
+                                                </p>
+                                                <p>
+                                                <input type="text" :name="'content_' + dataSongs[n].id" size="width:150px" v-model="secliGuessedNumbers[dataSongs[n].id].code" />
+                                                </p>
+                                            </template>
+                                            <template v-else>
+                                                <div class="ui grid sixteen columns">
+                                                    <template v-for="(song_proposal, l) in secliGuessedNumbers[dataSongs[n].id]">
+                                                        <div class="six wide column">
+                                                            <p class="field">
+                                                                <label :for="'selection_propositions_' + dataSongs[n].id + '_' + l">{{ t('Select this code: ') }}</label>
+                                                                <input type="radio" :value="l" :id="'selection_propositions_' + dataSongs[n].id + '_' + l" :name="'selection_propositions_' + dataSongs[n].id" v-model="secliSelectedChoices[n]" />
+                                                            </p>
+                                                        </div>
+                                                        <div class="ten wide column">
+                                                            <p>
+                                                            <strong>{{ song_proposal.title }}</strong>
+                                                            </p>
+                                                            <p>
+                                                            <em>{{ t('Author: ') }} {{ song_proposal.author[0] }} - {{ t('Composer: ') }} {{ song_proposal.author[1] }}</em>
+                                                            </p>
+                                                            <p class="field">
+                                                                <input type="text" :name="'content_' + dataSongs[n].id" v-model="secliGuessedNumbers[dataSongs[n].id][l].code" style="width:150px" />
+                                                            </p>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
-                                    <div class="twelve wide column">
-                                        <template v-if="secliGuessedNumbers[item.id].code">
-                                            <p>
-                                            <strong>{{ secliGuessedNumbers[item.id].title }}</strong>
-                                            </p>
-                                            <p>
-                                            <em>{{ t('Author: ') }} {{ secliGuessedNumbers[item.id].author[0] }} - {{ t('Composer: ') }} {{ secliGuessedNumbers[item.id].author[1] }}</em>
-                                            </p>
-                                            <p>
-                                            <input type="text" :name="'content_' + item.id" size="width:150px" v-model="secliGuessedNumbers[item.id].code" />
-                                            </p>
-                                        </template>
-                                        <template v-else>
-                                            <div class="ui grid sixteen columns">
-                                                <template v-for="(song_proposal, l) in secliGuessedNumbers[item.id]">
-                                                    <div class="six wide column">
-                                                        <p class="field">
-                                                            <label :for="'selection_propositions_' + item.id + '_' + l">{{ t('Select this code: ') }}</label>
-                                                            <input type="radio" :id="'selection_propositions_' + item.id + '_' + l" :name="'selection_propositions_' + item.id" v-model="song_proposal.selected" />
-                                                        </p>
-                                                    </div>
-                                                    <div class="ten wide column">
-                                                        <p>
-                                                        <strong>{{ song_proposal.title }}</strong>
-                                                        </p>
-                                                        <p>
-                                                        <em>{{ t('Author: ') }} {{ song_proposal.author[0] }} - {{ t('Composer: ') }} {{ song_proposal.author[1] }}</em>
-                                                        </p>
-                                                        <p class="field">
-                                                            <input type="text" :name="'content_' + item.id" v-model="song_proposal.code" style="width:150px" />
-                                                        </p>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-                                <div class="ui section divider"></div>
+                                    <div class="ui section divider"></div>
+                                </template>
                             </template>
                             <p class="field"><button @click.prevent="saveCodes()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
@@ -118,19 +131,32 @@
                     <h2>{{ t('List of songs') }}</h2>
                     <div class="ui list aligned large">
                         <form id="latex_songs_selection" class="ui form">
-                            <fieldset>
-                                <legend>{{ t('Select the songs to edit') }}</legend>
-                                <p>
-                                    <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
-                                    <input type="checkbox" id="select_all" v-model="allSelected" @change="select_all()"/>
-                                </p>
+                            <p>
+                                <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
+                                <input type="checkbox" id="select_all" v-model="allSelected" @change="select_all()"/>
+                            </p>
+                            <table class="ui celled table">
+                              <thead>
+                                <tr><th>{{ t('Title') }}</th>
+                                <th>{{ t('Author') }}</th>
+                                <th>{{ t('Code') }}</th>
+                                <th>{{ t('Page') }}</th>
+                                <th>{{ t('Select') }}</th>
+                              </tr></thead>
+                              <tbody>
                                 <template v-for="(item, n) in dataSongs">
-                                    <p>
-                                        <label :for="'selectionner_' + item.id">{{item.title}}:</label>
-                                        <input type="checkbox" v-model="checkedNames[n]" :value="item.id" :id="'selectionner_' + item.id" />
-                                    </p>
+                                    <tr>
+                                        <td><label :for="'selectionner_' + item.id">
+                                            <strong>{{item.title}}</strong>
+                                        </label></td>
+                                        <td><label :for="'selectionner_' + item.id">{{item.get_printable_author}}</label></td>
+                                        <td><label :for="'selectionner_' + item.id">{{item.secli_number}}</label></td>
+                                        <td><label :for="'selectionner_' + item.id">{{item.page_number}}</label></td>
+                                        <td><input type="checkbox" v-model="checkedNames[n]" :value="item.id" :id="'selectionner_' + item.id" /></td>
+                                    </tr>
                                 </template>
-                            </fieldset>
+                                </tbody>
+                            </table>
                         </form>
                     </div>
                 </template>
@@ -148,13 +174,19 @@
         data() {
             return {
                 dataSongs: Array,
-                secliGuessedNumbers: false,
                 checkedNames: Array,
-                pagesGuessed: false,
-                latexCode: false,
-                pagesChosen: false,
                 allSelected: false,
                 listIds: "",
+                
+                secliGuessedNumbers: false,
+                secliSelectedChoices: Array,
+
+                pagesGuessed: false,
+                pagesChosen: false,
+                
+                latexCode: false,
+                
+                errorMessage: false,
             }
         },
         created() {
@@ -172,7 +204,7 @@
                 },  (error) => { console.log(error) });
         },
         methods: {
-            guessPages() {
+            computeListIds() {
                 // prepares the URL
                 let listIds = ""
                 let numberSelectedSongs = 0;
@@ -186,73 +218,86 @@
                 if( numberSelectedSongs == this.$data.checkedNames.length ){
                     listIds = "all/"
                 }
-                
+
                 // if there is more then one 
                 if( listIds.length > 0 )
                 {
+                    this.$data.listIds = listIds;
+                }
+            },
+
+            guessPages() {
+                this.computeListIds()
+                
+                // if there is more then one 
+                if( this.$data.listIds.length > 0 )
+                {
                     this.$data.pagesGuessed = true;
-                    axios.get(root_url + "songs/guess/pages/" + listIds)
+                    axios.get(root_url + "songs/guess/pages/" + this.$data.listIds)
                     .then(response => {
                         // pagesGuessed = data from API or null for songs that didn't match any song in the external database
                         this.$data.pagesGuessed = new Array();
                         // pagesChosen = data to save (data in the forms)
                         this.$data.pagesChosen = new Array();
-                        this.$data.listIds = listIds;
 
                         this.$data.pagesGuessed = response.data;
 
-                        for (var i = 0; i < this.$data.dataSongs.length; i++) {
-                            // if this title has been associated to a song in the external database
-                            if( this.$data.pagesGuessed[this.$data.dataSongs[i].id] ){
-                                this.$data.pagesChosen[this.$data.dataSongs[i].id] = response.data[this.$data.dataSongs[i].id][0];
-                            } else {
-                                this.$data.pagesChosen[this.$data.dataSongs[i].id] = "";
+                        for (var i = 0; i < this.$data.checkedNames.length; i++) {
+                            if( this.$data.checkedNames[i] ){
+                                // if this title has been associated to a song in the external database
+                                if( this.$data.pagesGuessed[this.$data.dataSongs[i].id] ){
+                                    this.$data.pagesChosen[this.$data.dataSongs[i].id] = response.data[this.$data.dataSongs[i].id][0];
+                                } else {
+                                    this.$data.pagesChosen[this.$data.dataSongs[i].id] = "";
+                                }
                             }
                         }
                     },  (error) => { console.log(error) });
                 }
             },
             savePages() {
-                // axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, data_code)
-                //     .then(response => {
-                //         console.log("Saved!")
-                //     },  (error) => { console.log(error) })
-                // this.$router.push({name:'latex_homepage'})
+                let dataToSend = new Array()
+
+                for (var i = 0; i < this.$data.checkedNames.length; i++) {
+                    if( this.$data.checkedNames[i] ){
+                        let songId = this.$data.dataSongs[i].id;
+                        if( this.$data.pagesChosen[songId] != "" ) {
+                            dataToSend.push({
+                                id: songId,
+                                page: this.$data.pagesChosen[songId]
+                            })
+                        }
+                    }
+                }
+
+                axios.post(root_url + "songs/guess/pages/" + this.$data.listIds, dataToSend)
+                    .then(response => {
+                        this.cancel()
+                        this.update()
+                    },  (error) => { console.log(error) });
             },
 
 
             editLatex() {
-                // prepares the URL
-                let listIds = ""
-                let numberSelectedSongs = 0;
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    if( this.$data.checkedNames[i] ){
-                        numberSelectedSongs++;
-                        listIds += "" + this.$data.dataSongs[i].id + "/";
-                    }
-                }
-                // if all songs have been selected, changes the url
-                if( numberSelectedSongs == this.$data.checkedNames.length ){
-                    listIds = "all/"
-                }
+                this.computeListIds()
 
-                if( listIds.length > 0 )
+                if( this.$data.listIds.length > 0 )
                 {
                     this.$data.latexCode = true;
-                    axios.get(root_url + "song/edit/multiple/tex/" + listIds)
+                    axios.get(root_url + "song/edit/multiple/tex/" + this.$data.listIds)
                     .then(response => {
-                        this.$data.listIds = listIds;
                         this.$data.latexCode = response.data.code;
                     },  (error) => { console.log(error) });
                 }
             },
             saveLatex() {
-                let data_code = {
+                let dataToSend = {
                     code: this.$data.latexCode
                 }
-                axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, data_code)
+                axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, dataToSend)
                     .then(response => {
-                        console.log("Saved!")
+                        this.cancel()
+                        this.update()
                     },  (error) => { console.log(error) })
                 // this.$router.push({name:'latex_homepage'})
             },
@@ -260,41 +305,75 @@
 
 
             autofinder() {
-                // prepares the URL
-                let listIds = ""
-                let numberSelectedSongs = 0;
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    if( this.$data.checkedNames[i] ){
-                        numberSelectedSongs++;
-                        listIds += "" + this.$data.dataSongs[i].id + "/";
-                    }
-                }
-
-                // if all songs have been selected, changes the url
-                if( numberSelectedSongs == this.$data.checkedNames.length ){
-                    listIds = "all/"
-                }
+                this.computeListIds()
                 
-                if( listIds.length > 0 )
+                if( this.$data.listIds.length > 0 )
                 {
                     this.$data.secliGuessedNumbers = true;
-                    axios.get(root_url + "copyrights/extract/" + listIds)
+                    axios.get(root_url + "copyrights/extract/" + this.$data.listIds)
                     .then(response => {
-                        this.$data.listIds = listIds;
                         this.$data.secliGuessedNumbers = response.data;
+                        this.$data.secliSelectedChoices = new Array();
                         for (var i = 0; i < this.$data.checkedNames.length; i++) {
                             if( this.$data.checkedNames[i] ){
-                                // console.log(response.data[this.$data.dataSongs[i].id]);
+                                if( this.$data.secliGuessedNumbers[this.$data.dataSongs[i].id].length ){
+                                    this.$data.secliSelectedChoices[i] = undefined;
+                                }
                             }
                         }
+
                     },  (error) => { console.log(error) });
                 }
             },
             saveCodes() {
+                let dataToSend = new Array()
+
+                for (var i = 0; i < this.$data.checkedNames.length; i++) {
+                    if( this.$data.checkedNames[i] ){
+                        let songId = this.$data.dataSongs[i].id;
+                        let currentSongSecli = this.$data.secliGuessedNumbers[songId];
+
+                        if( currentSongSecli.length && this.$data.secliSelectedChoices[i] === undefined ) {
+                            this.$data.errorMessage = this.$translate.text("You forgot to select the best matching element for at least one song. Don't forget you still can edit the code in the input in the right column.");
+                            return "";
+                        }else{
+                            // When there are many choices possible (no obvious matching song)
+                            if( currentSongSecli.length ) {
+                                dataToSend.push({
+                                    id: songId,
+                                    chosenNumber: currentSongSecli[this.$data.secliSelectedChoices[i]].code
+                                })
+                            }
+                            // When a matching song was found.
+                            else {
+                                dataToSend.push({
+                                    id: songId,
+                                    chosenNumber: currentSongSecli.code
+                                })
+                            }
+                        }
+                    }
+                }
+
+                axios.post(root_url + "copyrights/extract/" + this.$data.listIds, dataToSend)
+                    .then(response => {
+                        this.cancel()
+                        this.update()
+                    },  (error) => { console.log(error) })
 
             },
 
+            update() {
+                axios.get(root_url + "songs/list.json")
+                .then(response => {
+                    // this.$data.dataSongs = response.data
 
+                    this.$data.dataSongs = new Array()
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.$data.dataSongs[i] = response.data[i];
+                    }
+                },  (error) => { console.log(error) });
+            },
             cancel() {
                 this.$data.pagesGuessed = false
                 this.$data.secliGuessedNumbers = false

@@ -506,155 +506,189 @@ def get_code_song(data, code_columns_id):
 
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def find_copyrights_data(request, songs_ids):
-    if songs_ids == "all":
-        songs = {
-            song.id: song for song in models.Song.objects.all()
-        }
-    else:
-        songs_ids = songs_ids.split("/")
-        songs = {}
-        for song_id in songs_ids:
-            song = get_object_or_404(models.Song, pk=song_id)
-            songs[song_id] = song
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        songs = models.Song.objects.filter(id__in=[d["id"] for d in json_data])
 
-    if not os.path.isfile('../data/copyrights_data.csv'):
+        new_codes = {}
+        for elements in json_data:
+            try:
+                new_codes[elements["id"]] = elements["chosenNumber"].strip()
+            except:
+                pass
+        for song in songs.all():
+            if song.id in new_codes.keys():
+                song.secli_number = new_codes[song.id]
+                song.save()
+
         return JsonResponse({})
     else:
-        copyrights_structure = {}
-        titles = {}
+        if songs_ids == "all":
+            songs = {
+                song.id: song for song in models.Song.objects.all()
+            }
+        else:
+            songs_ids = songs_ids.split("/")
+            songs = {}
+            for song_id in songs_ids:
+                song = get_object_or_404(models.Song, pk=song_id)
+                songs[song_id] = song
 
-        with open('../data/copyrights_data_structure.json', 'r') as f:
-            copyrights_structure = json.loads(f.read())
-        with open('../data/copyrights_data.csv', 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
-            titles = []
-            rows = []
-            for row in spamreader:
-                titles.append(row[copyrights_structure["title"]].upper())
-                rows.append(row)
-        
-        output = {
-            song.id: {} for song in songs.values()
-        }
+        if not os.path.isfile('../data/copyrights_data.csv'):
+            return JsonResponse({})
+        else:
+            copyrights_structure = {}
+            titles = {}
 
-        for song in songs.values():
-            best_ratio, closest_titles = get_closest_songs(song.title.upper(), titles)
+            with open('../data/copyrights_data_structure.json', 'r') as f:
+                copyrights_structure = json.loads(f.read())
+            with open('../data/copyrights_data.csv', 'r') as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
+                titles = []
+                rows = []
+                for row in spamreader:
+                    titles.append(row[copyrights_structure["title"]].upper())
+                    rows.append(row)
             
-            # if the best ratio is not even bigger than #arbitrary threshold, 
-            # there is no use to look for author
-            if best_ratio > 0.8:
-                best_ratio = 0
-                best_song_id = 0
-                for title_id in closest_titles:
-                    if type(copyrights_structure["author"]) == list:
-                        for author_id_column in copyrights_structure["author"]:
+            output = {
+                song.id: {} for song in songs.values()
+            }
+
+            for song in songs.values():
+                best_ratio, closest_titles = get_closest_songs(song.title.upper(), titles)
+                
+                # if the best ratio is not even bigger than #arbitrary threshold, 
+                # there is no use to look for author
+                if best_ratio > 0.8:
+                    best_ratio = 0
+                    best_song_id = 0
+                    for title_id in closest_titles:
+                        if type(copyrights_structure["author"]) == list:
+                            for author_id_column in copyrights_structure["author"]:
+                                score = difflib.SequenceMatcher(
+                                    None, 
+                                    song.author.get_comparable(), 
+                                    rows[title_id][author_id_column]
+                                ).ratio()
+                                
+                                if score > best_ratio:
+                                    best_ratio = score
+                                    best_song_id = title_id
+                        else:
                             score = difflib.SequenceMatcher(
                                 None, 
                                 song.author.get_comparable(), 
-                                rows[title_id][author_id_column]
+                                rows[title_id][copyrights_structure["author"]]
                             ).ratio()
                             
                             if score > best_ratio:
                                 best_ratio = score
                                 best_song_id = title_id
-                    else:
-                        score = difflib.SequenceMatcher(
-                            None, 
-                            song.author.get_comparable(), 
-                            rows[title_id][copyrights_structure["author"]]
-                        ).ratio()
-                        
-                        if score > best_ratio:
-                            best_ratio = score
-                            best_song_id = title_id
-            
-                # adds arbitrary threshold for unique song choice
-                if best_ratio > 0.8:
-                    best_song = rows[best_song_id]
-                    output[song.id] = {
-                        "code": get_code_song(
-                            best_song, 
-                            copyrights_structure["number"]
-                        ),
-                        "title": best_song[copyrights_structure["title"]],
-                        "selected": True,
-                    }
-                    if type(copyrights_structure["author"]) == list:
-                        output[song.id]["author"] = []
-                        for author_id_column in copyrights_structure["author"]:
-                            output[song.id]["author"].append(best_song[author_id_column])
-                    else:
-                        output[song.id]["author"] = best_song[copyrights_structure["author"]]
+                
+                    # adds arbitrary threshold for unique song choice
+                    if best_ratio > 0.8:
+                        best_song = rows[best_song_id]
+                        output[song.id] = {
+                            "code": get_code_song(
+                                best_song, 
+                                copyrights_structure["number"]
+                            ),
+                            "title": best_song[copyrights_structure["title"]],
+                            "selected": True,
+                        }
+                        if type(copyrights_structure["author"]) == list:
+                            output[song.id]["author"] = []
+                            for author_id_column in copyrights_structure["author"]:
+                                output[song.id]["author"].append(best_song[author_id_column])
+                        else:
+                            output[song.id]["author"] = best_song[copyrights_structure["author"]]
 
-            # if the best fit has not been found,
-            # returns the whole choices given by titles comparisons
-            if output[song.id] == {}:
-                output[song.id] = []
-                for title_id in closest_titles:
-                    close_song = rows[title_id]
-                    dic_song = {
-                        "code": get_code_song(
-                            close_song, 
-                            copyrights_structure["number"]
-                        ),
-                        "title": close_song[copyrights_structure["title"]],
-                        "selected": False,
-                    }
-                    if type(copyrights_structure["author"]) == list:
-                        dic_song["author"] = []
-                        for author_id_column in copyrights_structure["author"]:
-                            dic_song["author"].append(close_song[author_id_column])
-                    else:
-                        dic_song["author"] = close_song[copyrights_structure["author"]]
-                    output[song.id].append(dic_song)
+                # if the best fit has not been found,
+                # returns the whole choices given by titles comparisons
+                if output[song.id] == {}:
+                    output[song.id] = []
+                    for title_id in closest_titles:
+                        close_song = rows[title_id]
+                        dic_song = {
+                            "code": get_code_song(
+                                close_song, 
+                                copyrights_structure["number"]
+                            ),
+                            "title": close_song[copyrights_structure["title"]],
+                            "selected": False,
+                        }
+                        if type(copyrights_structure["author"]) == list:
+                            dic_song["author"] = []
+                            for author_id_column in copyrights_structure["author"]:
+                                dic_song["author"].append(close_song[author_id_column])
+                        else:
+                            dic_song["author"] = close_song[copyrights_structure["author"]]
+                        output[song.id].append(dic_song)
 
-        return JsonResponse(output)
+            return JsonResponse(output)
 
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def guess_pages_numbers(request, songs_ids):
-    if songs_ids == "all":
-        songs = {
-            song.id: song for song in models.Song.objects.all()
-        }
-    else:
-        songs_ids = songs_ids.split("/")
-        songs = {}
-        for song_id in songs_ids:
-            song = get_object_or_404(models.Song, pk=song_id)
-            songs[song_id] = song
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        songs = models.Song.objects.filter(id__in=[d["id"] for d in json_data])
 
-    if not os.path.isfile('../data/pages_data.csv'):
+        new_pages = {}
+        for elements in json_data:
+            try:
+                new_pages[elements["id"]] = elements["page"].strip()
+            except:
+                pass
+        for song in songs.all():
+            if song.id in new_pages.keys():
+                song.page_number = new_pages[song.id]
+                song.save()
+                # print("Song", song.title, "new page is", song.page)
         return JsonResponse({})
     else:
-        pages_structure = {}
-        titles = {}
+        if songs_ids == "all":
+            songs = {
+                song.id: song for song in models.Song.objects.all()
+            }
+        else:
+            songs_ids = songs_ids.split("/")
+            songs = {}
+            for song_id in songs_ids:
+                song = get_object_or_404(models.Song, pk=song_id)
+                songs[song_id] = song
 
-        with open('../data/pages_data_structure.json', 'r') as f:
-            pages_structure = json.loads(f.read())
-        with open('../data/pages_data.csv', 'r') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
-            pages_data = []
-            titles = []
-            for row in spamreader:
-                titles.append(row[pages_structure["title"]].upper())
-                pages_data.append(row[pages_structure["page"]])
-        
-        output = {
-            song.id: None for song in songs.values()
-        }
+        if not os.path.isfile('../data/pages_data.csv'):
+            return JsonResponse({})
+        else:
+            pages_structure = {}
+            titles = {}
 
-        for song in songs.values():
-            best_ratio, closest_titles = get_closest_songs(
-                song.title.upper(), 
-                titles, 
-                number_min_elements=1
-            )
+            with open('../data/pages_data_structure.json', 'r') as f:
+                pages_structure = json.loads(f.read())
+            with open('../data/pages_data.csv', 'r') as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=';', quotechar='"')
+                pages_data = []
+                titles = []
+                for row in spamreader:
+                    titles.append(row[pages_structure["title"]].upper())
+                    pages_data.append(row[pages_structure["page"]])
+            
+            output = {
+                song.id: None for song in songs.values()
+            }
 
-            if best_ratio > 0.8:
-                output[song.id] = (pages_data[closest_titles[0]], titles[closest_titles[0]])
+            for song in songs.values():
+                best_ratio, closest_titles = get_closest_songs(
+                    song.title.upper(), 
+                    titles, 
+                    number_min_elements=1
+                )
 
-        return JsonResponse(output)
+                if best_ratio > 0.8:
+                    output[song.id] = (pages_data[closest_titles[0]], titles[closest_titles[0]])
+
+            return JsonResponse(output)

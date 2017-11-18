@@ -213,6 +213,8 @@ class SongListSerializer(serializers.ModelSerializer):
             'id',
             'url',
             'title',
+            'page_number',
+            'secli_number',
             'get_printable_author',
         )
 
