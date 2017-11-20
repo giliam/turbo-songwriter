@@ -56,7 +56,7 @@
                     <form id="songtexform" class="ui form">
                         <fieldset>
                             <legend>{{ t('Pages choices for selected songs') }}</legend>
-                            <template v-for="(item, n) in checkedNames">
+                            <template v-for="(item, n) in checkedSongs">
                                 <template v-if="item">
                                     <p class="field">
                                         <h3>{{dataSongs[n].title.toUpperCase()}}</h3>
@@ -91,7 +91,7 @@
                     <form id="songtexform" class="ui form">
                         <fieldset>
                             <legend>{{ t('SECLI codes form for songs selected') }}</legend>
-                            <template v-for="(item, n) in checkedNames">
+                            <template v-for="(item, n) in checkedSongs">
                                 <template v-if="item">
                                     <div class="ui grid sixteen columns">
                                         <div class="four wide column center">
@@ -145,8 +145,23 @@
                 <template v-else>
                     <h2>{{ t('List of songs') }}</h2>
                     <div class="ui list aligned large">
-                        <groupsmanagement :selectedSongs="checkedNames" :songsData="dataSongs" :actionSent="actionGroupManagement" v-if="showGroupManagement"></groupsmanagement>
+                        <groupsmanagement :selectedSongs="checkedSongs" :songsData="dataSongs" :actionSent="actionGroupManagement" v-if="showGroupManagement"></groupsmanagement>
                         <form id="latex_songs_selection" class="ui form">
+                            <p>{{ t('Select the songs by group:') }}</p>
+                            <table class="ui fixed celled table">
+                                <tbody>
+                                    <tr v-for="i in Math.ceil(dataGroups.length / 4)">
+                                        <td v-for="(group, n) in dataGroups.slice((i - 1) * 4, i * 4)">
+                                            <label :for="'group_selection_'+group.id">{{group.name}} 
+                                                <input type="checkbox" :id="'group_selection_' + group.id" @change="select_group(group.id, (i-1)*4+n)" v-model="checkedGroups[(i-1)*4+n]"/>
+                                            </label>
+                                        </td>
+                                        <td v-if="dataGroups.slice((i - 1) * 4, i * 4).length < 4" v-for="k in 4-dataGroups.slice((i - 1) * 4, i * 4).length">
+                                            
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <p>
                                 <label for="select_all"><strong>{{ t('Select all:') }}</strong></label>
                                 <input type="checkbox" id="select_all" v-model="allSelected" @change="select_all()"/>
@@ -168,7 +183,7 @@
                                         <td><label :for="'selectionner_' + item.id">{{item.get_printable_author}}</label></td>
                                         <td><label :for="'selectionner_' + item.id">{{item.secli_number}}</label></td>
                                         <td><label :for="'selectionner_' + item.id">{{item.page_number}}</label></td>
-                                        <td><input type="checkbox" v-model="checkedNames[n]" :value="item.id" :id="'selectionner_' + item.id" /></td>
+                                        <td><input type="checkbox" v-model="checkedSongs[n]" :value="item.id" :id="'selectionner_' + item.id" /></td>
                                     </tr>
                                 </template>
                                 </tbody>
@@ -194,8 +209,10 @@
         },
         data() {
             return {
+                dataGroups: Array,
+                checkedGroups: Array,
                 dataSongs: Array,
-                checkedNames: Array,
+                checkedSongs: Array,
                 allSelected: false,
                 listIds: "",
 
@@ -225,8 +242,17 @@
                         this.$data.dataSongs[i] = response.data[i];
                     }
 
-                    this.$data.checkedNames = new Array(this.$data.dataSongs.length)
+                    this.$data.checkedSongs = new Array(this.$data.dataSongs.length)
 
+                },  (error) => { console.log(error) });
+
+            axios.get(root_url + "groups/list/")
+                .then(response => {
+                    this.$data.dataGroups = response.data
+                    this.$data.checkedGroups = new Array(this.$data.dataGroups.length)
+                    for (var i = 0; i < this.$data.checkedGroups.length; i++) {
+                        this.$data.checkedGroups[i] = false
+                    }
                 },  (error) => { console.log(error) });
         },
         methods: {
@@ -234,14 +260,14 @@
                 // prepares the URL
                 let listIds = ""
                 let numberSelectedSongs = 0;
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    if( this.$data.checkedNames[i] ){
+                for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                    if( this.$data.checkedSongs[i] ){
                         numberSelectedSongs++;
                         listIds += "" + this.$data.dataSongs[i].id + "/";
                     }
                 }
                 // if all songs have been selected, changes the url
-                if( numberSelectedSongs == this.$data.checkedNames.length ){
+                if( numberSelectedSongs == this.$data.checkedSongs.length ){
                     listIds = "all/"
                 }
 
@@ -268,8 +294,8 @@
 
                         this.$data.pagesGuessed = response.data;
 
-                        for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                            if( this.$data.checkedNames[i] ){
+                        for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                            if( this.$data.checkedSongs[i] ){
                                 // if this title has been associated to a song in the external database
                                 if( this.$data.pagesGuessed[this.$data.dataSongs[i].id] ){
                                     this.$data.pagesChosen[this.$data.dataSongs[i].id] = response.data[this.$data.dataSongs[i].id][0];
@@ -284,8 +310,8 @@
             savePages() {
                 let dataToSend = new Array()
 
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    if( this.$data.checkedNames[i] ){
+                for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                    if( this.$data.checkedSongs[i] ){
                         let songId = this.$data.dataSongs[i].id;
                         if( this.$data.pagesChosen[songId] != "" ) {
                             dataToSend.push({
@@ -340,8 +366,8 @@
                     .then(response => {
                         this.$data.secliGuessedNumbers = response.data;
                         this.$data.secliSelectedChoices = new Array();
-                        for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                            if( this.$data.checkedNames[i] ){
+                        for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                            if( this.$data.checkedSongs[i] ){
                                 if( this.$data.secliGuessedNumbers[this.$data.dataSongs[i].id].length ){
                                     this.$data.secliSelectedChoices[i] = undefined;
                                 }
@@ -354,8 +380,8 @@
             saveCodes() {
                 let dataToSend = new Array()
 
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    if( this.$data.checkedNames[i] ){
+                for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                    if( this.$data.checkedSongs[i] ){
                         let songId = this.$data.dataSongs[i].id;
                         let currentSongSecli = this.$data.secliGuessedNumbers[songId];
 
@@ -404,11 +430,23 @@
                 this.$data.pagesGuessed = false
                 this.$data.secliGuessedNumbers = false
                 this.$data.latexCode = false
-                // this.$data.checkedNames = new Array()
+                // this.$data.checkedSongs = new Array()
             },
             select_all() {
-                for (var i = 0; i < this.$data.checkedNames.length; i++) {
-                    this.$data.checkedNames[i] = this.$data.allSelected;
+                for (var i = 0; i < this.$data.checkedSongs.length; i++) {
+                    this.$data.checkedSongs[i] = this.$data.allSelected;
+                }
+            },
+            select_group(groupId, n){
+                for (var i = 0; i < this.$data.dataGroups[n].songs.length; i++) {
+                    console.log("Group:", this.$data.dataGroups[n].songs[i].id, this.$data.dataGroups[n].songs[i].title)
+                    for (var j = 0; j < this.$data.dataSongs.length; j++) {
+                        if( this.$data.dataSongs[j].id == this.$data.dataGroups[n].songs[i].id ) {
+                            console.log("Song:", this.$data.dataSongs[j].id, this.$data.dataSongs[j].title)
+                            console.log("Song #", j)
+                            this.$data.checkedSongs[j] = this.$data.checkedGroups[n]
+                        }
+                    }
                 }
             },
 

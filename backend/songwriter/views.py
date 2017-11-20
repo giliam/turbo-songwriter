@@ -666,7 +666,7 @@ def guess_pages_numbers(request, songs_ids):
                 pass
         for song in songs.all():
             if song.id in new_pages.keys():
-                song.page_number = new_pages[song.id]
+                song.old_page_number = new_pages[song.id]
                 song.save()
                 # print("Song", song.title, "new page is", song.page)
         return JsonResponse({})
