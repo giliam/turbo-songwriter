@@ -97,6 +97,7 @@ export const locales = {
         'Create a group from those songs': 'Créer un group avec ces chants',
         'Groups management': 'Gestion des groupes',
         'Latex management': 'Gestion du LaTeX',
-        'Metadata': 'Métadonnées'
+        'Metadata': 'Métadonnées',
+        'Is a refrain?': 'Est un refrain ?',
     }
 }

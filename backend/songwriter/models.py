@@ -125,6 +125,11 @@ class Song(models.Model):
         blank=True
     )
 
+    is_refrain = models.BooleanField(
+        default=False,
+        verbose_name=_("is a refrain song?").capitalize()
+    )
+
     page_number = models.CharField(
         max_length=20,
         default="0",

@@ -30,6 +30,10 @@
                 </select>
             </p>
             <p class="field">
+                <label for="is_refrain">{{ t('Is a refrain?') }}</label>
+                <input type="checkbox" id="is_refrain" name="is_refrain" v-model="is_refrain" />
+            </p>
+            <p class="field">
                 <label for="secli_number">{{ t('SECLI Number ') }}:</label>
                 <input type="text" name="secli_number" v-model="secli_number">
             </p>
@@ -65,6 +69,7 @@
                 title: "",
                 author: 0,
                 editor: 0,
+                is_refrain: false,
                 page_number: 0,
                 old_page_number: 0,
                 secli_number: "",
@@ -109,6 +114,7 @@
                         }
                         if( response.data.editor )
                             this.$data.editor = response.data.editor.id
+                        this.$data.is_refrain = response.data.is_refrain
                         this.$data.secli_number = response.data.secli_number
                         this.$data.page_number = response.data.page_number
                         this.$data.old_page_number = response.data.old_page_number
@@ -139,6 +145,7 @@
                     title: this.$data.title,
                     author: this.$data.author,
                     editor: this.$data.editor,
+                    is_refrain: this.$data.is_refrain,
                     secli_number: this.$data.secli_number,
                     page_number: this.$data.page_number,
                     old_page_number: this.$data.old_page_number,
