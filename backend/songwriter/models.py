@@ -99,7 +99,21 @@ class Chord(models.Model):
     def __str__(self):
         return u"Note: {0}".format(self.note)
 
-class Song(models.Model):
+
+class BookElement(models.Model):
+    selected = models.BooleanField(
+        default=True,
+        blank=False
+    )
+    order_value = models.IntegerField(
+        default=0
+    )
+
+    class Meta:
+        abstract = True
+
+
+class Song(BookElement):
     title = models.CharField(
         max_length=150,
         default="",
@@ -141,11 +155,6 @@ class Song(models.Model):
         blank=True
     )
 
-    selected = models.BooleanField(
-        default=True,
-        blank=False
-    )
-
     comments = models.TextField(
         blank=True,
         verbose_name=_("comments").capitalize()
@@ -174,7 +183,7 @@ class Song(models.Model):
         return u"Song: {0}".format(self.title)
 
 
-class SongsGroup(models.Model):
+class SongsGroup(BookElement):
     name = models.CharField(
         max_length=150,
         default="",

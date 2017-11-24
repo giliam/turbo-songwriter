@@ -25,6 +25,26 @@ from songwriter import models
 from songwriter import serializers
 
 
+def _get_default_header():
+    return """
+\\documentclass[preprint,11pt]{book}
+\\usepackage[utf8]{inputenc}
+\\usepackage[francais]{babel}
+\\usepackage{fancyhdr}
+\\setcounter{secnumdepth}{0}
+\\setcounter{tocdepth}{1}
+\\pagestyle{fancy}
+\\begin{document}
+    """
+
+
+def _get_default_footer():
+    return """
+\\tableofcontents
+\\end{document}
+    """
+
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return response.Response({
@@ -195,6 +215,12 @@ def convert_to_tex(request, song_id):
 def _convert_song_to_tex(song):
     tex_output = "\\section{%s}" % (song.title,) + "\n"
     tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
+    if song.page_number and song.old_page_number:
+        tex_output += u"\cfoot{%s (%s)}\n" % (song.page_number, song.old_page_number)
+    elif song.page_number:
+        tex_output += u"\cfoot{%s}\n" % (song.page_number, )
+    elif song.old_page_number:
+        tex_output += u"\cfoot{%s}\n" % (song.old_page_number, )
 
     for paragraph in song.paragraphs.all():
         tex_output += "\\paragraph{}\n"
@@ -312,22 +338,13 @@ def compile_tex(request, song_id):
     if additional_latex_content.filter(name="header").exists():
         header = additional_latex_content.get(name="header").code
     else:
-        header = """
-\\documentclass[preprint,11pt]{book}
-\\usepackage[utf8]{inputenc}
-\\usepackage[francais]{babel}
-\\setcounter{secnumdepth}{0}
-\\setcounter{tocdepth}{1}
-\\begin{document}
-    """
+        header = _get_default_header()
 
     if additional_latex_content.filter(name="footer").exists():
         footer = additional_latex_content.get(name="footer").code
     else:
-        footer = """
-\\tableofcontents
-\\end{document}
-"""
+        footer = _get_default_footer()
+
     tex_code = header
 
     tex_code += song.latex_code.code
@@ -367,27 +384,19 @@ def get_whole_tex_code(request):
     if additional_latex_content.filter(name="header").exists():
         header = additional_latex_content.get(name="header").code
     else:
-        header = """
-\\documentclass[preprint,11pt]{book}
-\\usepackage[utf8]{inputenc}
-\\usepackage[francais]{babel}
-\\setcounter{secnumdepth}{0}
-\\setcounter{tocdepth}{1}
-\\begin{document}
-    """
+        header = _get_default_header()
 
     if additional_latex_content.filter(name="footer").exists():
         footer = additional_latex_content.get(name="footer").code
     else:
-        footer = """
-\\tableofcontents
-\\end{document}
-"""
+        footer = _get_default_footer()
+
     tex_code = header
 
     songs = models.Song.objects.filter(selected=True)
 
     for song in songs.all():
+        tex_code += "\n\n"
         if hasattr(song, 'latex_code'):
             tex_code += song.latex_code.code
         else:
@@ -424,7 +433,6 @@ class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def edit_multiple_songs_tex(request, songs_ids, force=False):
-    print(songs_ids)
     if songs_ids == "all":
         songs = {
             song.id: song for song in models.Song.objects.all()
@@ -467,14 +475,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
         if additional_latex_content.filter(name="header").exists():
             latex_code.code = additional_latex_content.get(name="header").code
         else:
-            latex_code.code = """
-    \\documentclass[preprint,11pt]{book}
-    \\usepackage[utf8]{inputenc}
-    \\usepackage[francais]{babel}
-    \\setcounter{secnumdepth}{0}
-    \\setcounter{tocdepth}{1}
-    \\begin{document}
-        """
+            latex_code.code = _get_default_header()
 
 
         for song in songs.values():
@@ -489,10 +490,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
         if additional_latex_content.filter(name="footer").exists():
             latex_code.code += additional_latex_content.get(name="footer").code
         else:
-            latex_code.code += """
-    \\tableofcontents
-    \\end{document}
-    """
+            latex_code.code += _get_default_footer()
 
         serializer = serializers.AdditionalLaTeXContentSerializer(
             latex_code, 

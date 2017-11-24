@@ -217,6 +217,7 @@ class SongListSerializer(serializers.ModelSerializer):
             'title',
             'is_refrain',
             'page_number',
+            'old_page_number',
             'secli_number',
             'get_printable_author',
         )

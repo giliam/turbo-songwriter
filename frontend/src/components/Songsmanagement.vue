@@ -182,7 +182,7 @@
                                         </label></td>
                                         <td><label :for="'selectionner_' + item.id">{{item.get_printable_author}}</label></td>
                                         <td><label :for="'selectionner_' + item.id">{{item.secli_number}}</label></td>
-                                        <td><label :for="'selectionner_' + item.id">{{item.page_number}}</label></td>
+                                        <td><label :for="'selectionner_' + item.id">{{ t('New') }} {{item.page_number}} / {{ t('Old') }} {{item.old_page_number}}</label></td>
                                         <td><input type="checkbox" v-model="checkedSongs[n]" :value="item.id" :id="'selectionner_' + item.id" /></td>
                                     </tr>
                                 </template>
