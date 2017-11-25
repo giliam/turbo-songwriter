@@ -1,1 +1,2 @@
 export const root_url = "http://localhost:8000/api/"
+export const songs_by_page = 20

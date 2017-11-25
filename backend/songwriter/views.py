@@ -87,6 +87,10 @@ class SongList(generics.ListCreateAPIView):
         return serializers.SongSerializer
 
 
+class SongListPaginate(SongList):
+    pagination_class = serializers.ResultsSetPagination
+
+
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Song.objects.all()
 

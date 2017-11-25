@@ -3,8 +3,14 @@
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
-
+from rest_framework import pagination
 from songwriter import models
+
+
+class ResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class UserSerializer(serializers.ModelSerializer):
