@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import tempfile
 
+import slugify
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -410,6 +412,12 @@ def get_whole_tex_code(request):
             latex_code.save()
             tex_code += latex_code.code
 
+    themes = models.Theme.objects.all()
+    tex_code += "\\newpage"
+    tex_code += _get_summary(songs)
+    tex_code += "\\newpage"
+    tex_code += _get_thematic_summary(songs, themes)
+
     tex_code += footer
 
     f = open('out.tex','w')
@@ -715,3 +723,29 @@ def guess_pages_numbers(request, songs_ids):
                     output[song.id] = (pages_data[closest_titles[0]], titles[closest_titles[0]])
 
             return JsonResponse(output)
+
+
+def _get_summary(songs):
+    output = "\\section{Sommaire}\n"
+    last_letter = ""
+    for song in songs.order_by('title'):
+        first_letter = _simplify_title_letters(song.title[0])
+        if first_letter != last_letter:
+            last_letter = first_letter
+            output += "\\subsection{%s}\n\\paragraph{}\n" % (song.title[0], )
+        output += "%s - %s \\\\ \n" % (song.title, song.page_number)
+    return output
+        
+
+def _get_thematic_summary(songs, themes):
+    output = "\\section{Index thématique}\n"
+    for theme in themes.order_by('name'):
+        output += "\\subsection{%s}\n\\paragraph{}\n" % (theme.name, )
+        songs_filtered = songs.filter(theme=theme)
+        for song in songs_filtered.all():
+            output += "%s - %s \\\\ \n" % (song.title, song.page_number)
+    return output
+
+
+def _simplify_title_letters(title):
+    return slugify.slugify(title).upper()
