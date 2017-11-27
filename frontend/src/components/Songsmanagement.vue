@@ -8,16 +8,12 @@
                             <p>
                                 <button @click.prevent="cancel()" class="vertical_item ui button">{{ t('Cancel') }}</button>
                             </p>
-                            <div class="header ui vertical_item">{{ t('Metadata') }}</div>
-                            <p>
-                                <button @click.prevent="guessPages()" class="vertical_item ui button orange">{{ t('Guess the pages of those songs') }}</button>
-                            </p>
-                            <p>
-                                <button @click.prevent="autofinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
-                            </p>
                             <div class="header ui vertical_item">{{ t('Latex management') }}</div>
                             <p>
                                 <button @click.prevent="editLatex()" class="vertical_item ui button purple">{{ t('Edit the latex of those songs') }}</button>
+                            </p>
+                            <p>
+                                <router-link tag="button" class="vertical_item ui button purple" :to="{name: 'book_order'}">{{ t('Sort the elements of the book') }}</router-link>
                             </p>
                             <p>
                                 <router-link tag="button" class="vertical_item ui button purple" :to="{name:'additional_latexcode_list'}">{{ t('Edit additional latex code') }}</router-link>
@@ -34,6 +30,13 @@
                             </p>
                             <p>
                                 <router-link tag="button" class="vertical_item ui button olive" :to="{name:'groups_management'}">{{ t('Manage groups') }}</router-link>
+                            </p>
+                            <div class="header ui vertical_item">{{ t('Metadata') }}</div>
+                            <p>
+                                <button @click.prevent="guessPages()" class="vertical_item ui button orange">{{ t('Guess the pages of those songs') }}</button>
+                            </p>
+                            <p>
+                                <button @click.prevent="autofinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
                             </p>
                         </div>
                     </div>

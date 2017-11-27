@@ -99,5 +99,13 @@ export const locales = {
         'Latex management': 'Gestion du LaTeX',
         'Metadata': 'Métadonnées',
         'Is a refrain?': 'Est un refrain ?',
+        'Caracteristics': 'Caractéristiques',
+        'Selected for book': 'Selectionné pour le carnet',
+        'Unselect': 'Déselectionner',
+        'Select': 'Sélectionner',
+        'Sort the elements of the book': 'Trier les éléments du carnet',
+        'Names': 'Noms',
+        'Song title: ': 'Titre de chanson : ',
+        'Group': 'Groupe',
     }
 }

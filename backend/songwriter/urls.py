@@ -29,6 +29,11 @@ urlpatterns = [
     url(r'^copyrights/extract/(?P<songs_ids>[\/0-9]+|all)/$', views.find_copyrights_data,
         name="find_copyrights_data"),
 
+    url(r'^book/elements/sort/$', views.update_book_elements_list,
+        name="book_elements_sort"),
+    url(r'^book/elements/list/$', views.book_elements_list,
+        name="book_elements_list"),
+
     url(r'^groups/list/$', views.SongsGroupList.as_view(),
         name="groups_list"),
     url(r'^groups/(?P<pk>[0-9]+)/$', views.SongsGroupDetail.as_view(),

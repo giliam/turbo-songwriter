@@ -112,6 +112,12 @@ class BookElement(models.Model):
     class Meta:
         abstract = True
 
+    def print(self):
+        return ""
+
+    def is_song(self):
+        return isinstance(self, Song)
+
 
 class Song(BookElement):
     title = models.CharField(
@@ -182,6 +188,9 @@ class Song(BookElement):
     def __str__(self):
         return u"Song: {0}".format(self.title)
 
+    def print(self):
+        return str(self)
+
 
 class SongsGroup(BookElement):
     name = models.CharField(
@@ -205,7 +214,10 @@ class SongsGroup(BookElement):
         ordering = ['name',]
 
     def __str__(self):
-        return u"SongsGroup {0}".format(self.name)
+        return u"Group {0}".format(self.name)
+
+    def print(self):
+        return str(self)
 
 
 class Paragraph(models.Model):

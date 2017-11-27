@@ -37,6 +37,11 @@ var router = new Router({
         name: 'songs_management',
         auth: true
     },{
+        path: '/book/elements/order/',
+        component: require('@/components/Orderbook.vue').default,
+        name: 'book_order',
+        auth: true
+    },{
         path: '/song/edit/:item_id(\\d+)',
         component: require('@/components/Songeditform.vue').default,
         name: 'song_edit',

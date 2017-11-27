@@ -159,6 +159,8 @@ class SongSerializer(serializers.ModelSerializer):
         model = models.Song
         fields = (
             'id',
+            'selected', 
+            'order_value',
             'title',
             'author',
             'editor',
@@ -171,7 +173,8 @@ class SongSerializer(serializers.ModelSerializer):
             'old_page_number',
             'comments',
             'added_date',
-            'updated_date'
+            'updated_date', 
+            'is_song'
         )
 
 
@@ -248,19 +251,39 @@ class GroupListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.SongsGroup
-        fields = ('id', 'name', 'songs', 'url',)
+        fields = (
+            'id',
+            'name',
+            'songs',
+            'url',
+            'selected',
+            'order_value'
+        )
 
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SongsGroup
-        fields = ('id', 'name', 'songs',)
+        fields = (
+            'id', 
+            'selected', 
+            'order_value', 
+            'name', 
+            'songs', 
+            'is_song'
+        )
 
 
 class GroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SongsGroup
-        fields = ('id', 'name', 'songs',)
+        fields = (
+            'id', 
+            'name', 
+            'songs', 
+            'selected', 
+            'order_value'
+        )
 
     def create(self, validated_data):
         name = validated_data.get('name')

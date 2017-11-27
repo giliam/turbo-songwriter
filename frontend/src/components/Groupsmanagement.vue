@@ -49,6 +49,7 @@
             <table class="ui celled table">
                 <thead>
                     <tr><th>{{ t('Names') }}</th>
+                    <th>{{ t('Caracteristics') }}</th>
                     <th>{{ t('Songs') }}</th>
                     <th>{{ t('Actions') }}</th>
                     </tr>
@@ -59,6 +60,22 @@
                             <td><label :for="'selectionner_' + group.id">
                                 <strong>{{group.name}}</strong>
                             </label></td>
+                            <td>
+                                <p class="item">
+                                    <label :for="'select_' + group.id">
+                                        <template v-if="group.selected">
+                                            {{ t('Unselect') }}
+                                        </template>
+                                        <template v-else>
+                                            {{ t('Select') }}
+                                        </template>
+                                    </label>
+                                    <input type="checkbox" @click="selectGroup(group)" :id="'select_' + group.id" v-model="group.selected" />
+                                </p>
+                                <template v-if="group.selected">
+                                    <p>{{ t('Selected for book') }}</p>
+                                </template>
+                            </td>
                             <td><ul>
                                 <template v-for="song in group.songs">
                                     <li>{{song.title}}</li>
@@ -192,6 +209,24 @@
             },
             cancel() {
                 this.$data.action = "list"
+            },
+            selectGroup(group){
+                let new_group = {
+                    name: group.name,
+                    selected: !group.selected,
+                    order_value: group.order_value
+                }
+                console.log(new_group)
+                new_group.songs = new Array()
+                for (var i = 0; i < group.songs.length; i++) {
+                    new_group.songs.push(group.songs[i].id)
+                }
+
+                axios.put(root_url + "groups/" + group.id + "/", new_group)
+                    .then(response => { 
+                        this.sync(true)
+                     },
+                    (error) => { console.log("Error", error) });
             }
         }
     }

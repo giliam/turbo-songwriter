@@ -749,3 +749,52 @@ def _get_thematic_summary(songs, themes):
 
 def _simplify_title_letters(title):
     return slugify.slugify(title).upper()
+
+
+@csrf_exempt
+@api_view(['GET'])
+def book_elements_list(request):
+    songs = models.Song.objects.order_by('-selected', 'order_value').all()
+    groups = models.SongsGroup.objects.order_by('-selected', 'order_value').all()
+    songs_serializer = serializers.SongSerializer(songs, many=True)
+    groups_serializer = serializers.GroupSerializer(groups, many=True)
+
+    output_data = songs_serializer.data+groups_serializer.data
+    output_data = sorted(
+        output_data, 
+        key=lambda t: list(t.items())[2][1])
+    output_data = sorted(
+        output_data, 
+        key=lambda t: not list(t.items())[1][1])
+    return JsonResponse(output_data, safe=False)
+
+
+@csrf_exempt
+@api_view(['PUT'])
+def update_book_elements_list(request):
+    if request.method == "PUT":
+        json_data = json.loads(request.body.decode('utf-8'))
+        songs_list = {
+            item["id"]: item 
+            for item in json_data if item["is_song"]
+        }
+        groups_list = {
+            item["id"]: item
+            for item in json_data if not item["is_song"]
+        }
+        songs = models.Song.objects.filter(id__in=songs_list.keys())
+        groups = models.SongsGroup.objects.filter(id__in=groups_list.keys())
+
+        for song in songs.all():
+            song.selected = songs_list[song.id]["selected"]
+            song.order_value = songs_list[song.id]["order_value"]
+            song.save()
+
+        for group in groups.all():
+            group.selected = groups_list[group.id]["selected"]
+            group.order_value = groups_list[group.id]["order_value"]
+            group.save()
+
+        return JsonResponse({})
+    else:
+        return JsonResponse({})
