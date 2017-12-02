@@ -21,8 +21,11 @@
                             <p>
                                 <button class="vertical_item ui button purple" @click.prevent="getWholeTexCode()">{{ t('Get whole LaTeX code') }}</button>
                             </p>
-                            <template v-if="urlWholeCode">
-                                <p><a class="ui button black" :href="urlWholeCode" target="_blank">{{ t('Link to full tex') }}</a></p>
+                            <template v-if="urlWholeTex">
+                                <p><a class="ui button black" :href="urlWholeTex" target="_blank">{{ t('Link to full tex') }}</a></p>
+                            </template>
+                            <template v-if="urlWholePdf">
+                                <p><a class="ui button black" :href="urlWholePdf" target="_blank">{{ t('Link to full pdf') }}</a></p>
                             </template>
                             <div class="header ui vertical_item">{{ t('Groups management') }}</div>
                             <p>
@@ -232,7 +235,8 @@
                 
                 errorMessage: false,
 
-                urlWholeCode: null,
+                urlWholeTex: null,
+                urlWholePdf: null,
             }
         },
         created() {
@@ -457,7 +461,8 @@
             getWholeTexCode(){
                 axios.get(root_url + "get/whole/tex/")
                     .then(response => {
-                        this.$data.urlWholeCode = root_url + response.data.url
+                        this.$data.urlWholeTex = root_url + response.data.url_tex
+                        this.$data.urlWholePdf = root_url + response.data.url_pdf
                     },  (error) => { console.log(error) });
             },
 

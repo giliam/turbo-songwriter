@@ -42,7 +42,6 @@ def _get_default_header():
 
 def _get_default_footer():
     return """
-\\tableofcontents
 \\end{document}
     """
 
@@ -236,6 +235,7 @@ def _convert_song_to_tex(song):
             else:
                 tex_output += verse.content + "\n"
             tex_output += "\\newline\n"
+    tex_output += "\\newline\n"
     return tex_output
 
 
@@ -337,7 +337,6 @@ def compile_tex(request, song_id):
 
     current = os.getcwd()
     temp = tempfile.mkdtemp()
-    os.chdir(temp)
 
     additional_latex_content = models.AdditionalLaTeXContent.objects.all()
 
@@ -357,16 +356,21 @@ def compile_tex(request, song_id):
 
     tex_code += footer
 
-    f = open('out.tex','w')
+    f = open(os.path.join(temp, 'out.tex'),'w')
     f.write(tex_code)
     f.close()
 
-    proc=subprocess.Popen(['pdflatex','out.tex'])
+    proc=subprocess.Popen(['pdflatex', '-output-directory=' + temp, os.path.join(temp, 'out.tex')])
     proc.communicate()
 
-    os.rename('out.pdf',"song_" + str(song.id) + ".pdf")
-    shutil.copy("song_" + str(song.id) + ".pdf", current + "/media/pdf/")
-    os.chdir(current)
+    os.rename(
+        os.path.join(temp, 'out.pdf'),
+        os.path.join(temp, "song_" + str(song.id) + ".pdf")
+    )
+    shutil.copy(
+        os.path.join(temp, "song_" + str(song.id) + ".pdf"), 
+        os.path.join(current, "media/pdf/")
+    )
     shutil.rmtree(temp)
 
     song.latex_code.is_compiled = True
@@ -383,7 +387,6 @@ def get_whole_tex_code(request):
     """
     current = os.getcwd()
     temp = tempfile.mkdtemp()
-    os.chdir(temp)
 
     additional_latex_content = models.AdditionalLaTeXContent.objects.all()
 
@@ -420,16 +423,20 @@ def get_whole_tex_code(request):
 
     tex_code += footer
 
-    f = open('out.tex','w')
+    f = open(os.path.join(temp, 'out.tex'),'w')
     f.write(tex_code)
     f.close()
 
-    os.rename('out.tex',"full.tex")
-    shutil.copy("full.tex", current + "/media/tex/")
-    os.chdir(current)
+    proc=subprocess.Popen(['pdflatex', '-output-directory=' + temp, os.path.join(temp, 'out.tex')])
+    proc.communicate()
+
+    os.rename(os.path.join(temp, 'out.pdf'),os.path.join(temp, 'whole_book.pdf'))
+    os.rename(os.path.join(temp, 'out.tex'),os.path.join(temp, 'full.tex'))
+    shutil.copy(os.path.join(temp, "full.tex"), current + "/media/tex/")
+    shutil.copy(os.path.join(temp, "whole_book.pdf"), current + "/media/pdf/")
     shutil.rmtree(temp)
 
-    return JsonResponse({"url":"media/tex/full.tex"}, safe=False)
+    return JsonResponse({"url_tex":"media/tex/full.tex", "url_pdf":"media/pdf/whole_book.pdf"}, safe=False)
 
 
 class AdditionalLaTeXContentList(generics.ListCreateAPIView):
