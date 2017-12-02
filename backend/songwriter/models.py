@@ -35,7 +35,10 @@ class Author(models.Model):
         return u"{0} {1}".format(self.firstname, self.lastname.upper())
 
     def get_comparable(self):
-        return u"{1} {0}.".format(self.firstname.upper()[0], self.lastname.upper())
+        if self.firstname:
+            return u"{1} {0}.".format(self.firstname.upper()[0], self.lastname.upper())
+        else:
+            return u"{0}.".format(self.lastname.upper())
 
 
 class Editor(models.Model):

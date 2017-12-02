@@ -33,6 +33,16 @@ class Song(object):
         self.author = author
         self.lyrics = lyrics
 
+    def _parse_author_name(self, author_name):
+        if author_name.count(".") == 1:
+            parts = author_name.split(".", 1)
+            return (parts[0] + ".", parts[1])
+        elif author_name.count(".") > 1:
+            parts = author_name[::-1].split(".", 1)
+            return (parts[1][::-1] + ".", parts[0][::-1])
+        else:
+            return ("", author_name)
+
     def ready_for_lyrics(self):
         return not self.title is None and not self.author is None
 
@@ -102,8 +112,6 @@ class Song(object):
         if empty_song:
             return db_data
 
-        print("Saves", self.title)
-
         song = models.Song()
         song.title = self.title
         if self.author and ("–" in self.author or "-" in self.author):
@@ -116,7 +124,8 @@ class Song(object):
             author_name = copyrights[0].strip()
             if not author_name in db_data["authors"].keys():
                 author = models.Author()
-                author.firstname = author_name
+                author.firstname, author.lastname = self._parse_author_name(author_name)
+                print("Base : ", author_name, "\n", "firstname:", author.firstname, "Lastname:", author.lastname)
                 author.save()
                 song.author = author
                 db_data["authors"][author_name] = author
@@ -137,13 +146,16 @@ class Song(object):
         elif self.author:
             if not self.author in db_data["authors"].keys():
                 author = models.Author()
-                author.firstname = self.author
+                author.firstname, author.lastname = self._parse_author_name(self.author)
+                print("Base : ", self.author, "\n", "firstname:", author.firstname, "Lastname:", author.lastname)
                 author.save()
                 song.author = author
                 db_data["authors"][self.author] = author
             else:
                 song.author = db_data["authors"][self.author]
-
+        
+        print("Saves", self.title, song.author)
+        
         song.save()
 
         order_paragraph = 0
