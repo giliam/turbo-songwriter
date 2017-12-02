@@ -5,7 +5,7 @@
             <template v-if="get_number_pages() > 1">
                 <paginate
                   :pageCount="get_number_pages()"
-                  :page-range="1"
+                  :page-range="2"
                   :clickHandler="changeSongsPage"
                   :prevText="'Prev'"
                   :nextText="'Next'"
@@ -24,7 +24,7 @@
             <template v-if="get_number_pages() > 1">
                 <paginate
                   :pageCount="get_number_pages()"
-                  :page-range="1"
+                  :page-range="2"
                   :clickHandler="changeSongsPage"
                   :prevText="'Prev'"
                   :nextText="'Next'"
