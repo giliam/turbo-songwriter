@@ -29,13 +29,48 @@ from songwriter import serializers
 
 def _get_default_header():
     return """
-\\documentclass[preprint,11pt]{book}
+\\documentclass[a6paper,9pt]{book}
+
+\\usepackage{geometry}
+\\geometry{a6paper,
+left=5mm,
+bottom=4mm,
+right=5mm,
+top=5mm}
+
 \\usepackage[utf8]{inputenc}
 \\usepackage[francais]{babel}
-\\usepackage{fancyhdr}
+\\usepackage{times}
+\\usepackage{relsize}
+
+% ------------
+% PAGE NUMBER
+% ------------
 \\setcounter{secnumdepth}{0}
 \\setcounter{tocdepth}{1}
+\\usepackage{fancyhdr}
 \\pagestyle{fancy}
+
+% ------------
+% TITLES
+% ------------
+\\usepackage{titlesec}
+
+% \\titleformat{<command>}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
+\\titleformat{\\subsection}[display]{\\small\\itshape}{}{}{}[\\vspace{-0.3cm}\\rule{\\textwidth}{0.1pt}]
+
+% \\titleformat*{<command>}{<style>}
+\\titleformat*{\\section}{\\normalsize\\bfseries\\relscale{1.07}}
+
+% \\titlespacing*{<command>}{<left>}{<before-sep>}{<after-sep>}
+\\titlespacing*{\\section}{0pt}{0cm}{0cm}
+\\titlespacing*{\\subsection}{0pt}{0cm}{0.21cm}
+
+% ------------
+% PARAGRAPHS
+% ------------
+\\setlength{\\parindent}{-10pt}
+
 \\begin{document}
     """
 
@@ -73,6 +108,7 @@ class UserDetail(generics.RetrieveAPIView):
 
 class SongList(generics.ListCreateAPIView):
     queryset = models.Song.objects.all()
+    queryset = queryset.prefetch_related('author')
 
     def get_serializer_class(self):
         # Thanks to https://stackoverflow.com/a/41313121

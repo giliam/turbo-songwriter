@@ -297,8 +297,8 @@ class Parser(object):
             "authors":{},
             "editors":{},
         }
-        # for song in self.all_songs:
-        #     db_data = song.save_song(db_data)
+        for song in self.all_songs:
+            db_data = song.save_song(db_data)
 
     def compile(self):
         """

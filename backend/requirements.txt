@@ -2,6 +2,7 @@ Django==1.11.1
 Markdown==2.6.8
 PyJWT==1.5.3
 Pygments==2.2.0
+Unidecode==0.04.21
 certifi==2017.7.27.1
 chardet==3.0.4
 django-cors-headers==2.1.0
@@ -13,6 +14,7 @@ djoser==0.7.0
 httpie==0.9.9
 idna==2.5
 psycopg2==2.7.3
+python-slugify==1.2.4
 pytz==2017.2
 requests==2.18.3
 urllib3==1.22
