@@ -91,6 +91,15 @@ class VerseReadSerializer(serializers.ModelSerializer):
             'updated_date'
         )
 
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.select_related(
+            'harmonizations'
+        )
+        
+        return queryset
+
 
 class VerseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -153,6 +162,17 @@ class ParagraphSerializer(serializers.ModelSerializer):
             'updated_date'
         )
 
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.select_related(
+            'song'
+        ).prefetch_related(
+            'verses'
+        )
+
+        return queryset
+
 
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
@@ -176,6 +196,19 @@ class SongSerializer(serializers.ModelSerializer):
             'updated_date', 
             'is_song'
         )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.select_related(
+            'author'
+        ).select_related(
+            'editor'
+        ).select_related(
+            'theme'
+        )
+
+        return queryset
 
 
 class SongLaTeXCodeSerializer(serializers.ModelSerializer):
@@ -214,6 +247,19 @@ class SongReadSerializer(serializers.ModelSerializer):
             'updated_date'
         )
 
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.select_related(
+            'author'
+        ).select_related(
+            'editor'
+        ).prefetch_related(
+            'theme'
+        ).prefetch_related(
+            'paragraphs'
+        )
+        return queryset
 
 class SongListSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
@@ -230,6 +276,10 @@ class SongListSerializer(serializers.ModelSerializer):
             'secli_number',
             'get_printable_author',
         )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        return queryset
 
 
 class AdditionalLaTeXContentSerializer(serializers.ModelSerializer):

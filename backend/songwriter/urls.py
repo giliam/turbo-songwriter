@@ -15,6 +15,8 @@ urlpatterns = [
         name="songs_list_paginate"),
     url(r'^songs/(?P<pk>[0-9]+)/$', views.SongDetail.as_view(),
         name="songs_detail"),
+    url(r'^songs/fast/data/(?P<song_id>[0-9]+)/$', views.get_song_details,
+        name="songs_fast_data"),
     url(r'^song/convert/to/tex/(?P<song_id>[0-9]+)/$', views.convert_to_tex,
         name="song_convert_to_tex"),
     url(r'^song/edit/tex/(?P<song_id>[0-9]+)/$', views.edit_tex,

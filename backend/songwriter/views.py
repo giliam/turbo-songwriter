@@ -72,6 +72,17 @@ top=5mm}
 \\setlength{\\parindent}{-10pt}
 
 \\begin{document}
+
+% ------------
+% CHORDS
+% ------------
+
+\\usepackage{color}
+\\definecolor{gray}{gray}{0.45}
+
+\\newcommand{\\accords}[1]{\\hfill {\\color{gray} \\emph{#1}}}
+\\newcommand{\\accord}[1]{#1}
+
     """
 
 
@@ -107,8 +118,10 @@ class UserDetail(generics.RetrieveAPIView):
 
 
 class SongList(generics.ListCreateAPIView):
-    queryset = models.Song.objects.all()
-    queryset = queryset.prefetch_related('author')
+    def get_queryset(self):
+        queryset = models.Song.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
     def get_serializer_class(self):
         # Thanks to https://stackoverflow.com/a/41313121
@@ -129,7 +142,10 @@ class SongListPaginate(SongList):
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = models.Song.objects.all()
+    def get_queryset(self):
+        queryset = models.Song.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
     def get_serializer_class(self):
         if self.request.method in ('GET',):
@@ -178,12 +194,20 @@ class ChordDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ParagraphList(generics.ListCreateAPIView):
-    queryset = models.Paragraph.objects.all()
+    def get_queryset(self):
+        queryset = models.Paragraph.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
+
     serializer_class = serializers.ParagraphSerializer
 
 
 class ParagraphDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = models.Paragraph.objects.all()
+    def get_queryset(self):
+        queryset = models.Paragraph.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
+    
     serializer_class = serializers.ParagraphSerializer
 
 
@@ -253,6 +277,42 @@ def convert_to_tex(request, song_id):
     return edit_tex(request, song_id, True)
 
 
+def _print_harmonization_of_verse(verse):
+    if verse.harmonizations.exists():
+        chords_to_add = {}
+        for harmonization in verse.harmonization_set.all():
+            chords_to_add[harmonization.start_spot_in_verse] = {
+                "end": harmonization.end_spot_in_verse,
+                "note": harmonization.chord.note,
+            }
+        
+        has_to_be_underlined = False
+        current_chord = None
+        text_output = ""
+        chord_output = "\\accords{"
+        for i, letter in enumerate(verse.content):
+            if has_to_be_underlined and i == current_chord["end"]:
+                text_output += letter + "}"
+                has_to_be_underlined = False
+                current_chord = None
+            elif i in chords_to_add.keys():
+                text_output += "\\underline{" + letter
+                current_chord = chords_to_add[i]
+                if current_chord["end"] == i:
+                    text_output += "}"
+                else:
+                    has_to_be_underlined = True
+                if chord_output != "\\accords{":
+                    chord_output += "\\quad"
+                chord_output += "\\accord{%s}" % (current_chord["note"],)
+            else:
+                text_output += letter
+        chord_output += "}"
+        return text_output, chord_output
+    else:
+        return verse.content, ""
+
+
 def _convert_song_to_tex(song):
     tex_output = "\\section{%s}" % (song.title,) + "\n"
     tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
@@ -266,10 +326,14 @@ def _convert_song_to_tex(song):
     for paragraph in song.paragraphs.all():
         tex_output += "\\paragraph{}\n"
         for verse in paragraph.verses.all():
+
+            verse_text, harmonization_content = _print_harmonization_of_verse(verse)
             if paragraph.is_refrain:
-                tex_output += u"\\textbf{%s}" % (verse.content,) + "\n"
+                tex_output += u"\\textbf{%s}" % (verse_text,) + "\n"
             else:
-                tex_output += verse.content + "\n"
+                tex_output += verse_text + "\n"
+            tex_output += harmonization_content
+
             tex_output += "\\newline\n"
     tex_output += "\\newline\n"
     return tex_output
@@ -841,3 +905,17 @@ def update_book_elements_list(request):
         return JsonResponse({})
     else:
         return JsonResponse({})
+
+
+@api_view(['GET'])
+def get_song_details(request, song_id):
+    song = get_object_or_404(models.Song, pk=song_id)
+    paragraphs = models.Paragraph.objects.filter(song__id=song_id)
+    verses = models.Verse.objects.filter(paragraph__song__id=song_id)
+
+    serializer_song = serializers.SongListSerializer(song, context={"request":request})
+    serializer_paragraphs = serializers.ParagraphSerializer(paragraphs, context={"request":request})
+    print(type(serializer_song.data))
+    serializer_song.data["paragraphs"] = serializer_paragraphs.data
+    return response.Response(serializer_song.data)
+    # return response.Response({})
