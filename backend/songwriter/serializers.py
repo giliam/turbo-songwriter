@@ -127,7 +127,7 @@ class VerseReadSerializer(serializers.ModelSerializer):
         queryset = queryset.select_related(
             'harmonizations'
         )
-        
+       
         return queryset
 
 
@@ -205,7 +205,7 @@ class SongSerializer(serializers.ModelSerializer):
         model = models.Song
         fields = (
             'id',
-            'selected', 
+            'selected',
             'order_value',
             'title',
             'author',
@@ -219,7 +219,7 @@ class SongSerializer(serializers.ModelSerializer):
             'old_page_number',
             'comments',
             'added_date',
-            'updated_date', 
+            'updated_date',
             'is_song'
         )
 
@@ -327,6 +327,7 @@ class SongOnlyReadSerializer(serializers.ModelSerializer):
         )
         return queryset
 
+
 class SongListSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
 
@@ -345,6 +346,7 @@ class SongListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def setup_eager_loading(queryset):
+        queryset = queryset.select_related('author')
         return queryset
 
 
@@ -381,12 +383,26 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SongsGroup
         fields = (
-            'id', 
-            'selected', 
-            'order_value', 
-            'name', 
-            'songs', 
+            'id',
+            'selected',
+            'order_value',
+            'name',
+            'songs',
             'is_song'
+        )
+
+
+class SongBookElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Song
+        fields = (
+            'id',
+            'selected',
+            'order_value',
+            'title',
+            'page_number',
+            'old_page_number',
+            'is_song',
         )
 
 
@@ -394,10 +410,10 @@ class GroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SongsGroup
         fields = (
-            'id', 
-            'name', 
-            'songs', 
-            'selected', 
+            'id',
+            'name',
+            'songs',
+            'selected',
             'order_value'
         )
 

@@ -240,7 +240,7 @@
             }
         },
         created() {
-            axios.get(root_url + "songs/list.json")
+            axios.get(root_url + "songs/list/")
                 .then(response => {
                     // this.$data.dataSongs = response.data
 
@@ -423,7 +423,7 @@
             },
 
             update() {
-                axios.get(root_url + "songs/list.json")
+                axios.get(root_url + "songs/list/")
                 .then(response => {
                     // this.$data.dataSongs = response.data
 

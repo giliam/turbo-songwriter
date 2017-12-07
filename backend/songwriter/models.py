@@ -105,7 +105,7 @@ class Chord(models.Model):
 
 class BookElement(models.Model):
     selected = models.BooleanField(
-        default=True,
+        default=False,
         blank=False
     )
     order_value = models.IntegerField(
@@ -308,6 +308,7 @@ class SongLaTeXCode(models.Model):
         blank=True,
         verbose_name=_("LaTeX code of a song").capitalize()
     )
+    nb_lines = models.PositiveIntegerField(default=0)
     is_compiled = models.BooleanField(
         default=False,
         verbose_name=_("is compiled?").capitalize()

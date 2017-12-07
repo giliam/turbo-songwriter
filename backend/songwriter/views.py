@@ -12,6 +12,7 @@ import tempfile
 import slugify
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -36,7 +37,10 @@ def _get_default_header():
 left=5mm,
 bottom=4mm,
 right=5mm,
-top=5mm}
+top=3mm,
+% includehead,
+footskip=16pt,
+includefoot}
 
 \\usepackage[utf8]{inputenc}
 \\usepackage[francais]{babel}
@@ -63,15 +67,13 @@ top=5mm}
 \\titleformat*{\\section}{\\normalsize\\bfseries\\relscale{1.07}}
 
 % \\titlespacing*{<command>}{<left>}{<before-sep>}{<after-sep>}
-\\titlespacing*{\\section}{0pt}{0cm}{0cm}
+\\titlespacing*{\\section}{0pt}{0cm}{-0.09cm}
 \\titlespacing*{\\subsection}{0pt}{0cm}{0.21cm}
 
 % ------------
 % PARAGRAPHS
 % ------------
-\\setlength{\\parindent}{-10pt}
-
-\\begin{document}
+\\setlength{\\parindent}{0pt}
 
 % ------------
 % CHORDS
@@ -83,6 +85,9 @@ top=5mm}
 \\newcommand{\\accords}[1]{\\hfill {\\color{gray} \\emph{#1}}}
 \\newcommand{\\accord}[1]{#1}
 
+
+\\begin{document}
+
     """
 
 
@@ -90,6 +95,17 @@ def _get_default_footer():
     return """
 \\end{document}
     """
+
+
+def _get_available_lines_per_page():
+    return 32
+
+
+def _get_factor_bold_letters():
+    return 1.2
+
+def _get_nb_characters_per_line():
+    return 75.
 
 
 @api_view(['GET'])
@@ -313,30 +329,45 @@ def _print_harmonization_of_verse(verse):
         return verse.content, ""
 
 
+def _get_length_line(verse_text, is_bold=False):
+    if is_bold:
+        return len(verse_text)*_get_factor_bold_letters()/_get_nb_characters_per_line()
+    else:
+        return len(verse_text)/_get_nb_characters_per_line()
+
+
 def _convert_song_to_tex(song):
-    tex_output = "\\section{%s}" % (song.title,) + "\n"
-    tex_output += u"\subsection{%s - %s}" % (song.author,song.editor,) + "\n"
+    tex_output = []
+    nb_lines = 0
+    tex_output.append("\\section{%s}" % (song.title,))
+    tex_output.append(u"\subsection{%s - %s}" % (song.author,song.editor,))
     if song.page_number and song.old_page_number:
-        tex_output += u"\cfoot{%s (%s)}\n" % (song.page_number, song.old_page_number)
+        tex_output.append(u"\cfoot{%s (%s)}" % (song.page_number, song.old_page_number))
     elif song.page_number:
-        tex_output += u"\cfoot{%s}\n" % (song.page_number, )
+        tex_output.append(u"\cfoot{%s}" % (song.page_number, ))
     elif song.old_page_number:
-        tex_output += u"\cfoot{%s}\n" % (song.old_page_number, )
+        tex_output.append(u"\cfoot{%s}" % (song.old_page_number, ))
+    
+    # for the title
+    nb_lines += 3
 
     for paragraph in song.paragraphs.all():
-        tex_output += "\\paragraph{}\n"
         for verse in paragraph.verses.all():
-
             verse_text, harmonization_content = _print_harmonization_of_verse(verse)
             if paragraph.is_refrain:
-                tex_output += u"\\textbf{%s}" % (verse_text,) + "\n"
+                tex_output.append(u"\\textbf{%s}" % (verse_text,))
+                size_line = _get_length_line(verse_text, True)
             else:
-                tex_output += verse_text + "\n"
-            tex_output += harmonization_content
-
-            tex_output += "\\newline\n"
-    tex_output += "\\newline\n"
-    return tex_output
+                tex_output.append(verse_text)
+                size_line = _get_length_line(verse_text)
+            tex_output.append(harmonization_content)
+            tex_output.append("\\newline")
+            nb_lines += 1
+            if size_line >= 1:
+                nb_lines += 1
+        tex_output.append("\\newline")
+        nb_lines += 1
+    return nb_lines, "\n".join([line for line in tex_output if line.strip() != ""])
 
 
 @csrf_exempt
@@ -355,7 +386,7 @@ def edit_tex(request, song_id, force=False):
         force = True
     
     if force:
-        latex_code.code = _convert_song_to_tex(song)
+        latex_code.nb_lines, latex_code.code = _convert_song_to_tex(song)
         latex_code.is_compiled = False
         latex_code.save()
 
@@ -502,18 +533,45 @@ def get_whole_tex_code(request):
 
     tex_code = header
 
-    songs = models.Song.objects.filter(selected=True)
+    songs = models.Song.objects.filter(
+        Q(selected=True)|Q(groups__selected=True)
+    ).prefetch_related(
+        'author'
+    ).prefetch_related(
+        'editor'
+    ).prefetch_related(
+        'theme'
+    ).prefetch_related(
+        'latex_code'
+    ).prefetch_related(
+        'paragraphs'
+    ).prefetch_related(
+        'paragraphs__verses'
+    ).prefetch_related(
+        'paragraphs__verses__harmonizations'
+    )
+
+    base_lines_per_page = _get_available_lines_per_page()
+    available_lines_per_page = base_lines_per_page
 
     for song in songs.all():
         tex_code += "\n\n"
-        if hasattr(song, 'latex_code'):
-            tex_code += song.latex_code.code
-        else:
+
+        if not hasattr(song, 'latex_code'):
             latex_code = models.SongLaTeXCode()
             latex_code.song = song
-            latex_code.code = _convert_song_to_tex(song)
-            latex_code.save()
-            tex_code += latex_code.code
+            latex_code.nb_lines, latex_code.code = _convert_song_to_tex(song)
+            # latex_code.save()
+            song.latex_code = latex_code
+
+        # if the song we try to add has more lines than remaining lines for this page AND we are not on a new page
+        if song.latex_code.nb_lines < available_lines_per_page or available_lines_per_page == base_lines_per_page:
+            tex_code += song.latex_code.code
+            available_lines_per_page -= song.latex_code.nb_lines
+        else:
+            tex_code += "\\newpage\n"
+            tex_code += song.latex_code.code
+            available_lines_per_page = (base_lines_per_page - song.latex_code.nb_lines) % base_lines_per_page
 
     themes = models.Theme.objects.all()
     tex_code += "\\newpage"
@@ -536,7 +594,7 @@ def get_whole_tex_code(request):
     shutil.copy(os.path.join(temp, "whole_book.pdf"), current + "/media/pdf/")
     shutil.rmtree(temp)
 
-    return JsonResponse({"url_tex":"media/tex/full.tex", "url_pdf":"media/pdf/whole_book.pdf"}, safe=False)
+    return response.Response({"url_tex":"media/tex/full.tex", "url_pdf":"media/pdf/whole_book.pdf"})
 
 
 class AdditionalLaTeXContentList(generics.ListCreateAPIView):
@@ -596,14 +654,27 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
         else:
             latex_code.code = _get_default_header()
 
+        base_lines_per_page = _get_available_lines_per_page()
+        available_lines_per_page = base_lines_per_page
 
         for song in songs.values():
             latex_code.code += "\n% /!\ Do not delete these commented lines /!\ %\n"
             latex_code.code += "% /!\ song #" + str(song.id) + " /!\ %\n"
+
             if song.latex_code:
-                latex_code.code += song.latex_code.code + "\n"
+                nb_lines, code = song.latex_code.nb_lines, song.latex_code.code
             else:
-                latex_code.code += _convert_song_to_tex(song) + "\n"
+                nb_lines, code = _convert_song_to_tex(song)
+
+
+            # if the song we try to add has more lines than remaining lines for this page AND we are not on a new page
+            if nb_lines < available_lines_per_page or available_lines_per_page == base_lines_per_page:
+                latex_code.code += code
+                available_lines_per_page -= nb_lines
+            else:
+                latex_code.code += "\\newpage"
+                latex_code.code += song.latex_code.code
+                available_lines_per_page = base_lines_per_page
 
         latex_code.code += "% /!\ Do not delete these commented lines /!\ %\n"
         if additional_latex_content.filter(name="footer").exists():
@@ -785,7 +856,6 @@ def guess_pages_numbers(request, songs_ids):
             if song.id in new_pages.keys():
                 song.old_page_number = new_pages[song.id]
                 song.save()
-                # print("Song", song.title, "new page is", song.page)
         return JsonResponse({})
     else:
         if songs_ids == "all":
@@ -863,7 +933,7 @@ def _simplify_title_letters(title):
 def book_elements_list(request):
     songs = models.Song.objects.order_by('-selected', 'order_value').all()
     groups = models.SongsGroup.objects.order_by('-selected', 'order_value').all()
-    songs_serializer = serializers.SongSerializer(songs, many=True)
+    songs_serializer = serializers.SongBookElementSerializer(songs, many=True)
     groups_serializer = serializers.GroupSerializer(groups, many=True)
 
     output_data = songs_serializer.data+groups_serializer.data
