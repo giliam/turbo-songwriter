@@ -12,6 +12,8 @@
                     <router-link :to="{name:'editors_list'}" class="item">{{ t('Editors') }}</router-link>
                     <router-link :to="{name:'themes_list'}" class="item">{{ t('Themes') }}</router-link>
                     <router-link :to="{name:'chords_list'}" class="item">{{ t('Chords') }}</router-link>
+                    <router-link :to="{name:'groups_management'}" class="item">{{ t('Manage groups') }}</router-link>
+                    <router-link :to="{name:'book_order'}" class="item">{{ t('Sort book') }}</router-link>
                     <router-link :to="{name:'songs_management'}" class="item">{{ t('Manage list') }}</router-link>
                     <router-link :to="{name:'logout'}" class="item">{{ t('Logout') }}</router-link>
                 </template>

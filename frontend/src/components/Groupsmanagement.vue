@@ -1,5 +1,6 @@
 <template>
     <div>
+        <button @click.prevent="sync(true)" class="ui button">{{ t('Back to the list') }}</button>
         <template v-if="action == 'create'">
             <form class="ui form">
                 <fieldset>
@@ -15,7 +16,10 @@
                         <label for="name">{{ t('Name') }}:</label>
                         <input type="text" name="name" v-model="name">
                     </p>
-                    <p class="field"><button @click.prevent="create()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
+                    <p class="field">
+                        <button @click.prevent="create()" class="ui primary button">{{ t('Save') }}</button>
+                        <slot><button @click.prevent="sync(true)" class="ui button">{{ t('Cancel') }}</button></slot>
+                    </p>
                 </fieldset>
             </form>
         </template>
@@ -34,7 +38,10 @@
                         <label for="name">{{ t('Name') }}:</label>
                         <input type="text" name="name" v-model="editedGroup.name">
                     </p>
-                    <p class="field"><button @click.prevent="saveEditedGroup()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
+                    <p class="field">
+                        <button @click.prevent="saveEditedGroup()" class="ui primary button">{{ t('Save') }}</button>
+                        <slot><button @click.prevent="sync(true)" class="ui button">{{ t('Cancel') }}</button></slot>
+                    </p>
                 </fieldset>
             </form>
             <ul>
@@ -195,7 +202,7 @@
 
                 axios.put(root_url + "groups/" + this.$data.editedGroup.id + "/", group)
                     .then(response => { 
-                        this.sync(true)
+                        // this.sync(true)
                      },
                     (error) => { console.log("Error", error) });
             },
@@ -204,10 +211,10 @@
                     .then(response => {
                         this.$data.dataGroups = response.data
                         if(cancel)
-                            this.cancel()
+                            this.cancelGroupManagement()
                     },  (error) => { console.log(error) });
             },
-            cancel() {
+            cancelGroupManagement() {
                 this.$data.action = "list"
             },
             selectGroup(group){
@@ -216,7 +223,7 @@
                     selected: !group.selected,
                     order_value: group.order_value
                 }
-                console.log(new_group)
+
                 new_group.songs = new Array()
                 for (var i = 0; i < group.songs.length; i++) {
                     new_group.songs.push(group.songs[i].id)

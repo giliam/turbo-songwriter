@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^book/elements/list/$', views.book_elements_list,
         name="book_elements_list"),
 
+    url(r'^groups/fast/list/$', views.SongsGroupFastList.as_view(),
+        name="groups_fast_list"),
     url(r'^groups/list/$', views.SongsGroupList.as_view(),
         name="groups_list"),
     url(r'^groups/(?P<pk>[0-9]+)/$', views.SongsGroupDetail.as_view(),

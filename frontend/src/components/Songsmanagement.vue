@@ -6,7 +6,7 @@
                     <div class="overlay" style="position: fixed; top: auto; left: auto; z-index: 10;">
                         <div class="ui labeled icon vertical menu">
                             <p>
-                                <button @click.prevent="cancel()" class="vertical_item ui button">{{ t('Cancel') }}</button>
+                                <button @click.prevent="cancelSongsManagement()" class="vertical_item ui button">{{ t('Cancel') }}</button>
                             </p>
                             <div class="header ui vertical_item">{{ t('Latex management') }}</div>
                             <p>
@@ -39,7 +39,7 @@
                                 <button @click.prevent="guessPages()" class="vertical_item ui button orange">{{ t('Guess the pages of those songs') }}</button>
                             </p>
                             <p>
-                                <button @click.prevent="autofinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
+                                <button @click.prevent="autoCopyrightFinder()" class="vertical_item ui button yellow">{{ t('Autofind those songs codes') }}</button>
                             </p>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                                     </p>
                                 </template>
                             </template>
-                            <p class="field"><button @click.prevent="savePages()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
+                            <p class="field"><button @click.prevent="savePages()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancelSongsManagement()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
                     </form>
                 </template>
@@ -89,7 +89,7 @@
                                 <label for="content">Content:</label>
                                 <textarea name="content" style="height:500px" v-model="latexCode" v-focus></textarea>
                             </p>
-                            <p class="field"><button @click.prevent="saveLatex()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
+                            <p class="field"><button @click.prevent="saveLatex()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancelSongsManagement()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
                     </form>
                 </template>
@@ -144,14 +144,18 @@
                                     <div class="ui section divider"></div>
                                 </template>
                             </template>
-                            <p class="field"><button @click.prevent="saveCodes()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
+                            <p class="field"><button @click.prevent="saveCodes()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancelSongsManagement()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
                     </form>
                 </template>
                 <template v-else>
                     <h2>{{ t('List of songs') }}</h2>
                     <div class="ui list aligned large">
-                        <groupsmanagement :selectedSongs="checkedSongs" :songsData="dataSongs" :actionSent="actionGroupManagement" v-if="showGroupManagement"></groupsmanagement>
+                        
+                        <groupsmanagement :selectedSongs="checkedSongs" :songsData="dataSongs" :actionSent="actionGroupManagement" v-if="showGroupManagement">
+                            <button @click.prevent="cancelSongsManagement()" class="ui button">{{ t('Cancel') }}</button>
+                        </groupsmanagement>
+
                         <form id="latex_songs_selection" class="ui form">
                             <p>{{ t('Select the songs by group:') }}</p>
                             <table class="ui fixed celled table">
@@ -241,6 +245,15 @@
             }
         },
         created() {
+            axios.get(root_url + "groups/fast/list/")
+                .then(response => {
+                    this.$data.dataGroups = response.data
+                    this.$data.checkedGroups = new Array(this.$data.dataGroups.length)
+                    for (var i = 0; i < this.$data.checkedGroups.length; i++) {
+                        this.$data.checkedGroups[i] = false
+                    }
+                },  (error) => { console.log(error) });
+
             axios.get(root_url + "songs/list/")
                 .then(response => {
                     // this.$data.dataSongs = response.data
@@ -252,15 +265,6 @@
 
                     this.$data.checkedSongs = new Array(this.$data.dataSongs.length)
 
-                },  (error) => { console.log(error) });
-
-            axios.get(root_url + "groups/list/")
-                .then(response => {
-                    this.$data.dataGroups = response.data
-                    this.$data.checkedGroups = new Array(this.$data.dataGroups.length)
-                    for (var i = 0; i < this.$data.checkedGroups.length; i++) {
-                        this.$data.checkedGroups[i] = false
-                    }
                 },  (error) => { console.log(error) });
         },
         methods: {
@@ -332,7 +336,7 @@
 
                 axios.post(root_url + "songs/guess/pages/" + this.$data.listIds, dataToSend)
                     .then(response => {
-                        this.cancel()
+                        this.cancelSongsManagement()
                         this.update()
                     },  (error) => { console.log(error) });
             },
@@ -356,7 +360,7 @@
                 }
                 axios.post(root_url + "song/edit/multiple/tex/" + this.$data.listIds, dataToSend)
                     .then(response => {
-                        this.cancel()
+                        this.cancelSongsManagement()
                         this.update()
                     },  (error) => { console.log(error) })
                 // this.$router.push({name:'latex_homepage'})
@@ -364,7 +368,7 @@
 
 
 
-            autofinder() {
+            autoCopyrightFinder() {
                 this.computeListIds()
                 
                 if( this.$data.listIds.length > 0 )
@@ -395,7 +399,7 @@
 
                         if( currentSongSecli.length && this.$data.secliSelectedChoices[i] === undefined ) {
                             this.$data.errorMessage = this.$translate.text("You forgot to select the best matching element for at least one song. Don't forget you still can edit the code in the input in the right column.");
-                            return "";
+                            // return "";
                         }else{
                             // When there are many choices possible (no obvious matching song)
                             if( currentSongSecli.length ) {
@@ -417,7 +421,7 @@
 
                 axios.post(root_url + "copyrights/extract/" + this.$data.listIds, dataToSend)
                     .then(response => {
-                        this.cancel()
+                        this.cancelSongsManagement()
                         this.update()
                     },  (error) => { console.log(error) })
 
@@ -434,10 +438,12 @@
                     }
                 },  (error) => { console.log(error) });
             },
-            cancel() {
+            cancelSongsManagement() {
                 this.$data.pagesGuessed = false
                 this.$data.secliGuessedNumbers = false
                 this.$data.latexCode = false
+                this.$data.actionGroupManagement = false
+                this.$data.showGroupManagement = false
                 // this.$data.checkedSongs = new Array()
             },
             select_all() {
@@ -449,7 +455,7 @@
                 for (var i = 0; i < this.$data.dataGroups[n].songs.length; i++) {
                     // console.log("Group:", this.$data.dataGroups[n].songs[i].id, this.$data.dataGroups[n].songs[i].title)
                     for (var j = 0; j < this.$data.dataSongs.length; j++) {
-                        if( this.$data.dataSongs[j].id == this.$data.dataGroups[n].songs[i].id ) {
+                        if( this.$data.dataSongs[j].id == this.$data.dataGroups[n].songs[i] ) {
                             // console.log("Song:", this.$data.dataSongs[j].id, this.$data.dataSongs[j].title)
                             // console.log("Song #", j)
                             this.$data.checkedSongs[j] = this.$data.checkedGroups[n]

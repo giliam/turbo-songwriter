@@ -350,7 +350,7 @@ class SongListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def setup_eager_loading(queryset):
-        queryset = queryset.select_related('author')
+        queryset = queryset.prefetch_related('author')
         return queryset
 
 
@@ -378,9 +378,15 @@ class GroupListSerializer(serializers.ModelSerializer):
             'name',
             'songs',
             'url',
+            'theme',
             'selected',
             'order_value'
         )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.prefetch_related('songs').prefetch_related('songs__author')
+        return queryset
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -417,6 +423,7 @@ class GroupCreateSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'songs',
+            'theme',
             'selected',
             'order_value'
         )
@@ -435,3 +442,16 @@ class GroupCreateSerializer(serializers.ModelSerializer):
         song_group.save()
 
         return song_group
+
+
+class GroupOnlyListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SongsGroup
+        fields = (
+            'id',
+            'name',
+            'songs',
+            'theme',
+            'selected',
+            'order_value'
+        )

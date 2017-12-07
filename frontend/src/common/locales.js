@@ -107,5 +107,13 @@ export const locales = {
         'Names': 'Noms',
         'Song title: ': 'Titre de chanson : ',
         'Group': 'Groupe',
+        'Refresh': 'Rafraichir',
+        'Save changes': 'Sauvegarder les changements',
+        'Name': 'Nom',
+        'Included': 'Inclus',
+        'Force value : ': 'Forcer l\'ordre : ',
+        'Sort book': 'Ordonner',
+        'New': '(v2)',
+        'Old': '(v1)',
     }
 }

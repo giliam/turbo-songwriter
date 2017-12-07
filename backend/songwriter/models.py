@@ -202,6 +202,7 @@ class SongsGroup(BookElement):
         blank=False
     )
     songs = models.ManyToManyField(Song, related_name='groups')
+    theme = models.ForeignKey(Theme, null=True, related_name="+")
 
     added_date = models.DateTimeField(
         _('date added to the database'),

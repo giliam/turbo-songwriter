@@ -274,12 +274,21 @@ class SongLaTeXCodeDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SongsGroupList(generics.ListCreateAPIView):
-    queryset = models.SongsGroup.objects.all()
+    def get_queryset(self):
+        queryset = models.SongsGroup.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
     def get_serializer_class(self):
         if self.request.method in ('GET',):
             return serializers.GroupListSerializer
         return serializers.GroupCreateSerializer
+
+
+class SongsGroupFastList(generics.ListCreateAPIView):
+    queryset = models.SongsGroup.objects.all()
+
+    serializer_class = serializers.GroupOnlyListSerializer
 
 
 class SongsGroupDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -797,7 +806,7 @@ def find_copyrights_data(request, songs_ids):
                 
                 # if the best ratio is not even bigger than #arbitrary threshold, 
                 # there is no use to look for author
-                if best_ratio > 0.8:
+                if best_ratio > 0.8 and hasattr(song, "author") and song.author:
                     best_ratio = 0
                     best_song_id = 0
                     for title_id in closest_titles:

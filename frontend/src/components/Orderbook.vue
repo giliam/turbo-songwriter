@@ -10,7 +10,7 @@
                             <tr>
                                 <th>{{ t('Type') }}</th>
                                 <th>{{ t('Name') }}</th>
-                                <th>{{ t('Value') }}</th>
+                                <th>{{ t('Included') }}</th>
                                 <th>{{ t('Caracteristics') }}</th>
                             </tr>
                         </thead>
