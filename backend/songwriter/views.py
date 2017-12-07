@@ -909,13 +909,44 @@ def update_book_elements_list(request):
 
 @api_view(['GET'])
 def get_song_details(request, song_id):
-    song = get_object_or_404(models.Song, pk=song_id)
+    song = models.Song.objects.filter(pk=song_id).values(
+        'id',
+        'title',
+        'author',
+        'author_id',
+        'author__firstname',
+        'author__lastname',
+        'editor',
+        'editor_id',
+        'editor__name',
+        'latex_code',
+        'is_refrain',
+        'rights_paid',
+        'page_number',
+        'old_page_number',
+        'secli_number',
+        'sacem_number',
+        'comments',
+        'added_date',
+        'updated_date',
+    )
+    themes = models.Theme.objects.filter(song__id=song_id)
     paragraphs = models.Paragraph.objects.filter(song__id=song_id)
     verses = models.Verse.objects.filter(paragraph__song__id=song_id)
 
-    serializer_song = serializers.SongListSerializer(song, context={"request":request})
-    serializer_paragraphs = serializers.ParagraphSerializer(paragraphs, context={"request":request})
-    print(type(serializer_song.data))
-    serializer_song.data["paragraphs"] = serializer_paragraphs.data
-    return response.Response(serializer_song.data)
-    # return response.Response({})
+    serializer_themes = serializers.ThemeSerializer(themes, many=True, context={'request': request})
+    serializer_paragraphs = serializers.ParagraphOnlySerializer(paragraphs, many=True)
+    serializer_verses = serializers.VerseOnlySerializer(verses, many=True)
+    
+    dict_song = song.get(pk=song_id)
+    dict_themes = serializer_themes.data
+    dict_paragraphs = serializer_paragraphs.data
+    dict_verses = serializer_verses.data
+
+    output = {
+        "song": dict(dict_song),
+        "themes": list(dict_themes),
+        "paragraphs": list(dict_paragraphs),
+        "verses": list(dict_verses)
+    }
+    return response.Response(output)

@@ -19,6 +19,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'groups')
 
 
+class ChordSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='chords_detail', format='json')
+
+    class Meta:
+        model = models.Chord
+        fields = (
+            'id',
+            'url',
+            'note',
+        )
+
+
 class AuthorSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='authors_detail', format='json')
 
@@ -48,6 +60,36 @@ class EditorSerializer(serializers.ModelSerializer):
         )
 
 
+class HarmonizationReadSerializer(serializers.ModelSerializer):
+    chord = ChordSerializer()
+
+    class Meta:
+        model = models.Harmonization
+        fields = (
+            'id',
+            'chord',
+            'verse',
+            'start_spot_in_verse',
+            'end_spot_in_verse',
+            'added_date',
+            'updated_date'
+        )
+
+
+class HarmonizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Harmonization
+        fields = (
+            'id',
+            'chord',
+            'verse',
+            'start_spot_in_verse',
+            'end_spot_in_verse',
+            'added_date',
+            'updated_date'
+        )
+
+
 class ThemeSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='themes_detail', format='json')
 
@@ -59,18 +101,6 @@ class ThemeSerializer(serializers.ModelSerializer):
             'name',
             'added_date',
             'updated_date'
-        )
-
-
-class ChordSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='chords_detail', format='json')
-
-    class Meta:
-        model = models.Chord
-        fields = (
-            'id',
-            'url',
-            'note',
         )
 
 
@@ -115,31 +145,14 @@ class VerseSerializer(serializers.ModelSerializer):
         )
 
 
-class HarmonizationReadSerializer(serializers.ModelSerializer):
-    chord = ChordSerializer()
-
+class VerseOnlySerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Harmonization
+        model = models.Verse
         fields = (
             'id',
-            'chord',
-            'verse',
-            'start_spot_in_verse',
-            'end_spot_in_verse',
-            'added_date',
-            'updated_date'
-        )
-
-
-class HarmonizationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Harmonization
-        fields = (
-            'id',
-            'chord',
-            'verse',
-            'start_spot_in_verse',
-            'end_spot_in_verse',
+            'order',
+            'content',
+            'paragraph',
             'added_date',
             'updated_date'
         )
@@ -172,6 +185,19 @@ class ParagraphSerializer(serializers.ModelSerializer):
         )
 
         return queryset
+
+
+class ParagraphOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Paragraph
+        fields = (
+            'id',
+            'order',
+            'song',
+            'is_refrain',
+            'added_date',
+            'updated_date'
+        )
 
 
 class SongSerializer(serializers.ModelSerializer):
@@ -258,6 +284,46 @@ class SongReadSerializer(serializers.ModelSerializer):
             'theme'
         ).prefetch_related(
             'paragraphs'
+        )
+        return queryset
+
+
+
+class SongOnlyReadSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
+    editor = EditorSerializer()
+    theme = ThemeSerializer(many=True)
+    latex_code = SongLaTeXCodeSerializer()
+
+    class Meta:
+        model = models.Song
+        fields = (
+            'id',
+            'title',
+            'author',
+            'editor',
+            'theme',
+            'latex_code',
+            'is_refrain',
+            'rights_paid',
+            'page_number',
+            'old_page_number',
+            'secli_number',
+            'sacem_number',
+            'comments',
+            'added_date',
+            'updated_date'
+        )
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """ Perform necessary eager loading of data. """
+        queryset = queryset.select_related(
+            'author'
+        ).select_related(
+            'editor'
+        ).prefetch_related(
+            'theme'
         )
         return queryset
 
