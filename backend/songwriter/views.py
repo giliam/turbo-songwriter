@@ -612,14 +612,41 @@ class AdditionalLaTeXContentDetail(generics.RetrieveUpdateDestroyAPIView):
 def edit_multiple_songs_tex(request, songs_ids, force=False):
     if songs_ids == "all":
         songs = {
-            song.id: song for song in models.Song.objects.all()
+            song.id: song for song in models.Song.objects.all().select_related(
+                'author'
+            ).select_related(
+                'editor'
+            ).prefetch_related(
+                'theme'
+            ).select_related(
+                'latex_code'
+            ).prefetch_related(
+                'paragraphs'
+            ).prefetch_related(
+                'paragraphs__verses'
+            ).prefetch_related(
+                'paragraphs__verses__harmonizations'
+            )
         }
     else:
-        songs_ids = songs_ids.split("/")
-        songs = {}
-        for song_id in songs_ids:
-            song = get_object_or_404(models.Song, pk=song_id)
-            songs[song_id] = song
+        songs_ids = map(int, songs_ids.split("/"))
+        songs = {
+            song.id: song for song in models.Song.objects.filter(pk__in=songs_ids).select_related(
+                'author'
+            ).select_related(
+                'editor'
+            ).prefetch_related(
+                'theme'
+            ).select_related(
+                'latex_code'
+            ).prefetch_related(
+                'paragraphs'
+            ).prefetch_related(
+                'paragraphs__verses'
+            ).prefetch_related(
+                'paragraphs__verses__harmonizations'
+            )
+        }
 
     if request.method == "POST":
         json_data = json.loads(request.body.decode('utf-8'))
@@ -661,7 +688,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
             latex_code.code += "\n% /!\ Do not delete these commented lines /!\ %\n"
             latex_code.code += "% /!\ song #" + str(song.id) + " /!\ %\n"
 
-            if song.latex_code:
+            if hasattr(song, "latex_code"):
                 nb_lines, code = song.latex_code.nb_lines, song.latex_code.code
             else:
                 nb_lines, code = _convert_song_to_tex(song)
@@ -672,11 +699,11 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
                 latex_code.code += code
                 available_lines_per_page -= nb_lines
             else:
-                latex_code.code += "\\newpage"
-                latex_code.code += song.latex_code.code
+                latex_code.code += "\\newpage\n"
+                latex_code.code += code
                 available_lines_per_page = base_lines_per_page
 
-        latex_code.code += "% /!\ Do not delete these commented lines /!\ %\n"
+        latex_code.code += "\n% /!\ Do not delete these commented lines /!\ %\n"
         if additional_latex_content.filter(name="footer").exists():
             latex_code.code += additional_latex_content.get(name="footer").code
         else:
@@ -686,7 +713,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
             latex_code, 
             context={"request":request}
         )
-        return JsonResponse(serializer.data)
+        return response.Response(serializer.data)
 
 
 def get_closest_songs(song_title, titles_list, number_min_elements=3):

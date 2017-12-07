@@ -87,7 +87,7 @@
                             <legend>{{ t('Tex form for selected songs') }}</legend>
                             <p class="field">
                                 <label for="content">Content:</label>
-                                <textarea name="content" v-model="latexCode" v-focus></textarea>
+                                <textarea name="content" style="height:500px" v-model="latexCode" v-focus></textarea>
                             </p>
                             <p class="field"><button @click.prevent="saveLatex()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
                         </fieldset>
@@ -221,6 +221,7 @@
                 checkedSongs: Array,
                 allSelected: false,
                 listIds: "",
+                listGroupsIds: "",
 
                 actionGroupManagement: false,
                 showGroupManagement: false,
@@ -446,11 +447,11 @@
             },
             select_group(groupId, n){
                 for (var i = 0; i < this.$data.dataGroups[n].songs.length; i++) {
-                    console.log("Group:", this.$data.dataGroups[n].songs[i].id, this.$data.dataGroups[n].songs[i].title)
+                    // console.log("Group:", this.$data.dataGroups[n].songs[i].id, this.$data.dataGroups[n].songs[i].title)
                     for (var j = 0; j < this.$data.dataSongs.length; j++) {
                         if( this.$data.dataSongs[j].id == this.$data.dataGroups[n].songs[i].id ) {
-                            console.log("Song:", this.$data.dataSongs[j].id, this.$data.dataSongs[j].title)
-                            console.log("Song #", j)
+                            // console.log("Song:", this.$data.dataSongs[j].id, this.$data.dataSongs[j].title)
+                            // console.log("Song #", j)
                             this.$data.checkedSongs[j] = this.$data.checkedGroups[n]
                         }
                     }
@@ -467,14 +468,10 @@
             },
 
             createGroup() {
-                console.log("YOOO3")
                 this.computeListIds()
-                console.log("YOOO1")
 
                 this.$data.actionGroupManagement = "create"
-                console.log("YOOO2")
                 this.$data.showGroupManagement = true
-                console.log("YOOO4")
             }
         }
     }

@@ -72,7 +72,7 @@ export const locales = {
         'List of additional LaTeX codes': 'Liste des codes LaTeX additionnels',
         'Get whole LaTeX code': 'Récupérer le code LaTeX complet',
         'Select the songs to edit': 'Sélectionner les chants à modifier',
-        'Edit the latex of those songs': 'Modifier le code LaTeX',
+        'Edit the latex of those songs': 'Modifier le code LaTeX des chants sélectionnés',
         'Edit additional latex code': 'Modifier les codes LaTeX additionnels',
         'Composer: ': 'Compositeur :',
         'Author: ': 'Auteur :',

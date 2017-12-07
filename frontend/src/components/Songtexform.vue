@@ -6,7 +6,7 @@
                 <legend>{{ t('Tex form for song') }}</legend>
                 <p class="field">
                     <label for="content">Content:</label>
-                    <textarea name="content" v-model="code" v-focus></textarea>
+                    <textarea name="content" style="height:500px;" v-model="code" v-focus></textarea>
                 </p>
                 <p class="field"><button @click.prevent="save()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancel()" class="ui button">{{ t('Cancel') }}</button></p>
             </fieldset>
@@ -58,3 +58,9 @@
         }
     }
 </script>
+
+<style>
+.tall_textarea {
+    height: 400px;
+}
+</style>
