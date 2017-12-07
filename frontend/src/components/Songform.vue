@@ -9,6 +9,8 @@
             <p class="field">
                 <label for="author">{{ t('Author') }}:</label>
                 <select name="author" v-model="author">
+                    <option :value="null">
+                    </option>
                     <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}
                     </option>
                 </select>
@@ -16,6 +18,8 @@
             <p class="field">
                 <label for="editor">{{ t('Editor') }}:</label>
                 <select name="editor" v-model="editor">
+                    <option :value="null">
+                    </option>
                     <option :value="seditor.id" v-for="seditor in editors">
                         {{ seditor.name }}
                     </option>
@@ -67,8 +71,8 @@
             return {
                 loaded: false,
                 title: "",
-                author: 0,
-                editor: 0,
+                author: null,
+                editor: null,
                 is_refrain: false,
                 page_number: 0,
                 old_page_number: 0,

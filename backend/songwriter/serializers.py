@@ -230,7 +230,7 @@ class SongSerializer(serializers.ModelSerializer):
             'author'
         ).select_related(
             'editor'
-        ).select_related(
+        ).prefetch_related(
             'theme'
         )
 
@@ -284,6 +284,10 @@ class SongReadSerializer(serializers.ModelSerializer):
             'theme'
         ).prefetch_related(
             'paragraphs'
+        ).prefetch_related(
+            'paragraphs__verses'
+        ).prefetch_related(
+            'paragraphs__verses__harmonizations'
         )
         return queryset
 
