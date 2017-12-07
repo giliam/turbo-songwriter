@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'songwriter',
     'corsheaders',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'turbosettings.urls'
@@ -174,5 +176,8 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=18000),
 }
+
+# For debug toolbar
+INTERNAL_IPS = ["127.0.0.1"]
 
 from turbosettings.settings_local import *

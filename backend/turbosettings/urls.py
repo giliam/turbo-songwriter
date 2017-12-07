@@ -29,3 +29,9 @@ urlpatterns = [
     url(r'^api/token-verify/', jwt_views.verify_jwt_token),
     url(r'^api/token-refresh/', jwt_views.refresh_jwt_token),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
