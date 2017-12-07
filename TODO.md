@@ -45,3 +45,4 @@
         * ~~frontend~~
         * ~~backend~~
 * Change songs selection and pages number
+* Add gzip for nginx (https://easyengine.io/tutorials/nginx/enable-gzip/)

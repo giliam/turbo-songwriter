@@ -58,6 +58,7 @@ export default new Vuex.Store({
                 axios.post(root_url + "token-verify/", data)
                     .then(response => {
                         context.commit("set_authorized", true);
+                        this._vm.$localstorage.set('token', response.data.token)
                         axios.defaults.headers.common['Authorization'] = "JWT " + this._vm.$localstorage.get('token');
                         
                         // redirects to main page
