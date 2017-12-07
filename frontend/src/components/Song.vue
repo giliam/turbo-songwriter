@@ -105,12 +105,9 @@
                 this.$data.result.paragraphs.push(paragraph)
             },
             sync(){
-                axios.get(root_url + "songs/fast/data/" + this.$route.params.item_id + ".json")
+                axios.get(root_url + "songs/" + this.$route.params.item_id + "/")
                     .then(response => {
-                        this.$data.result = response.data.song;
-                        this.$data.result.paragraphs = response.data.paragraphs;
-                        this.$data.result.theme = response.data.themes;
-                        this.$data.result.verses = response.data.verses;
+                        this.$data.result = response.data;
                     })
             },
             deleteParagraph(paragraph, index){

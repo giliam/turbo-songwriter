@@ -164,6 +164,7 @@ class Song(object):
 
         for i, lyric in enumerate(self.lyrics):
             if lyric.new_paragraph:
+                order_verse = 0
                 current_paragraph = models.Paragraph()
                 current_paragraph.order = order_paragraph
                 order_paragraph += 1
