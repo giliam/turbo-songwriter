@@ -129,8 +129,8 @@ class Song(BookElement):
         blank=False
     )
 
-    author = models.ForeignKey(Author, null=True, related_name="+")
-    editor = models.ForeignKey(Editor, null=True, related_name="+")
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, related_name="+")
+    editor = models.ForeignKey(Editor, on_delete=models.SET_NULL, null=True, related_name="+")
     theme = models.ManyToManyField(Theme, blank=True)
 
     rights_paid = models.BooleanField(
@@ -202,7 +202,7 @@ class SongsGroup(BookElement):
         blank=False
     )
     songs = models.ManyToManyField(Song, related_name='groups')
-    theme = models.ForeignKey(Theme, null=True, related_name="+")
+    theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True, related_name="+")
 
     added_date = models.DateTimeField(
         _('date added to the database'),
@@ -226,7 +226,7 @@ class SongsGroup(BookElement):
 
 class Paragraph(models.Model):
     order = models.PositiveIntegerField()
-    song = models.ForeignKey(Song, related_name='paragraphs')
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='paragraphs')
 
     is_refrain = models.BooleanField(
         default=False,
@@ -252,7 +252,7 @@ class Paragraph(models.Model):
 
 class Verse(models.Model):
     order = models.PositiveIntegerField()
-    paragraph = models.ForeignKey(Paragraph, related_name='verses')
+    paragraph = models.ForeignKey(Paragraph, on_delete=models.CASCADE, related_name='verses')
 
     content = models.TextField(blank=False)
 
@@ -276,8 +276,8 @@ class Verse(models.Model):
 
 
 class Harmonization(models.Model):
-    verse = models.ForeignKey(Verse)
-    chord = models.ForeignKey(Chord)
+    verse = models.ForeignKey(Verse, on_delete=models.CASCADE)
+    chord = models.ForeignKey(Chord, on_delete=models.CASCADE)
 
     start_spot_in_verse = models.PositiveIntegerField()
     end_spot_in_verse = models.PositiveIntegerField()

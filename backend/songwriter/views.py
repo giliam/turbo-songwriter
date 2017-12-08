@@ -802,8 +802,9 @@ def find_copyrights_data(request, songs_ids):
             }
 
             for song in songs.values():
+                print("Handles song", song)
                 best_ratio, closest_titles = get_closest_songs(song.title.upper(), titles)
-                
+                print("Found results")
                 # if the best ratio is not even bigger than #arbitrary threshold, 
                 # there is no use to look for author
                 if best_ratio > 0.8 and hasattr(song, "author") and song.author:
@@ -850,6 +851,7 @@ def find_copyrights_data(request, songs_ids):
                         else:
                             output[song.id]["author"] = best_song[copyrights_structure["author"]]
 
+                print("Found best fit ?", output[song.id])
                 # if the best fit has not been found,
                 # returns the whole choices given by titles comparisons
                 if output[song.id] == {}:
