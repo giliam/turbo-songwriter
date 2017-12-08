@@ -439,7 +439,7 @@ def invert_paragraphs(request, paragraph_id_top, paragraph_id_bottom):
 @csrf_exempt
 @api_view(['GET'])
 def get_song_harmonizations(request, song_id):
-    harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id)
+    harmonizations = models.Harmonization.objects.filter(verse__paragraph__song__id=song_id).select_related('chord')
     serializer = serializers.HarmonizationReadSerializer(harmonizations, context={'request': request}, many=True)
     return JsonResponse(serializer.data, safe=False)
 
