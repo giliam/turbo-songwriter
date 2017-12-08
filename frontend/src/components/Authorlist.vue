@@ -33,7 +33,7 @@
                     <div class="ui list large">
                         <div v-for="item in authors" class="item" @click="editAuthor(item)">
                             <i class="icon user"></i>
-                            {{ item.firstname }} {{ item.lastname }}
+                            {{ item.lastname }} {{ item.firstname }}
                         </div>
                     </div>
                 </template>

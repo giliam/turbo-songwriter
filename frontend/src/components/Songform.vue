@@ -11,7 +11,7 @@
                 <select name="author" v-model="author">
                     <option :value="null">
                     </option>
-                    <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.firstname }} {{ sauthor.lastname }}
+                    <option :value="sauthor.id" v-for="sauthor in authors">{{ sauthor.lastname }} {{ sauthor.firstname }}
                     </option>
                 </select>
             </p>
