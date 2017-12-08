@@ -14,16 +14,23 @@ function parseJwt(token) {
 
 export default new Vuex.Store({
     state: {
-      authorized: false
+      authorized: false,
+      originalTarget: false,
     },
     mutations: {
         set_authorized(state, value) {
             state.authorized = value
+        },
+        set_original_target(state, value) {
+            state.originalTarget = value
         }
     },
     getters: {
         has_jwt_token: state => {
             return state.authorized
+        },
+        get_original_target: state => {
+            return state.originalTarget ? {name: state.originalTarget} : {name: "root"}
         }
     },
     actions: {
@@ -46,7 +53,9 @@ export default new Vuex.Store({
                         this._vm.$localstorage.set('token', response.data.token)
                         
                         // redirects to main page
-                        router.push({name:"root"})
+
+                        router.push(context.getters.get_original_target)
+                        context.commit("set_original_target", false)
                     },  (error) => {
                         // logs out
                         console.log(error)
@@ -62,7 +71,8 @@ export default new Vuex.Store({
                         axios.defaults.headers.common['Authorization'] = "JWT " + this._vm.$localstorage.get('token');
                         
                         // redirects to main page
-                        router.push({name:"root"})
+                        router.push(context.getters.get_original_target)
+                        context.commit("set_original_target", false)
                     },  (error) => {
                         // logs out
                         console.log(error)

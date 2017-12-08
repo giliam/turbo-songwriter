@@ -26,6 +26,8 @@
 <script>
     import { mapActions, mapGetters } from 'vuex'
 
+    import store from '@/store'
+
     export default {
         data() {
             return {
@@ -49,7 +51,7 @@
                     password: this.$data.password
                 })
                 if( b ){
-                    this.$router.push("/")
+                    this.$router.push(store.getters.get_original_target)
                 }else{
                     this.$data.error_message = true
                 }

@@ -101,6 +101,7 @@ router.beforeEach(function (to, from, next) {
     window.scrollTo(0, 0)
     if (!store.getters.has_jwt_token && to.name != "login") {
         // if route requires auth and user isn't authenticated
+        store.commit("set_original_target", to.name);
         next('/login')
     } else {
         next()
