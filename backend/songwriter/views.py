@@ -447,25 +447,25 @@ def get_song_harmonizations(request, song_id):
 @csrf_exempt
 @api_view(['GET'])
 def get_author_songs(request, author_id):
-    songs = models.Song.objects.filter(author__id=author_id)
+    songs = models.Song.objects.filter(author__id=author_id).select_related('author')
     serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return response.Response(serializer.data)
 
 
 @csrf_exempt
 @api_view(['GET'])
 def get_editor_songs(request, editor_id):
-    songs = models.Song.objects.filter(editor__id=editor_id)
+    songs = models.Song.objects.filter(editor__id=editor_id).select_related('author')
     serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return response.Response(serializer.data)
 
 
 @csrf_exempt
 @api_view(['GET'])
 def get_theme_songs(request, theme_id):
-    songs = models.Song.objects.filter(theme__id=theme_id)
+    songs = models.Song.objects.filter(theme__id=theme_id).select_related('author')
     serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    return response.Response(serializer.data)
 
 @csrf_exempt
 @api_view(['GET'])
