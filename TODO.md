@@ -46,3 +46,12 @@
         * ~~backend~~
 * Change songs selection and pages number
 * Add gzip for nginx (https://easyengine.io/tutorials/nginx/enable-gzip/)
+
+Research for verse presentation
+---
+
+https://tex.stackexchange.com/questions/192440/automatic-versewidth
+https://tex.stackexchange.com/questions/160560/package-to-typeset-poems
+https://tex.stackexchange.com/questions/324711/how-can-i-adjust-the-width-of-the-verse-textblock-with-the-dramatist-package
+https://pdfs.semanticscholar.org/5884/c17924423b3fb1618eb63a16660c8186e2ab.pdf
+https://tex.stackexchange.com/questions/4152/how-do-i-prevent-widow-orphan-lines
