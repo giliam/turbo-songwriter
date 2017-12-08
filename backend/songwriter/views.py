@@ -74,6 +74,7 @@ includefoot}
 % PARAGRAPHS
 % ------------
 \\setlength{\\parindent}{0pt}
+\\usepackage[final,tracking=true,kerning=true,spacing=true,stretch=10,shrink=10]{microtype}
 
 % ------------
 % CHORDS
@@ -348,17 +349,18 @@ def _get_length_line(verse_text, is_bold=False):
 def _convert_song_to_tex(song):
     tex_output = []
     nb_lines = 0
-    tex_output.append("\\section{%s}" % (song.title,))
-    tex_output.append(u"\subsection{%s - %s}" % (song.author,song.editor,))
+    if not song.is_refrain:
+        tex_output.append("\\section{%s}" % (song.title,))
+        tex_output.append(u"\\subsection{%s - %s}" % (song.author,song.editor,))        
+        # for the title
+        nb_lines += 3
+
     if song.page_number and song.old_page_number:
-        tex_output.append(u"\cfoot{%s (%s)}" % (song.page_number, song.old_page_number))
+        tex_output.append(u"\\cfoot{%s (%s)}" % (song.page_number, song.old_page_number))
     elif song.page_number:
-        tex_output.append(u"\cfoot{%s}" % (song.page_number, ))
+        tex_output.append(u"\\cfoot{%s}" % (song.page_number, ))
     elif song.old_page_number:
-        tex_output.append(u"\cfoot{%s}" % (song.old_page_number, ))
-    
-    # for the title
-    nb_lines += 3
+        tex_output.append(u"\\cfoot{%s}" % (song.old_page_number, ))
 
     for paragraph in song.paragraphs.all():
         for verse in paragraph.verses.all():
@@ -376,7 +378,9 @@ def _convert_song_to_tex(song):
                 nb_lines += 1
         tex_output.append("\\newline")
         nb_lines += 1
-    return nb_lines, "\n".join([line for line in tex_output if line.strip() != ""])
+    tex_output.pop()
+    full_output = "\n".join([line for line in tex_output if line.strip() != ""]).strip()
+    return nb_lines, full_output
 
 
 @csrf_exempt
@@ -575,7 +579,11 @@ def get_whole_tex_code(request):
 
         # if the song we try to add has more lines than remaining lines for this page AND we are not on a new page
         if song.latex_code.nb_lines < available_lines_per_page or available_lines_per_page == base_lines_per_page:
+            # if we are following another song, add newline
             tex_code += song.latex_code.code
+            if not available_lines_per_page == base_lines_per_page:
+                tex_code += "\\newline\n"
+                available_lines_per_page -= 1
             available_lines_per_page -= song.latex_code.nb_lines
         else:
             tex_code += "\\newpage\n"
@@ -593,7 +601,7 @@ def get_whole_tex_code(request):
     f = open(os.path.join(temp, 'out.tex'),'w')
     f.write(tex_code)
     f.close()
-
+    
     proc=subprocess.Popen(['pdflatex', '-output-directory=' + temp, os.path.join(temp, 'out.tex')])
     proc.communicate()
 
@@ -947,7 +955,7 @@ def _get_summary(songs):
         first_letter = _simplify_title_letters(song.title[0])
         if first_letter != last_letter:
             last_letter = first_letter
-            output += "\\subsection{%s}\n\\paragraph{}\n" % (song.title[0], )
+            output += "\\subsection{%s}\n" % (song.title[0], )
         output += "%s - %s \\\\ \n" % (song.title, song.page_number)
     return output
         
@@ -955,8 +963,9 @@ def _get_summary(songs):
 def _get_thematic_summary(songs, themes):
     output = "\\section{Index thématique}\n"
     for theme in themes.order_by('name'):
-        output += "\\subsection{%s}\n\\paragraph{}\n" % (theme.name, )
+        output += "\\subsection{%s}\n" % (theme.name, )
         songs_filtered = songs.filter(theme=theme)
+        print(songs_filtered)
         for song in songs_filtered.all():
             output += "%s - %s \\\\ \n" % (song.title, song.page_number)
     return output

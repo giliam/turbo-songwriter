@@ -5,8 +5,9 @@
             <template v-if="get_number_pages() > 1">
                 <paginate
                   :pageCount="get_number_pages()"
-                  :page-range="2"
-                  :clickHandler="changeSongsPage"
+                  :page-range="10"
+                  :clickHandler="changeSongsPageTop"
+                  ref="paginatetop"
                   :prevText="'Prev'"
                   :nextText="'Next'"
                   :containerClass="'ui pagination menu'"
@@ -24,8 +25,9 @@
             <template v-if="get_number_pages() > 1">
                 <paginate
                   :pageCount="get_number_pages()"
-                  :page-range="2"
-                  :clickHandler="changeSongsPage"
+                  :page-range="10"
+                  :clickHandler="changeSongsPageBottom"
+                  ref="paginatebottom"
                   :prevText="'Prev'"
                   :nextText="'Next'"
                   :containerClass="'ui pagination menu'"
@@ -64,10 +66,19 @@
                 .then(response => {
                     this.results = response.data["results"];
                     this.count = response.data["count"];
-                }, 	(error) => { console.log(error) });
+                },  (error) => { console.log(error) });
         },
         methods: {
+            changeSongsPageBottom(pageNum) {
+                this.$refs.paginatetop.selected = pageNum-1
+                this.changeSongsPage(pageNum)
+            },
+            changeSongsPageTop(pageNum) {
+                this.$refs.paginatebottom.selected = pageNum-1
+                this.changeSongsPage(pageNum)
+            },
             changeSongsPage(pageNum) {
+                console.log("Changes page num", pageNum)
                 axios.get(root_url + "songs/list/paginate/?page=" + pageNum)
                 .then(response => {
                     this.results = response.data["results"];

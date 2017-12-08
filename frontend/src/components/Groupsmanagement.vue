@@ -55,10 +55,10 @@
         <template v-else>
             <table class="ui celled table">
                 <thead>
-                    <tr><th>{{ t('Names') }}</th>
-                    <th>{{ t('Caracteristics') }}</th>
-                    <th>{{ t('Songs') }}</th>
-                    <th>{{ t('Actions') }}</th>
+                    <tr><th class="three wide">{{ t('Names') }}</th>
+                    <th class="three wide">{{ t('Caracteristics') }}</th>
+                    <th class="seven wide">{{ t('Songs') }}</th>
+                    <th class="three wide">{{ t('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,11 +83,17 @@
                                     <p>{{ t('Selected for book') }}</p>
                                 </template>
                             </td>
-                            <td><ul>
-                                <template v-for="song in group.songs">
-                                    <li>{{song.title}}</li>
+                            <td>
+                                <label :for="'check_' + n">{{ t('Show/Hide') }}</label>
+                                <input type="checkbox" :id="'check_' + n" v-model="dataShownGroups[n]">
+                                <template v-if="isShownGroup(n)">
+                                    <ul>
+                                    <template v-for="song in group.songs">
+                                        <li>{{song.title}}</li>
+                                    </template>
+                                    </ul>
                                 </template>
-                            </ul></td>
+                            </td>
                             <td>
                                 <p><button @click="editGroup(n, group.id)" class="ui button primary">{{ t('Edit') }}</button></p>
                                 <p><button @click="deleteGroup(group.id)" class="ui button red">{{ t('Delete') }}</button></p>
@@ -116,6 +122,7 @@
                 action: "list",
                 name: "",
                 dataGroups: Array,
+                dataShownGroups: Array,
                 dataSongs: Array,
                 editedGroup: null,
             }
@@ -125,6 +132,10 @@
             axios.get(root_url + "groups/list/")
                 .then(response => {
                     this.$data.dataGroups = response.data
+                    this.$data.dataShownGroups = Array()
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.$data.dataShownGroups[i] = false
+                    }
                 },  (error) => { console.log(error) });
 
             axios.get(root_url + "songs/list/")
@@ -234,6 +245,9 @@
                         this.sync(true)
                      },
                     (error) => { console.log("Error", error) });
+            },
+            isShownGroup(group){
+                return this.$data.dataShownGroups[group]
             }
         }
     }
