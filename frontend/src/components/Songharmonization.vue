@@ -6,7 +6,7 @@
             <div v-for="(verse, vindex) in paragraph.verses">
                 <p>
                     <form v-if="isEnabledVerse(paragraph.id, verse.id)">
-                        <select v-model="harmonization" v-focus>
+                        <select v-model="harmonization" v-focus @keyup.enter.prevent="save()">
                             <option v-for="chord in chords" :value="chord.id">{{ chord.note }}</option>
                         </select>
                         <button class="ui primary button" @click.prevent="save()">{{ t('Save') }}</button><button class="ui button" @click.prevent="cancel()">{{ t('Cancel') }}</button><button class="ui button red" @click.prevent="deleteHarmonization()">{{ t('Delete') }}</button>
