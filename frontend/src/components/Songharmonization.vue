@@ -4,7 +4,8 @@
         
         <div v-if="loaded" v-for="(paragraph, index) in song.paragraphs">
             <div v-for="(verse, vindex) in paragraph.verses">
-                <template v-if="isHarmonized(verse.id)">
+                <verseharmonization :verse="verse" :chords="chords" :p_id_enabled="paragraph.id" :v_id_enabled="verse.id" :harmonizations_given="harmonizations[verse.id]"></verseharmonization>
+                <!-- <template v-if="isHarmonized(verse.id)">
                     <p class="harmonization" v-html="printHarmonization(index, vindex, verse.id)"></p>
                 </template>
                 <p :id="'verse_' + verse.id" @mouseup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)" @keyup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)">
@@ -17,7 +18,7 @@
                         </select>
                         <button class="ui primary button" @click.prevent="save()">{{ t('Save') }}</button><button class="ui button" @click.prevent="cancel()">{{ t('Cancel') }}</button><button class="ui button red" @click.prevent="deleteHarmonization()">{{ t('Delete') }}</button>
                     </form>
-                </p>
+                </p> -->
             </div>
             <p>~~~</p>
         </div>
@@ -32,24 +33,30 @@
     import axios from 'axios'
     import {root_url} from '@/common/index.js'
 
+    import Verseharmonization from '@/components/Verseharmonization.vue'
+
     export default {
         props:{
             song: Object
+        },
+        components: {
+            Verseharmonization,
         },
         data(){
             return {
                 chords: [],
                 loaded: false,
 
-                p_id_enabled: -1,
-                v_id_enabled: -1,
+                // p_id_enabled: -1,
+                // v_id_enabled: -1,
 
-                l_start_id_enabled: -1,
-                l_end_id_enabled: -1,
+                // l_start_id_enabled: -1,
+                // l_end_id_enabled: -1,
 
-                harmonization: -1,
+                // harmonization: -1,
                 harmonizations: [],
-                already_printed: [],
+                // already_printed: [],
+
             }
         },
         created(){
@@ -72,198 +79,190 @@
                                 this.$data.harmonizations[response.data[i].verse].push(response.data[i])
                             else
                                 this.$data.harmonizations[response.data[i].verse] = [response.data[i]]
+                            // this.printHarmonization(index, vindex, verse.id)
                         }
                         this.loaded = true
                     })
             },
-            getSelectedText() {
-                let text = "";
-                if (typeof window.getSelection != "undefined") {
-                    text = window.getSelection().toString();
-                } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
-                    text = document.selection.createRange().text;
-                }
-                return text;
-            },
-            selectText(p_id, v_id, verse_id) {
-                let text = "";
-                if (typeof window.getSelection != "undefined") {
-                    // thanks to https://stackoverflow.com/a/11559168
-                    var sel = window.getSelection();
-                    var div = document.getElementById(verse_id);
+            // selectText(p_id, v_id, verse_id) {
+            //     let text = "";
+            //     if (typeof window.getSelection != "undefined") {
+            //         // thanks to https://stackoverflow.com/a/11559168
+            //         var sel = window.getSelection();
+            //         var div = document.getElementById(verse_id);
 
-                    if (sel.rangeCount) {
-                        // Get the selected range
-                        var range = sel.getRangeAt(0);
+            //         if (sel.rangeCount) {
+            //             // Get the selected range
+            //             var range = sel.getRangeAt(0);
 
-                        // Check that the selection is wholly contained within the div text
-                        if (range.commonAncestorContainer == div) {
-                            // Create a range that spans the content from the start of the div
-                            // to the start of the selection
-                            var precedingRange = document.createRange();
-                            precedingRange.setStartBefore(div.firstChild);
-                            precedingRange.setEnd(range.startContainer, range.startOffset);
+            //             // Check that the selection is wholly contained within the div text
+            //             if (range.commonAncestorContainer == div) {
+            //                 // Create a range that spans the content from the start of the div
+            //                 // to the start of the selection
+            //                 var precedingRange = document.createRange();
+            //                 precedingRange.setStartBefore(div.firstChild);
+            //                 precedingRange.setEnd(range.startContainer, range.startOffset);
 
-                            // Get the text preceding the selection and do a crude estimate
-                            // of the number of words by splitting on white space
-                            var textPrecedingSelection = precedingRange.toString();
-                            let cut_text = div.textContent.substring(textPrecedingSelection.length)
-                            let selection = sel.toString()
+            //                 // Get the text preceding the selection and do a crude estimate
+            //                 // of the number of words by splitting on white space
+            //                 var textPrecedingSelection = precedingRange.toString();
+            //                 let cut_text = div.textContent.substring(textPrecedingSelection.length)
+            //                 let selection = sel.toString()
                             
-                            let starting_point = textPrecedingSelection.length
-                            for (var i = 0; i < cut_text.length; i++) {
-                                if( cut_text[i] == selection[0] ) {
-                                    cut_text = cut_text.substring(i, i+selection.length)
-                                    starting_point += i
-                                    break
-                                }
-                            }
+            //                 let starting_point = textPrecedingSelection.length
+            //                 for (var i = 0; i < cut_text.length; i++) {
+            //                     if( cut_text[i] == selection[0] ) {
+            //                         cut_text = cut_text.substring(i, i+selection.length)
+            //                         starting_point += i
+            //                         break
+            //                     }
+            //                 }
 
-                            this.addHarmonization(p_id, v_id, starting_point, starting_point+selection.length-1)
-                        }
-                    }
-                } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
-                    text = document.selection.createRange().text;
-                }
-            },
-            isEnabledVerse(p_id, v_id){
-                return (this.$data.p_id_enabled == p_id 
-                    && this.$data.v_id_enabled == v_id)
-            },
-            isEnabled(p_id, v_id, l_id){
-                return (this.$data.p_id_enabled == p_id 
-                    && this.$data.v_id_enabled == v_id 
-                    && this.$data.l_start_id_enabled <= l_id
-                    && this.$data.l_end_id_enabled >= l_id )
-            },
+            //                 this.addHarmonization(p_id, v_id, starting_point, starting_point+selection.length-1)
+            //             }
+            //         }
+            //     } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
+            //         text = document.selection.createRange().text;
+            //     }
+            // },
+            // isEnabledVerse(p_id, v_id){
+            //     return (this.$data.p_id_enabled == p_id 
+            //         && this.$data.v_id_enabled == v_id)
+            // },
+            // isEnabled(p_id, v_id, l_id){
+            //     return (this.$data.p_id_enabled == p_id 
+            //         && this.$data.v_id_enabled == v_id 
+            //         && this.$data.l_start_id_enabled <= l_id
+            //         && this.$data.l_end_id_enabled >= l_id )
+            // },
 
-            isUnderlined(p_id, v_id, l_id){
-                return this.isEnabled(p_id, v_id, l_id) ? "underlined" : ""
-            },
+            // isUnderlined(p_id, v_id, l_id){
+            //     return this.isEnabled(p_id, v_id, l_id) ? "underlined" : ""
+            // },
 
-            isHarmonized(v_id){
-                if(this.$data.harmonizations[v_id]){
-                    return true
-                }
-                else
-                    return false
-            },
+            // isHarmonized(v_id){
+            //     if(this.$data.harmonizations[v_id]){
+            //         return true
+            //     }
+            //     else
+            //         return false
+            // },
 
-            isHarmonizedLetter(v_id, i, j){
-                if(this.$data.harmonizations[v_id]){
-                    for (var j = 0; j < this.$data.harmonizations[v_id].length; j++) {
-                        if( this.$data.harmonizations[v_id][j].start_spot_in_verse <= i 
-                            && this.$data.harmonizations[v_id][j].end_spot_in_verse >= i ){
-                            return j
-                        }
-                    }
-                    return false
-                }
-                else
-                    return false
-            },
+            // isHarmonizedLetter(v_id, i, j){
+            //     if(this.$data.harmonizations[v_id]){
+            //         for (var j = 0; j < this.$data.harmonizations[v_id].length; j++) {
+            //             if( this.$data.harmonizations[v_id][j].start_spot_in_verse <= i 
+            //                 && this.$data.harmonizations[v_id][j].end_spot_in_verse >= i ){
+            //                 return j
+            //             }
+            //         }
+            //         return false
+            //     }
+            //     else
+            //         return false
+            // },
 
-            printHarmonization(p_index, v_index, v_id){
-                let output = ""
-                if(this.isHarmonized(v_id)){
+            // printHarmonization(p_index, v_index, v_id){
+            //     let output = ""
+            //     if(this.isHarmonized(v_id)){
                     
-                    this.$data.already_printed[v_id] = []
+            //         this.$data.already_printed[v_id] = []
 
-                    for (var i = 0; i < this.song.paragraphs[p_index].verses[v_index].content.length; i++) {
-                        let v_id = this.song.paragraphs[p_index].verses[v_index].id
+            //         for (var i = 0; i < this.song.paragraphs[p_index].verses[v_index].content.length; i++) {
+            //             let v_id = this.song.paragraphs[p_index].verses[v_index].id
 
-                        let found = false
-                        for (var j = 0; j < this.$data.harmonizations[v_id].length; j++) {
-                            if( this.$data.harmonizations[v_id][j].start_spot_in_verse <= i 
-                                && this.$data.harmonizations[v_id][j].end_spot_in_verse >= i
-                                && this.$data.already_printed[v_id].indexOf(j) == -1 ){
-                                output += this.$data.harmonizations[v_id][j].chord.note
-                                this.$data.already_printed[v_id].push(j)
-                                found = true
-                                break
-                            }
-                        }
-                        if(!found){
-                            output += "<span style='color:white'>" + this.song.paragraphs[p_index].verses[v_index].content[i] + "</span>"
-                        }
-                    }
-                }
-                return output
-            },
+            //             let found = false
+            //             for (var j = 0; j < this.$data.harmonizations[v_id].length; j++) {
+            //                 if( this.$data.harmonizations[v_id][j].start_spot_in_verse <= i 
+            //                     && this.$data.harmonizations[v_id][j].end_spot_in_verse >= i
+            //                     && this.$data.already_printed[v_id].indexOf(j) == -1 ){
+            //                     output += this.$data.harmonizations[v_id][j].chord.note
+            //                     this.$data.already_printed[v_id].push(j)
+            //                     found = true
+            //                     break
+            //                 }
+            //             }
+            //             if(!found){
+            //                 output += "<span style='color:white'>" + this.song.paragraphs[p_index].verses[v_index].content[i] + "</span>"
+            //             }
+            //         }
+            //     }
+            //     return output
+            // },
 
-            addHarmonization(p_id, v_id, l_start_id, l_end_id){
-                this.$data.p_id_enabled = p_id
-                this.$data.v_id_enabled = v_id
-                this.$data.l_start_id_enabled = l_start_id
-                this.$data.l_end_id_enabled = l_end_id
-                this.$data.harmonization = -1
-                let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
-                if( harmonized !== false ){
-                    this.$data.harmonization = this.$data.harmonizations[v_id][harmonized].chord.id
-                }
-            },
+            // addHarmonization(p_id, v_id, l_start_id, l_end_id){
+            //     this.$data.p_id_enabled = p_id
+            //     this.$data.v_id_enabled = v_id
+            //     this.$data.l_start_id_enabled = l_start_id
+            //     this.$data.l_end_id_enabled = l_end_id
+            //     this.$data.harmonization = -1
+            //     let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
+            //     if( harmonized !== false ){
+            //         this.$data.harmonization = this.$data.harmonizations[v_id][harmonized].chord.id
+            //     }
+            // },
 
-            getCorrespondingChord(chord_id){
-                for (var i = 0; i < this.$data.chords.length; i++) {
-                    if( this.$data.chords[i].id == chord_id ){
-                        return this.$data.chords[i]
-                    }
-                }
-            },
+            // getCorrespondingChord(chord_id){
+            //     for (var i = 0; i < this.$data.chords.length; i++) {
+            //         if( this.$data.chords[i].id == chord_id ){
+            //             return this.$data.chords[i]
+            //         }
+            //     }
+            // },
 
-            save(){
-                let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
+            // save(){
+            //     let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
 
-                if( harmonized !== false ){
-                    let harmonization = this.$data.harmonizations[this.$data.v_id_enabled][harmonized]
-                    harmonization.chord = this.$data.harmonization
-                    axios.put(root_url + "harmonization/" + harmonization.id + "/", harmonization)
-                        .then(response => {
-                            this.$data.harmonizations[this.$data.v_id_enabled][harmonized].chord = this.getCorrespondingChord(harmonization.chord) 
-                            this.cancel()
-                        }, error => {console.log(error)})
-                }else{
-                    let harmonization = {
-                        verse: this.$data.v_id_enabled,
-                        chord: this.$data.harmonization,
-                        start_spot_in_verse: this.$data.l_start_id_enabled,
-                        end_spot_in_verse: this.$data.l_end_id_enabled
-                    }
+            //     if( harmonized !== false ){
+            //         let harmonization = this.$data.harmonizations[this.$data.v_id_enabled][harmonized]
+            //         harmonization.chord = this.$data.harmonization
+            //         axios.put(root_url + "harmonization/" + harmonization.id + "/", harmonization)
+            //             .then(response => {
+            //                 this.$data.harmonizations[this.$data.v_id_enabled][harmonized].chord = this.getCorrespondingChord(harmonization.chord) 
+            //                 this.cancel()
+            //             }, error => {console.log(error)})
+            //     }else{
+            //         let harmonization = {
+            //             verse: this.$data.v_id_enabled,
+            //             chord: this.$data.harmonization,
+            //             start_spot_in_verse: this.$data.l_start_id_enabled,
+            //             end_spot_in_verse: this.$data.l_end_id_enabled
+            //         }
 
-                    axios.post(root_url + "harmonization/list/", harmonization)
-                        .then(response => {
-                            harmonization.chord = this.getCorrespondingChord(harmonization.chord)
+            //         axios.post(root_url + "harmonization/list/", harmonization)
+            //             .then(response => {
+            //                 harmonization.chord = this.getCorrespondingChord(harmonization.chord)
 
-                            if( this.$data.harmonizations[harmonization.verse] )
-                                this.$data.harmonizations[harmonization.verse].push(harmonization)
-                            else
-                                this.$data.harmonizations[harmonization.verse] = [harmonization]
-                            this.cancel()
-                        })
-                }
-            },
+            //                 if( this.$data.harmonizations[harmonization.verse] )
+            //                     this.$data.harmonizations[harmonization.verse].push(harmonization)
+            //                 else
+            //                     this.$data.harmonizations[harmonization.verse] = [harmonization]
+            //                 this.cancel()
+            //             })
+            //     }
+            // },
             
-            cancel(){
-                this.$data.p_id_enabled = -1
-                this.$data.v_id_enabled = -1
-                this.$data.l_start_id_enabled = -1
-                this.$data.l_end_id_enabled = -1
-                this.$data.harmonization = -1
-            },
+            // cancel(){
+            //     this.$data.p_id_enabled = -1
+            //     this.$data.v_id_enabled = -1
+            //     this.$data.l_start_id_enabled = -1
+            //     this.$data.l_end_id_enabled = -1
+            //     this.$data.harmonization = -1
+            // },
             
-            deleteHarmonization(){
-                let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
+            // deleteHarmonization(){
+            //     let harmonized = this.isHarmonizedLetter(this.$data.v_id_enabled, this.$data.l_start_id_enabled, this.$data.l_end_id_enabled)
 
-                if( harmonized !== false ){
-                    let harmonization = this.$data.harmonizations[this.$data.v_id_enabled][harmonized]
-                    axios.delete(root_url + "harmonization/" + harmonization.id + "/")
-                        .then(response => {
-                            this.$data.harmonizations[this.$data.v_id_enabled].splice(harmonized, 1)
-                            this.cancel()
-                            this.synchronize()
-                        }, error => {console.log(error)})
-                }
-            },
+            //     if( harmonized !== false ){
+            //         let harmonization = this.$data.harmonizations[this.$data.v_id_enabled][harmonized]
+            //         axios.delete(root_url + "harmonization/" + harmonization.id + "/")
+            //             .then(response => {
+            //                 this.$data.harmonizations[this.$data.v_id_enabled].splice(harmonized, 1)
+            //                 this.cancel()
+            //                 this.synchronize()
+            //             }, error => {console.log(error)})
+            //     }
+            // },
         }
     }
 </script>
