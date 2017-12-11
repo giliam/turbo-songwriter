@@ -25,7 +25,7 @@
             </div>
             <form v-if="display_form_add" class="ui form">
                 <p class="field">
-                    <label for="content">Content:</label>
+                    <label for="content">{{ t('Content:') }}</label>
                     <input type="text" v-model="new_verse_content" v-focus>
                 </p>
 

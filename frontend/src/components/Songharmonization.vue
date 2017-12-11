@@ -4,6 +4,12 @@
         
         <div v-if="loaded" v-for="(paragraph, index) in song.paragraphs">
             <div v-for="(verse, vindex) in paragraph.verses">
+                <template v-if="isHarmonized(verse.id)">
+                    <p class="harmonization" v-html="printHarmonization(index, vindex, verse.id)"></p>
+                </template>
+                <p :id="'verse_' + verse.id" @mouseup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)" @keyup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)">
+                    <span v-for="(l, i) in verse.content" @click.prevent="addHarmonization(paragraph.id, verse.id, i, i)" :class="isEnabled(paragraph.id, verse.id, i) || isHarmonizedLetter(verse.id, i) !== false ? 'underlined' : ''">{{ l }}</span>
+                </p>
                 <p>
                     <form v-if="isEnabledVerse(paragraph.id, verse.id)">
                         <select v-model="harmonization" v-focus @keyup.enter.prevent="save()">
@@ -11,12 +17,6 @@
                         </select>
                         <button class="ui primary button" @click.prevent="save()">{{ t('Save') }}</button><button class="ui button" @click.prevent="cancel()">{{ t('Cancel') }}</button><button class="ui button red" @click.prevent="deleteHarmonization()">{{ t('Delete') }}</button>
                     </form>
-                </p>
-                <template v-if="isHarmonized(verse.id)">
-                    <p class="harmonization" v-html="printHarmonization(index, vindex, verse.id)"></p>
-                </template>
-                <p :id="'verse_' + verse.id" @mouseup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)" @keyup="selectText(paragraph.id, verse.id, 'verse_' + verse.id)">
-                    <span v-for="(l, i) in verse.content" @click.prevent="addHarmonization(paragraph.id, verse.id, i, i)" :class="isEnabled(paragraph.id, verse.id, i) || isHarmonizedLetter(verse.id, i) !== false ? 'underlined' : ''">{{ l }}</span>
                 </p>
             </div>
             <p>~~~</p>
@@ -40,10 +40,13 @@
             return {
                 chords: [],
                 loaded: false,
+
                 p_id_enabled: -1,
                 v_id_enabled: -1,
+
                 l_start_id_enabled: -1,
                 l_end_id_enabled: -1,
+
                 harmonization: -1,
                 harmonizations: [],
                 already_printed: [],
@@ -268,8 +271,5 @@
 <style>
     .underlined{
         text-decoration: underline;
-    }
-    .harmonization {
-        font-size: 0.95em;
     }
 </style>

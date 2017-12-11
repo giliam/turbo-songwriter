@@ -86,7 +86,7 @@
                         <fieldset>
                             <legend>{{ t('Tex form for selected songs') }}</legend>
                             <p class="field">
-                                <label for="content">Content:</label>
+                                <label for="content">{{ t('Content:') }}</label>
                                 <textarea name="content" style="height:500px" v-model="latexCode" v-focus></textarea>
                             </p>
                             <p class="field"><button @click.prevent="saveLatex()" class="ui primary button">{{ t('Save') }}</button><button @click.prevent="cancelSongsManagement()" class="ui button">{{ t('Cancel') }}</button></p>

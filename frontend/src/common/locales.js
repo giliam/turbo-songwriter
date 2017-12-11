@@ -115,5 +115,9 @@ export const locales = {
         'Sort book': 'Ordonner',
         'New': '(v2)',
         'Old': '(v1)',
+        'Add a song with the lyrics': 'Ajouter une chanson avec les paroles',
+        'To add a song with the lyrics, just put all the verses, one per line, in the text box below. Please separate each paragraph with an empty line. If one (or more) paragraph is a refrain, put two underscores (__) in front of each verse of the paragraph.':'Pour ajouter une chanson avec ses paroles, insérez simplement les vers, un par ligne, dans la zone de texte ci-dessous. Séparez chaque paragraphe par une ligne vide. Si un (ou plusieurs) paragraphe est un refrain, préfixez chaque ligne du paragraph par deux tirets __.',
+        'Verses': 'Vers',
+        'Content:': 'Contenu :'
     }
 }
