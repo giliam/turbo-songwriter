@@ -2,6 +2,7 @@
     <div>
         <div id="listsongs">
             <h2>{{ t('List of songs') }}</h2>
+            <p style="margin-top:30px;"><router-link tag="a" class="ui button green" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link><router-link tag="a" class="ui button green" :to="{name: 'song_new_with_verses'}">{{ t('Add a song with the lyrics') }}</router-link></p>
             <template v-if="get_number_pages() > 1">
                 <paginate
                   :pageCount="get_number_pages()"
@@ -38,7 +39,7 @@
                 </paginate>
             </template>
         </div>
-        <p style="margin-top:30px;"><router-link tag="a" class="ui button green" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link></p>
+        <p style="margin-top:30px;"><router-link tag="a" class="ui button green" :to="{name: 'song_new'}">{{ t('Add a song') }}</router-link><router-link tag="a" class="ui button green" :to="{name: 'song_new_with_verses'}">{{ t('Add a song with the lyrics') }}</router-link></p>
     </div>
 </template>
 

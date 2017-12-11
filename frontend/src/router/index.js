@@ -27,6 +27,11 @@ var router = new Router({
         name: 'song_new',
         auth: true
     },{
+        path: '/song/add/with/verses/',
+        component: require('@/components/Songaddform.vue').default,
+        name: 'song_new_with_verses',
+        auth: true
+    },{
         path: '/groups/manage/',
         component: require('@/components/Groupsmanagement.vue').default,
         name: 'groups_management',

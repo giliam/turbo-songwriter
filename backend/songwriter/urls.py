@@ -27,6 +27,8 @@ urlpatterns = [
         name="song_compile_tex"),
     url(r'^songs/guess/pages/(?P<songs_ids>[\/0-9]+|all)/$', views.guess_pages_numbers,
         name="songs_guess_pages_numbers"),
+    url(r'^song/new/with/verses/$', views.add_song_with_verses,
+        name="song_add_with_verses"),
 
     url(r'^copyrights/extract/(?P<songs_ids>[\/0-9]+|all)/$', views.find_copyrights_data,
         name="find_copyrights_data"),

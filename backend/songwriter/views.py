@@ -43,6 +43,7 @@ footskip=16pt,
 includefoot}
 
 \\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
 \\usepackage[francais]{babel}
 \\usepackage{times}
 \\usepackage{relsize}
@@ -965,7 +966,6 @@ def _get_thematic_summary(songs, themes):
     for theme in themes.order_by('name'):
         output += "\\subsection{%s}\n" % (theme.name, )
         songs_filtered = songs.filter(theme=theme)
-        print(songs_filtered)
         for song in songs_filtered.all():
             output += "%s - %s \\\\ \n" % (song.title, song.page_number)
     return output
@@ -1067,3 +1067,57 @@ def get_song_details(request, song_id):
         "verses": list(dict_verses)
     }
     return response.Response(output)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def add_song_with_verses(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        song = models.Song()
+        song.title = json_data["title"]
+        song.author = models.Author.objects.get(id=json_data["author"])
+        song.editor = models.Editor.objects.get(id=json_data["editor"])
+        song.is_refrain = json_data["is_refrain"]
+        song.secli_number = json_data["secli_number"]
+        song.page_number = json_data["page_number"]
+        song.old_page_number = json_data["old_page_number"]
+        song.comments = json_data["comments"]
+        song.save()
+        song.theme = models.Theme.objects.filter(id__in=json_data["theme"]).all()
+
+        verses = json_data["verses"].strip().split("\n")
+        j = 0
+
+        paragraph = models.Paragraph()
+        paragraph.song = song
+        paragraph.order = j
+        paragraph.save()
+
+        i = 0
+        for line in verses:
+            line = line.strip()
+            if line == "":
+                paragraph = models.Paragraph()
+                paragraph.song = song
+                j += 1
+                i = 0
+                paragraph.order = j
+                paragraph.save()
+            else:
+                if line[0] == "_" and line[1] == "_":
+                    paragraph.is_refrain = True
+                    paragraph.save()
+                    line = line[2:]
+                
+                # is refrain
+                verse = models.Verse()
+                verse.paragraph = paragraph
+                verse.content = line
+                verse.order = i
+                i += 1
+                verse.save()
+
+        return response.Response({'id': song.id})
+    else:
+        return response.Response({})
