@@ -25,6 +25,7 @@
                 </template>
                 <template v-else>
         		    <h2>{{ t('List of editors') }}</h2>
+                    <p><a class="ui button green" @click.prevent="addEditor()">{{ t('Add an editor') }}</a></p>
         		    <button @click="synchronize()" class="ui button primary">{{ t('Update the list') }}</button>
                     <div class="ui list large">
                         <div v-for="item in editors" class="item" @click="editEditor(item)">
