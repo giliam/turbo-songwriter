@@ -224,6 +224,7 @@
                     .then(response => { 
                         this.$data.dataGroups.songs = response.data.songs
                         this.$data.loadingSongs = false
+                        this.sync(false)
                         setTimeout(function(){ window.scrollTo(posHor, posVer) }, 500);
                     },
                     (error) => { console.log("Error", error) });
