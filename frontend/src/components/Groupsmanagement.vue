@@ -1,6 +1,7 @@
 <template>
     <div>
-        <button @click.prevent="sync(true)" class="ui button">{{ t('Back to the list') }}</button>
+        <p><button @click.prevent="sync(true)" class="ui button">{{ t('Back to the list') }}</button></p>
+        <p><button class="ui button green" @click="sync(false)">{{ t('Refresh') }}</button></p>
         <template v-if="action == 'create'">
             <form class="ui form">
                 <fieldset>
@@ -46,7 +47,7 @@
             </form>
             <ul>
                 <template v-for="song in dataSongs">
-                    <template v-if="">
+                    <template v-if="!loadingSongs">
                         <li>{{song.title}} - <a @click.prevent="addToGroup(song.id, editedGroup.id)">{{ t('Add to group') }}</a></li>
                     </template>
                 </template>
@@ -125,6 +126,8 @@
                 dataShownGroups: Array,
                 dataSongs: Array,
                 editedGroup: null,
+                editedGroupId: null,
+                loadingSongs: false,
             }
         },
         created() {
@@ -169,6 +172,7 @@
             },
             editGroup(n, groupId){
                 this.$data.editedGroup = this.$data.dataGroups[n]
+                this.$data.editedGroupId = n
                 this.action = "edit"
             },
             saveEditedGroup(){
@@ -209,12 +213,19 @@
                     group.songs.push(this.$data.editedGroup.songs[i].id)
                 }
 
+                let posHor = window.scrollX
+                let posVer = window.scrollY
+
+                this.$data.loadingSongs = true
+
                 group.songs.push(songId)
 
                 axios.put(root_url + "groups/" + this.$data.editedGroup.id + "/", group)
                     .then(response => { 
-                        // this.sync(true)
-                     },
+                        this.$data.dataGroups.songs = response.data.songs
+                        this.$data.loadingSongs = false
+                        setTimeout(function(){ window.scrollTo(posHor, posVer) }, 500);
+                    },
                     (error) => { console.log("Error", error) });
             },
             sync(cancel){
@@ -223,10 +234,14 @@
                         this.$data.dataGroups = response.data
                         if(cancel)
                             this.cancelGroupManagement()
+                        if(this.action == "edit"){
+                            this.$data.editedGroup = this.$data.dataGroups[this.$data.editedGroupId]
+                        }
                     },  (error) => { console.log(error) });
             },
             cancelGroupManagement() {
                 this.$data.action = "list"
+                this.$data.editedGroupId = null
             },
             selectGroup(group){
                 let new_group = {
