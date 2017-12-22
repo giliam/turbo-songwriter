@@ -292,12 +292,10 @@ class SongReadSerializer(serializers.ModelSerializer):
         return queryset
 
 
-
-class SongOnlyReadSerializer(serializers.ModelSerializer):
+class SongOtherListSerializer(serializers.ModelSerializer):
     author = AuthorSerializer()
     editor = EditorSerializer()
     theme = ThemeSerializer(many=True)
-    latex_code = SongLaTeXCodeSerializer()
 
     class Meta:
         model = models.Song
@@ -332,6 +330,10 @@ class SongOnlyReadSerializer(serializers.ModelSerializer):
         return queryset
 
 
+class SongOnlyReadSerializer(SongOtherListSerializer):
+    latex_code = SongLaTeXCodeSerializer()
+
+
 class SongListSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='songs_detail', format='json')
 
@@ -342,6 +344,7 @@ class SongListSerializer(serializers.ModelSerializer):
             'url',
             'title',
             'is_refrain',
+            'latex_code',
             'page_number',
             'old_page_number',
             'secli_number',

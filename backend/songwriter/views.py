@@ -472,6 +472,7 @@ def get_theme_songs(request, theme_id):
     serializer = serializers.SongListSerializer(songs, context={'request':request}, many=True)
     return response.Response(serializer.data)
 
+
 @csrf_exempt
 @api_view(['GET'])
 def compile_tex(request, song_id):
@@ -1121,3 +1122,84 @@ def add_song_with_verses(request):
         return response.Response({'id': song.id})
     else:
         return response.Response({})
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_songs_without_author(request):
+    songs = models.Song.objects.filter(
+        author=None
+    ).select_related(
+        'latex_code'
+    ).select_related(
+        'author'
+    ).select_related(
+        'editor'
+    ).prefetch_related(
+        'theme'
+    )
+    serializer = serializers.SongOtherListSerializer(songs, context={'request':request}, many=True)
+    return response.Response(serializer.data)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_songs_without_editor(request):
+    songs = models.Song.objects.filter(
+        editor=None
+    ).select_related(
+        'latex_code'
+    ).select_related(
+        'author'
+    ).select_related(
+        'editor'
+    ).prefetch_related(
+        'theme'
+    )
+    serializer = serializers.SongOtherListSerializer(songs, context={'request':request}, many=True)
+    return response.Response(serializer.data)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_songs_with_latex_code(request):
+    songs = models.Song.objects.exclude(
+        latex_code=None
+    ).select_related(
+        'latex_code'
+    ).select_related(
+        'author'
+    ).select_related(
+        'editor'
+    ).prefetch_related(
+        'theme'
+    )
+    serializer = serializers.SongOtherListSerializer(songs, context={'request':request}, many=True)
+    return response.Response(serializer.data)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_songs_without_page_number(request):
+    songs = models.Song.objects.filter(
+        page_number=0, 
+        old_page_number=0
+    ).select_related(
+        'latex_code'
+    ).select_related(
+        'author'
+    ).select_related(
+        'editor'
+    ).prefetch_related(
+        'theme'
+    )
+    serializer = serializers.SongOtherListSerializer(songs, context={'request':request}, many=True)
+    return response.Response(serializer.data)
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_songs_with_edition_last_date(request):
+    songs = models.Song.objects.all()
+    serializer = serializers.SongOtherListSerializer(songs, context={'request':request}, many=True)
+    return response.Response(serializer.data)
