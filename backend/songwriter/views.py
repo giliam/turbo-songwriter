@@ -679,7 +679,7 @@ def edit_multiple_songs_tex(request, songs_ids, force=False):
             else:
                 return JsonResponse({})
             song_code = "\n".join(song_lines_lists[1:])
-            if songs[song_id_latex].latex_code:
+            if hasattr(songs[song_id_latex], "latex_code"):
                 songs[song_id_latex].latex_code.code = song_code.strip()
                 songs[song_id_latex].latex_code.save()
             else:
